@@ -1,0 +1,27 @@
+{
+  "name": "opentok-network-test-js",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "dependencies": {
+    "express": "^4.12.4",
+    "jade": "^1.10.0",
+    "lodash.defaults": "^3.1.1",
+    "lodash.max": "^3.3.1",
+    "lodash.min": "^3.3.1",
+    "lodash.pluck": "^3.1.2",
+    "lodash.sum": "^3.6.1",
+    "opentok": "^2.3.0"
+  },
+  "devDependencies": {
+    "watchify": "^3.2.2"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "watch": "watchify --debug src/js/app.js -o public/app.js -v",
+    "build": "browserify src/js/app.js -o public/app.js",
+    "start": "npm run watch & node server.js"
+  },
+  "author": "",
+  "license": "ISC"
+}

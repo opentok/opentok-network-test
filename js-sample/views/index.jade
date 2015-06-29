@@ -1,0 +1,15 @@
+html
+  head
+    script(type='text/javascript', src='TB.js')
+    script(type='text/javascript', src='app.js', session_id!= sessionId, token!= token, api_key!= apiKey)
+    meta(name='viewport', content='width=device-width, initial-scale=1')
+    link(href='assets/styles.css', rel='stylesheet')
+  body
+    h1
+      | OpenTok
+      small
+        |  Network test
+    #status_container.prettyBox
+      h2 Testing stream capabilities
+      p Acquiring camera
+      img(src='assets/spinner.gif')
