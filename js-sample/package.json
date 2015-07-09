@@ -23,5 +23,5 @@
     "start": "npm run watch & node server.js"
   },
   "author": "",
-  "license": "ISC"
+  "license": "MIT"
 }
