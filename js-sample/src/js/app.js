@@ -89,7 +89,7 @@ var callbacks = {
     session.unsubscribe(subscriber);
     session.unpublish(publisher);
   },
-  onSubscribe: function onSubscribe(error, subscribe) {
+  onSubscribe: function onSubscribe(error, subscriber) {
     if (error) {
       statusMessageEl.innerText = 'Could not subscribe to video';
       return;
@@ -97,7 +97,7 @@ var callbacks = {
 
     statusMessageEl.innerText = 'Checking your available bandwidth';
 
-    testStreamingCapability(subscribe, function(error, message) {
+    testStreamingCapability(subscriber, function(error, message) {
       statusMessageEl.innerText = message.text;
       statusIconEl.src = message.icon;
       callbacks.cleanup();
