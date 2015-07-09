@@ -20,7 +20,11 @@ var testStreamingCapability = function(subscriber, callback) {
   performQualityTest({subscriber: subscriber, timeout: TEST_TIMEOUT_MS}, function(error, results) {
     console.log('Test concluded', results);
 
-    if (results.video.bitsPerSecond > 150000 && results.video.packetLossRatioPerSecond < 0.03 && results.audio.packetLossRatioPerSecond < 0.03) {
+    var audioVideoSupported = results.video.bitsPerSecond > 250000
+      && results.video.packetLossRatioPerSecond < 0.03
+      && results.audio.bitsPerSecond > 25000
+      && results.audio.packetLossRatioPerSecond < 0.05
+    if (audioVideoSupported) {
       return callback(false, {
         text: "You're all set!",
         icon: 'assets/icon_tick.svg'
@@ -39,7 +43,10 @@ var testStreamingCapability = function(subscriber, callback) {
     publisher.publishVideo(false);
 
     performQualityTest({subscriber: subscriber, timeout: 5000}, function(error, results) {
-      if (results.audio.packetLossRatioPerSecond < 0.05) {
+      var audioSupported = results.audio.bitsPerSecond > 25000
+        && results.audio.packetLossRatioPerSecond < 0.05;
+
+      if (audioSupported) {
         return callback(false, {
           text: 'Your bandwidth can support audio only',
           icon: 'assets/icon_warning.svg'
@@ -115,11 +122,10 @@ compositeOfCallbacks(
   }
 );
 
-publisher = OT.initPublisher(publisherEl, {
-  // for other resoultions you may need to adjust the bandwidth conditions in
-  // testStreamingCapability()
-  resolution: '1280x720'
-}, callbacks.onInitPublisher);
+// This publisher uses the default resolution (640x480 pixels) and frame rate (30fps).
+// For other resoultions you may need to adjust the bandwidth conditions in
+// testStreamingCapability().
+publisher = OT.initPublisher(publisherEl, null, callbacks.onInitPublisher);
 
 document.addEventListener('DOMContentLoaded', function() {
   API_KEY = currentScript.attributes.api_key.nodeValue;
