@@ -31,7 +31,7 @@ var testStreamingCapability = function(subscriber, callback) {
       });
     }
 
-    if ((results.video.packetLossRatioPerSecond + results.audio.packetLossRatioPerSecond) / 2 < 0.05) {
+    if (results.audio.packetLossRatioPerSecond < 0.05) {
       return callback(false, {
         text: 'Your bandwidth can support audio only',
         icon: 'assets/icon_warning.svg'
