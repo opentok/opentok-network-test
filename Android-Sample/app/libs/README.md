@@ -1,1 +1,1 @@
-Add opentok-android-sdk-x.y.jar
+Add the opentok-android-sdk-x.y.jar to this directory.
