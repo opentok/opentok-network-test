@@ -1,10 +1,11 @@
-Sample app for the OpenTok.js stream statistics API
-===================================================
+OpenTok.js Pre-Call Test Sample
+===============================
 
-This sample shows how to use this OpenTok.js stream statistics API to determine the appropriate
-audio and video settings to use in publishing a stream to an OpenTok session. To do this, the app
-publishes a test stream to the session and then uses the API to check the quality of that stream.
-Based on the quality, the app determines what the client can successfully publish to the session:
+This sample shows how to use OpenTok.js to determine the appropriate audio and video settings
+to use in publishing a stream to an OpenTok session. To do this, the app publishes a test
+stream to the session and then uses the API to check the quality of that stream. Based on the
+quality, the app determines what the client can successfully publish to
+the session:
 
 * The client can publish an audio-video stream at the specified resolution.
 

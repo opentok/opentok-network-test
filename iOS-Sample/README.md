@@ -1,10 +1,11 @@
-Sample app for the OpenTok iOS SDK stream statistics API
-========================================================
+OpenTok iOS Pre-Call Test Sample
+================================
 
-This sample shows how to use the OpenTok iOS SDK stream statistics API to determine the appropriate
-audio and video settings to use in publishing a stream to an OpenTok session. To do this, the app
-publishes a test stream to the session and then uses the API to check the quality of that stream.
-Based on the quality, the app determines what the client can successfully publish to the session:
+This sample shows how to use this OpenTok iOS SDK to determine the appropriate audio and video
+settings to use in publishing a stream to an OpenTok session. To do this, the app publishes a test
+stream to the session and then uses the API to check the quality of that stream. Based on the
+quality, the app determines what the client can successfully publish to
+the session:
 
 * The client can publish an audio-video stream at the specified resolution.
 
@@ -52,7 +53,7 @@ and video. At the end of the test it reports one of the following:
 
 The app includes a OTNetworkStatsKit.h file. This header file exposes the
 `OTSubscriber networkStatsDelegate` property, the OTSubscriberKitNetworkStatsDelegate, the OTSubscriberKitAudioNetworkStats interface, and the OTSubscriberKitVideoNetworkStats
-interface. These undocumented features in the OpenTok iOS SDK enable the stream statistics
+interface. These undocumented features in the OpenTok iOS SDK enable the pre-call test
 functionality.
 
 When the view of the main ViewController loads, it instantiates a OTNetworkTest object,

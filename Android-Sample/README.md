@@ -1,10 +1,10 @@
-Sample app for the OpenTok Android SDK stream statistics API
-============================================================
+OpenTok Android Pre-Call Test Sample
+====================================
 
-This sample shows how to use this OpenTok Android SDK stream statistics API to determine the
-appropriate audio and video settings to use in publishing a stream to an OpenTok session. To do
-this, the app publishes a test stream to the session and then uses the API to check the quality of
-that stream. Based on the quality, the app determines what the client can successfully publish to
+This sample shows how to use this OpenTok Android SDK to determine the appropriate audio and video
+settings to use in publishing a stream to an OpenTok session. To do this, the app publishes a test
+stream to the session and then uses the API to check the quality of that stream. Based on the
+quality, the app determines what the client can successfully publish to
 the session:
 
 * The client can publish an audio-video stream at the specified resolution.
@@ -17,8 +17,6 @@ The sample app only subscribes to the test stream. It does not subscribe to othe
 session.
 
 ## Testing the app
-
-This sample app uses Node.js as a web server.
 
 To configure the app:
 
