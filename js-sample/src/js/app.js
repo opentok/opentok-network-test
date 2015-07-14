@@ -39,7 +39,7 @@ var testStreamingCapability = function(subscriber, callback) {
     }
 
     // try audio only to see if it reduces the packet loss
-    statusMessageEl.innerText = 'Trying audio only';
+    statusMessageEl.textContent = 'Trying audio only';
     publisher.publishVideo(false);
 
     performQualityTest({subscriber: subscriber, timeout: 5000}, function(error, results) {
@@ -63,18 +63,18 @@ var testStreamingCapability = function(subscriber, callback) {
 var callbacks = {
   onInitPublisher: function onInitPublisher(error) {
     if (error) {
-      statusMessageEl.innerText = 'Could not acquire your camera';
+      statusMessageEl.textContent = 'Could not acquire your camera';
       return;
     }
-    statusMessageEl.innerText = 'Connecting to session';
+    statusMessageEl.textContent = 'Connecting to session';
   },
   onPublish: function onPublish(error) {
     if (error) {
       // handle publishing errors here
-      statusMessageEl.innerText = 'Could not publish video';
+      statusMessageEl.textContent = 'Could not publish video';
       return;
     }
-    statusMessageEl.innerText = 'Subscribing to video';
+    statusMessageEl.textContent = 'Subscribing to video';
     subscriber = session.subscribe(
       publisher.stream,
       subscriberEl,
@@ -91,21 +91,21 @@ var callbacks = {
   },
   onSubscribe: function onSubscribe(error, subscriber) {
     if (error) {
-      statusMessageEl.innerText = 'Could not subscribe to video';
+      statusMessageEl.textContent = 'Could not subscribe to video';
       return;
     }
 
-    statusMessageEl.innerText = 'Checking your available bandwidth';
+    statusMessageEl.textContent = 'Checking your available bandwidth';
 
     testStreamingCapability(subscriber, function(error, message) {
-      statusMessageEl.innerText = message.text;
+      statusMessageEl.textContent = message.text;
       statusIconEl.src = message.icon;
       callbacks.cleanup();
     });
   },
   onConnect: function onConnect(error) {
     if (error) {
-      statusMessageEl.innerText = 'Could not connect to OpenTok';
+      statusMessageEl.textContent = 'Could not connect to OpenTok';
     }
   }
 };
@@ -117,7 +117,7 @@ compositeOfCallbacks(
     if (error) {
       return;
     }
-    statusMessageEl.innerText = 'Publishing video';
+    statusMessageEl.textContent = 'Publishing video';
     session.publish(publisher, callbacks.onPublish);
   }
 );
