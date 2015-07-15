@@ -1,7 +1,19 @@
 var API_KEY = '100'; // your API_KEY
-var SESSION_ID = '1_MX4xMDB-fjE0MzY0ODg2NDA5NjZ-aVFLMHlvbVZoelRWZDdqMWVKRk9UeGh4fn4'; // your SESSION_ID
-var TOKEN = 'T1==cGFydG5lcl9pZD0xMDAmc2lnPTMxN2ViNmU5ZDhhODI5Mzg1MzYzMTdlYzkwZDNmYzE5ZDA4MmQwYTE6c2Vzc2lvbl9pZD0xX01YNHhNREItZmpFME16WTBPRGcyTkRBNU5qWi1hVkZMTUhsdmJWWm9lbFJXWkRkcU1XVktSazlVZUdoNGZuNCZjcmVhdGVfdGltZT0xNDM2NDg4NjQyJm5vbmNlPTI2Mjgmcm9sZT1tb2RlcmF0b3Imc2Vzc2lvbklkPTFfTVg0eE1EQi1makUwTXpZME9EZzJOREE1TmpaLWFWRkxNSGx2YlZab2VsUldaRGRxTVdWS1JrOVVlR2g0Zm40'; // your TOKEN
+var SESSION_ID = '1_MX4xMDB-fjE0MzY5MTY3NDIzMjl-N1hmYzFiRCs2WnV6VDJsOEc0MVNjdnoyfn4'; // your SESSION_ID
+var TOKEN = 'T1==cGFydG5lcl9pZD0xMDAmc2lnPWMwYTcwYjM4ZmE3MWI3ZWU1N2E3YjU4MTJmMDg2ZWYzYzM4NjU5NDQ6c2Vzc2lvbl9pZD0xX01YNHhNREItZmpFME16WTVNVFkzTkRJek1qbC1OMWhtWXpGaVJDczJXblY2VkRKc09FYzBNVk5qZG5veWZuNCZjcmVhdGVfdGltZT0xNDM2OTE2NzUyJm5vbmNlPTkzMTA5NiZyb2xlPW1vZGVyYXRvciZzZXNzaW9uSWQ9MV9NWDR4TURCLWZqRTBNelk1TVRZM05ESXpNamwtTjFobVl6RmlSQ3MyV25WNlZESnNPRWMwTVZOamRub3lmbjQ=';
 var TEST_TIMEOUT_MS = 15000; // 15 seconds
+
+var setText = function setText(el, text) {
+  if (!el) {
+    return;
+  }
+  if (el.textContent) {
+    el.textContent = text;
+  }
+  if (el.innerText) {
+    el.innerText = text;
+  }
+};
 
 var pluck = function(arr, propertName) {
   return arr.map(function(value) {
@@ -167,6 +179,7 @@ var performQualityTest = function(config, callback) {
 
 var publisherEl = document.createElement('div');
 var subscriberEl = document.createElement('div');
+
 var session;
 var publisher;
 var subscriber;
@@ -198,7 +211,11 @@ var testStreamingCapability = function(subscriber, callback) {
     }
 
     // try audio only to see if it reduces the packet loss
-    statusMessageEl.innerText = 'Trying audio only';
+    setText(
+      statusMessageEl,
+     'Trying audio only'
+   );
+
     publisher.publishVideo(false);
 
     performQualityTest({subscriber: subscriber, timeout: 5000}, function(error, results) {
@@ -223,21 +240,28 @@ var testStreamingCapability = function(subscriber, callback) {
 var callbacks = {
   onInitPublisher: function onInitPublisher(error) {
     if (error) {
-      statusMessageEl.innerText = 'Could not acquire your camera';
+      setText(statusMessageEl, 'Could not acquire your camera');
       return;
     }
 
-    statusMessageEl.innerText = 'Connecting to session';
+    setText(statusMessageEl, 'Connecting to session');
   },
 
   onPublish: function onPublish(error) {
     if (error) {
       // handle publishing errors here
-      statusMessageEl.innerText = 'Could not publish video';
+      setText(
+        statusMessageEl,
+        'Could not publish video'
+      );
       return;
     }
 
-    statusMessageEl.innerText = 'Subscribing to video';
+    setText(
+      statusMessageEl,
+      'Subscribing to video'
+    );
+
     subscriber = session.subscribe(
       publisher.stream,
       subscriberEl,
@@ -256,14 +280,14 @@ var callbacks = {
 
   onSubscribe: function onSubscribe(error, subscriber) {
     if (error) {
-      statusMessageEl.innerText = 'Could not subscribe to video';
+      setText(statusMessageEl, 'Could not subscribe to video');
       return;
     }
 
-    statusMessageEl.innerText = 'Checking your available bandwidth';
+    setText(statusMessageEl, 'Checking your available bandwidth');
 
     testStreamingCapability(subscriber, function(error, message) {
-      statusMessageEl.innerText = message.text;
+      setText(statusMessageEl, message.text);
       statusIconEl.src = message.icon;
       callbacks.cleanup();
     });
@@ -271,7 +295,7 @@ var callbacks = {
 
   onConnect: function onConnect(error) {
     if (error) {
-      statusMessageEl.innerText = 'Could not connect to OpenTok';
+      setText(statusMessageEl, 'Could not connect to OpenTok');
     }
   }
 };
@@ -283,19 +307,28 @@ compositeOfCallbacks(
     if (error) {
       return;
     }
-
-    statusMessageEl.innerText = 'Publishing video';
+    setText(statusMessageEl, 'Publishing video');
     session.publish(publisher, callbacks.onPublish);
   }
-
 );
 
-// This publisher uses the default resolution (640x480 pixels) and frame rate (30fps).
-// For other resoultions you may need to adjust the bandwidth conditions in
-// testStreamingCapability().
-publisher = OT.initPublisher(publisherEl, undefined, callbacks.onInitPublisher);
 
 document.addEventListener('DOMContentLoaded', function() {
+  var container = document.createElement('div');
+  container.classList.add('container');
+
+
+  container.appendChild(publisherEl);
+  container.appendChild(subscriberEl);
+  document.body.appendChild(container);
+
+
+  // This publisher uses the default resolution (640x480 pixels) and frame rate (30fps).
+  // For other resoultions you may need to adjust the bandwidth conditions in
+  // testStreamingCapability().
+
+  publisher = OT.initPublisher(publisherEl, {}, callbacks.onInitPublisher);
+
   session = OT.initSession(API_KEY, SESSION_ID);
   session.connect(TOKEN, callbacks.onConnect);
   statusContainerEl = document.getElementById('status_container');

@@ -1,3 +1,8 @@
+.container {
+  position: absolute;
+  top: -1500px;
+}
+
 body {
   background: #eee;
   font-family: "Helvetica Neu", Arial;
@@ -7,6 +12,8 @@ body {
 }
 
 h1 {
+  margin-top: 0;
+  padding-top: 0;
   border-bottom: 1px solid rgba(0,0,0,0.2);
   box-shadow: 0px 0px 10px 1px rgba(0,0,0,0.2);
   display: block;
@@ -18,7 +25,6 @@ h1 {
   background: -o-linear-gradient(top, rgba(237,237,237,1) 0%, rgba(246,246,246,1) 53%, rgba(255,255,255,1) 100%);
   background: -ms-linear-gradient(top, rgba(237,237,237,1) 0%, rgba(246,246,246,1) 53%, rgba(255,255,255,1) 100%);
   background: linear-gradient(to bottom, rgba(237,237,237,1) 0%, rgba(246,246,246,1) 53%, rgba(255,255,255,1) 100%);
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ededed', endColorstr='#ffffff', GradientType=0 );
 }
 
 h1 small {
@@ -40,7 +46,6 @@ div.prettyBox {
   background: -o-linear-gradient(top, rgba(237,237,237,1) 0%, rgba(246,246,246,1) 53%, rgba(255,255,255,1) 100%);
   background: -ms-linear-gradient(top, rgba(237,237,237,1) 0%, rgba(246,246,246,1) 53%, rgba(255,255,255,1) 100%);
   background: linear-gradient(to bottom, rgba(237,237,237,1) 0%, rgba(246,246,246,1) 53%, rgba(255,255,255,1) 100%);
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ededed', endColorstr='#ffffff', GradientType=0 );
   border: 1px solid rgba(0,0,0,0.2);
   box-shadow: 0px 0px 10px 1px rgba(0,0,0,0.2);
   text-align: center;
