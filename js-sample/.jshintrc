@@ -1,21 +1,20 @@
 {
-  "browserify": true,
   "globalstrict": true,
-  "node": true,
   "browser": true,
-  "esnext": true,
   "strict": false,
   "camelcase": true,
   "eqeqeq": true,
   "eqnull": true,
   "expr": true,
   "indent": 2,
-  "latedef": true,
+  "latedef": false,
   "maxlen": 100,
   "newcap": true,
   "quotmark": "single",
   "smarttabs": true,
   "trailing": true,
   "undef": true,
-  "unused": true
+  "unused": true,
+  "predef": ["OT"],
+  "devel": true
 }
