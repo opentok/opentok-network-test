@@ -7,7 +7,7 @@ stream to the session and then uses the API to check the quality of that stream.
 quality, the app determines what the client can successfully publish to
 the session:
 
-* The client can publish an audio-video stream at the specified resolution.
+* The client can publish an audio-video stream at the default resolution (640-by-480 pixels).
 
 * The client can publish an audio-only stream.
 
@@ -18,51 +18,44 @@ session.
 
 ## Testing the app
 
-This sample app uses Node.js as a web server.
+To configure and test the app:
 
-To configure the app:
-
-Set the following environment variables to your OpenTok API key and API secret into app.js:
+1. At the top of the app.js file, set the following to your OpenTok API, a session ID, and a token
+   for that session:
 
    ```
-   var API_KEY = '12345'; // your API_KEY
-   var SESSION_ID = '12345'; // your SESSION_ID
-   var TOKEN = '12345';// your TOKEN
+   var API_KEY = '';
+   var SESSION_ID = '';
+   var TOKEN = '';
    ```
 
-   You can get your API key and API secret at the
-   [OpenTok dashboard](https://dashboard.tokbox.com/).
+   Note that the app requires that the session that uses the routed media mode -- one that uses
+   the [OpenTok Media Router](https://tokbox.com/developer/guides/create-session/#media-mode).
+   A routed session is required to get statistics for the stream published by the local client.
 
+   You can get your API key as well as a test session ID and token at the
+   [OpenTok dashboard](https://dashboard.tokbox.com/). However, in a shipping application, use
+   one of the [OpenTok server SDKs](https://tokbox.com/developer/sdks/server/) to generate a
+   session ID and token.
 
-Note that ```npm start``` calls ```watchify``` to pick up any changes you may make to the JavaScript
-in the app. (Simply running ```node server``` will not pick up these changes.)
+2. Install the sample code on a web server. Note that you must load the code from a web server.
+   Browsers do not support WebRTC video in pages loaded from a file:// URL.
 
-By default, the app runs on port 5000.
+3. In a web browser, navigate to the index.html page for the app.
 
-1. In a web browser, open http://localhost:5000/.
+4. Grant the page access to your camera and microphone.
 
-2. Grant the app access to your camera and microphone.
-
-3. The app uses a test stream to determine the client's ability to publish an stream that has a
-   1280-by-720-pixel video. At the end of the test it reports one of the following:
+5. The app uses a test stream to determine the client's ability to publish an stream that has a
+   640-by-480-pixel video. At the end of the test it reports one of the following:
 
    * You're all set -- your client can publish an audio-video stream that uses
-     1280-by-720-pixel video.
+     640-by-480-pixel video.
 
    * Your bandwidth is too low for audio.
 
    * Your bandwidth can support audio only.
 
 ## Understanding the code
-
-The JavaScript code uses the OpenTok.js file is in the src/js directory.
-
-The node app (see the server.js file) uses the OpenTok Node.js server SDK to generate
-a session and a token for the session. Note that the app uses a session that uses the
-routed media mode -- one that uses the [OpenTok Media
-Router](https://tokbox.com/developer/guides/create-session/#media-mode).
-A routed session is required to get statistics for the stream published by
-the local client.
 
 The main app.js file connects initializes an OpenTok publisher it uses to test stream quality.
 It also connects to the OpenTok session. Upon connecting to the session and initializing the publisher, the app subscribes to the test stream it publishes:
@@ -96,9 +89,8 @@ var publisherEl = document.createElement('div'),
 ```
 
 Upon subscribing to the test stream, the app calls the `testStreamingCapability()` function.
-This function calls the `performQualityTest()` function, which is defined in the
-src/lib/quality-test.js file. And this function initiates a BandwidthCalculator object (defined in
-the src/lib/quality-test.js file) and calls its `start()` method. This method periodically calls
+This function calls the `performQualityTest()` function. This function initiates a
+bandwidthCalculatorObj object and calls its `start()` method. This method periodically calls
 the `getStats()` method of the Subscriber:
 
 ```javascript
@@ -132,8 +124,8 @@ which includes the the following:
 
 * `packetsPerSecond` -- Packets per second
 
-The BandwidthCalculator stores these in a buffer. The `performQualityTest()` function logs the stats
-to the debug console.
+The bandwidthCalculator object stores these in a buffer. The `performQualityTest()` function logs
+the stats to the debug console.
 
 The quality stats test stops after 15 seconds, and the completion handler of the
 `performQualityTest()` method checks the video statistics and audio statistics to see if
