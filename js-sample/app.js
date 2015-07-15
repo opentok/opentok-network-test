@@ -1,6 +1,6 @@
-var API_KEY = '100'; // your API_KEY
+var API_KEY = ''; // your API_KEY
 var SESSION_ID = ''; // your SESSION_ID
-var TOKEN = '';
+var TOKEN = ''; //your Generated TOKEN
 var TEST_TIMEOUT_MS = 15000; // 15 seconds
 
 var publisherEl = document.createElement('div');

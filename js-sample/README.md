@@ -22,25 +22,17 @@ This sample app uses Node.js as a web server.
 
 To configure the app:
 
-1. Install the dependencies:
-
-   ```npm update```
-
-2. Set the following environment variables to your OpenTok API key and API secret:
+Set the following environment variables to your OpenTok API key and API secret into app.js:
 
    ```
-   export API_KEY=12345
-   export API_SECRET=12345
+   var API_KEY = '12345'; // your API_KEY
+   var SESSION_ID = '12345'; // your SESSION_ID
+   var TOKEN = '12345';// your TOKEN
    ```
 
    You can get your API key and API secret at the
    [OpenTok dashboard](https://dashboard.tokbox.com/).
 
-Now you can run the app:
-
-```
-npm start
-```
 
 Note that ```npm start``` calls ```watchify``` to pick up any changes you may make to the JavaScript
 in the app. (Simply running ```node server``` will not pick up these changes.)
