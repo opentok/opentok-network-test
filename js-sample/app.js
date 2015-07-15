@@ -1,5 +1,5 @@
 **
-* Replace these with your OpenTok API key, a session ID for a routed OpenToksession,
+* Replace these with your OpenTok API key, a session ID for a routed OpenTok session,
 * and a token that has the publish role:
 */
 var API_KEY = '';
