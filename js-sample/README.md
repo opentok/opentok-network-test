@@ -23,7 +23,8 @@ To configure and test the app:
 1. At the top of the app.js file, set the following to your OpenTok API, a session ID, and a token
    for that session:
 
-   ```var API_KEY = '';
+   ```
+   var API_KEY = '';
    var SESSION_ID = '';
    var TOKEN = '';
    ```
