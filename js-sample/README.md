@@ -25,7 +25,7 @@ To configure and test the app:
 
    ```var API_KEY = '';
    var SESSION_ID = '';
-   var TOKEN = ''; // your TOKEN
+   var TOKEN = '';
    ```
 
    Note that the app requires that the session that uses the routed media mode -- one that uses

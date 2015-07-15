@@ -1,6 +1,11 @@
-var API_KEY = ''; // your API_KEY
-var SESSION_ID = ''; // your SESSION_ID
-var TOKEN = ''; //your Generated TOKEN
+**
+* Replace these with your OpenTok API key, a session ID for a routed OpenToksession,
+* and a token that has the publish role:
+*/
+var API_KEY = '';
+var SESSION_ID = '';
+var TOKEN = '';
+
 var TEST_TIMEOUT_MS = 15000; // 15 seconds
 
 var publisherEl = document.createElement('div');
