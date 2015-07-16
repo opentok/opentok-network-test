@@ -226,6 +226,14 @@ function getSampleWindowSize(samples) {
   return (max(times) - min(times)) / 1000;
 }
 
+if ( !Array.prototype.forEach ) {
+    Array.prototype.forEach = function(fn, scope) {
+        for(var i = 0, len = this.length; i < len; ++i) {
+            fn.call(scope, this[i], i, this);
+        }
+    }
+}
+
 function compositeOfCallbacks(obj, fns, callback) {
   var results = {};
   var hasError = false;
@@ -237,14 +245,6 @@ function compositeOfCallbacks(obj, fns, callback) {
     }
   };
 
-  if ( !Array.prototype.forEach ) {
-      Array.prototype.forEach = function(fn, scope) {
-          for(var i = 0, len = this.length; i < len; ++i) {
-              fn.call(scope, this[i], i, this);
-          }
-      }
-  }
-  
   fns.forEach(function(key) {
     var originalCallback = obj[key];
 
