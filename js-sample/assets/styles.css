@@ -1,16 +1,16 @@
 .container {
-  position: absolute;
-  /*height: 1px;*/
+  position: relative;
+  text-align: center;
   /*bottom: 0px;*/
   /*overflow: hidden;*/
 }
 
 .OT_subscriber {
-  float: left;
+  display: inline-block;
 }
 
 .OT_publisher {
-  float: left;
+  display: inline-block;
 }
 
 body {
