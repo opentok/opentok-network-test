@@ -1,4 +1,4 @@
-**
+/**
 * Replace these with your OpenTok API key, a session ID for a routed OpenTok session,
 * and a token that has the publish role:
 */
@@ -146,7 +146,7 @@ compositeOfCallbacks(
 
 document.addEventListener('DOMContentLoaded', function() {
   var container = document.createElement('div');
-  container.classList.add('container');
+  container.className = 'container';
 
   container.appendChild(publisherEl);
   container.appendChild(subscriberEl);
