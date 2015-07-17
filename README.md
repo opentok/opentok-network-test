@@ -8,7 +8,7 @@ test results, the app can decide if the client should be allowed to publish a st
 and whether that stream should use audio-only mode or not.
 
 This is an experimental/beta feature. It can be a subject to change in future releases.
-Please provide any feedback at denis [at] tokbox.com.
+Please provide any feedback or questions at precall-test-beta@tokbox.com.
 
 The pre-call test is supported in:
 
