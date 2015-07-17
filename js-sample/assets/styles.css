@@ -1,6 +1,16 @@
 .container {
   position: absolute;
-  top: -1500px;
+  /*height: 1px;*/
+  /*bottom: 0px;*/
+  /*overflow: hidden;*/
+}
+
+.OT_subscriber {
+  float: left;
+}
+
+.OT_publisher {
+  float: left;
 }
 
 body {
