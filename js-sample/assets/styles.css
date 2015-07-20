@@ -1,16 +1,21 @@
 .container {
-  position: relative;
-  text-align: center;
-  /*bottom: 0px;*/
-  /*overflow: hidden;*/
+  position: absolute;
+  top: 0px;
+  right: 0px;
 }
 
-.OT_subscriber {
-  display: inline-block;
+.container, .container .OT_subscriber, .container .OT_publisher {
+  overflow: hidden;
 }
 
-.OT_publisher {
-  display: inline-block;
+.container .OT_subscriber, .container .OT_publisher {
+  float: left;
+  width: 2px !important;
+  height: 2px !important;
+  min-width: 2px !important;
+  max-width: 2px !important;
+  min-height: 2px !important;
+  max-height: 2px !important;
 }
 
 body {
