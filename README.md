@@ -5,7 +5,8 @@ This repository contains sample code that shows how to diagnose if the client's 
 a stream to an OpenTok session) will be succesful or not, given their network conditions. The
 pre-call test can be implemented as a step the client runs before joining the session. Based on the
 test results, the app can decide if the client should be allowed to publish a stream to the session
-and whether that stream should use audio-only mode or not.
+and whether that stream should use audio-only mode or not. The test is intended to be used in a
+session that connects two clients in a one-to-one call.
 
 This is an experimental/beta feature. It can be a subject to change in future releases.
 Please provide any feedback or questions at precall-test-beta@tokbox.com.
