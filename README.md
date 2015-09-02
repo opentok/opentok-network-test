@@ -89,11 +89,11 @@ For the given qualities and resolutions, all the following conditions must met.
 | Excellent  | 320x240 @ 30           | > 300       | < 0.5%      |
 | Acceptable | 1280x720 @ 30          | > 350       | < 0.3%      |
 | Acceptable | 640x480 @ 30           | > 250       | < 0.3%      |
-| Excellent  | 352x288 @ 30           | > 150       | < 0.3%      |
+| Acceptable | 352x288 @ 30           | > 150       | < 0.3%      |
 | Acceptable | 320x240 @ 30           | > 150       | < 0.3%      |
 
-Note that the default publish settings for video are 640x480 pixels @ 30 fps in OpenTok.js.
-The default is 352x288 @ 30 fps in the OpenTok Android SDK and the OpenTok iOS SDK.
+Note that the default publish settings for video are 640x480 pixels @ 30 fps in OpenTok.js and the
+OpenTok iOS SDK. The default is 352x288 @ 30 fps in the OpenTok Android SDK.
 
 You can calculate the video kbps and packet loss based on the video bytes received and
 video packets received statistics provided by the Network Statistics API. See the sample app
