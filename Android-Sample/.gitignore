@@ -1,0 +1,8 @@
+.gradle
+local.properties
+build/
+.DS_Store
+
+# Ignoring all IDE files is better for sample code purposes
+.idea
+*.iml
