@@ -51,7 +51,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		0A810D2D1AAE685100C84720 /* OTNetworkStatsKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OTNetworkStatsKit.h; sourceTree = "<group>"; };
 		0A810D2E1AAE68B300C84720 /* libc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libc++.dylib"; path = "usr/lib/libc++.dylib"; sourceTree = SDKROOT; };
 		A57661191B38763800638FA6 /* OTDefaultAudioDevice.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OTDefaultAudioDevice.h; sourceTree = "<group>"; };
 		A576611A1B38763800638FA6 /* OTDefaultAudioDevice.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OTDefaultAudioDevice.m; sourceTree = "<group>"; };
@@ -185,7 +184,6 @@
 				A576611A1B38763800638FA6 /* OTDefaultAudioDevice.m */,
 				A5D6F7B21B0FF02800CE1972 /* OTNetworkTest.h */,
 				A5D6F7B31B0FF02800CE1972 /* OTNetworkTest.m */,
-				0A810D2D1AAE685100C84720 /* OTNetworkStatsKit.h */,
 				D4426105185F81D800E23699 /* AppDelegate.h */,
 				D4426106185F81D800E23699 /* AppDelegate.m */,
 				D4426108185F81D800E23699 /* Main_iPhone.storyboard */,
@@ -470,6 +468,7 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"${SRCROOT}",
@@ -496,6 +495,7 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"${SRCROOT}",
