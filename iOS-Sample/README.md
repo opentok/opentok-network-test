@@ -258,40 +258,6 @@ the `[OTNetworkTest networkTestDidCompleteWithResult:]` delegate method. The vie
 controller receives this result and displays a message in the user interface based on
 the result.
 
-Note that this sample app uses thresholds based on the table in the "Interpretting stream
+Note that this sample app uses thresholds based on the table in the "Interpreting stream
 statistics" section of the main README file of this repo. You may change the threshold values used
 in your own app, based on the video resolution your app uses and your quality requirements.
-
-## OpenTok iOS SDK API additions
-
-The OpenTok iOS SDK includes the following API additions (which are not included in the
-main documentation).
-
-### [OTSubscriberKit setNetworkStatsDelegate:]
-
-Sets up a delegate object for subscriber quality statistics. This object implements the OTSubscriberKitNetworkStatsDelegate protocol. This object is sent messages reporting the following:
-
-* Total audio and video packets lost
-* Total audio and video packets received
-* Total audio and video bytes received
-
-### [OTSubscriberKitNetworkStatsDelegate subscriber: audioNetworkStatsUpdated:]
-
-This message is sent periodically to report audio statistics for the subscriber. The second parameter, stats, which is defined by the OTSubscriberKitAudioNetworkStats interface, includes the following properties:
-
-* `audioBytesReceived` (uint64_t) -- The total number of audio bytes received by the subscriber
-* `audioPacketsLost` (uint64_t) -- The total number of audio packetsthat did not reach the
-  subscriber
-* `audioPacketsReceived` (uint64_t) -- The total number of audio packets received by the subscriber
-* `timestamp` (double) -- The timestamp, in milliseconds since the Unix epoch, for when these stats
-  were gathered
-
-### [OTSubscriberKitNetworkStatsDelegate subscriber: videoNetworkStatsUpdated:]
-
-This message is sent periodically to report video statistics for the subscriber. The second parameter, stats, which is defined by the OTSubscriberKitVideoNetworkStats interface, includes the following properties:
-
-* `videoBytesReceived` (uint64_t) -- The total number of video bytes received by the subscriber
-* `videoPacketsLost` (uint64_t) -- The total number of video packets lost by the subscriber
-* `videoPacketsReceived` (uint64_t) -- The total number of video packets received by the subscriber
-* `timestamp` (double) -- The timestamp, in milliseconds since the Unix epoch, for when these stats
-  were gathered

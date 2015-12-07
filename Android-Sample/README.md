@@ -223,57 +223,6 @@ private void checkAudioQuality() {
 }
 ```
 
-Note that this sample app uses thresholds based on the table in the "Interpretting stream
+Note that this sample app uses thresholds based on the table in the "Interpreting stream
 statistics" section of the main README file of this repo. You may change the threshold values used
 in your own app, based on the video resolution your app uses and your quality requirements.
-
-## OpenTok Android SDK API additions
-
-The OpenTok Android SDK includes the following API additions (which are not included in the
-main documentation).
-
-### SubscriberKit.setAudioStatsListener(AudioStatsListener listener)
-
-Sets up a listener for subscriber audio statistics. The listener object implements the
-`onAudioStats(SubscriberKit subscriber, SubscriberAudioStats stats)`
-method of the AudioStatsListener interface. This method is called periodically to report the
-following:
-
-* Total audio packets lost
-* Total audio packets received
-* Total audio bytes received
-
-_Parameters_
-
-The method has one parameter -- listener -- which is method that implements the
-`onAudioStats(SubscriberKit subscriber, SubscriberAudioStats stats)` method defined by the
-AudioStatsListener interface. This method is called periodically to report audio statistics, which
-are passed in as the `stats` parameter. This `stats` object, defined by the SubscriberAudioStats
-class, has the following properties:
-
-* `audioBytesReceived` -- (int) The total number of audio bytes received by the subscriber
-* `audioPacketsLost` -- (int) The total number of audio packets that did not reach the subscriber
-* `audioPacketsReceived` -- (int) The total number of audio packets received by the subscriber
-* `timestamp` -- (double) The timestamp, in milliseconds since the Unix epoch, for
-  when these stats were gathered
-
-### SubscriberKit.setVideoStatsListener(VideoStatsListener listener)
-
-Sets up a listener for subscriber video statistics. The listener object implements the
-`onVideoStats(SubscriberKit subscriber, SubscriberVideoStats stats)`
-method of the VideoStatsListener interface. This method is called periodically to report the
-following:
-
-* Total video packets lost
-* Total video packets received
-* Total video bytes received
-
-_Parameters_
-
-The method has one parameter -- listener -- which is method that implements the `onVideoStats(SubscriberKit subscriber, SubscriberVideoStats stats)` method defined by the VideoStatsListener interface. This method is called periodically to to report video statistics, which are passed in as the  stats parameter. This  stats object, defined by the SubscriberAudioStats class, has the following properties:
-
-* `videoBytesReceived` -- (int) The total number of video bytes received by the subscriber
-* `videoPacketsLost` -- (int) The total number of video packets that did not reach the subscriber
-* `videoPacketsReceived` -- (int) The total number of video packets received by the subscriber
-* `timestamp` -- (double) The timestamp, in milliseconds since the Unix epoch, for
-  when these stats were gathered
