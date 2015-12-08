@@ -7,7 +7,6 @@
 //
 
 #import "OTNetworkTest.h"
-#import "OTNetworkStatsKit.h"
 #import "OTDefaultAudioDevice.h"
 
 #define TIME_WINDOW 3000 // 3 seconds
