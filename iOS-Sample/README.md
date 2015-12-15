@@ -1,5 +1,5 @@
-OpenTok iOS Pre-Call Test Sample
-================================
+OpenTok iOS Network Test Sample
+===============================
 
 This sample shows how to use this OpenTok iOS SDK to determine the appropriate audio and video
 settings to use in publishing a stream to an OpenTok session. To do this, the app publishes a test
@@ -50,11 +50,6 @@ and video. At the end of the test it reports one of the following:
    * Your bandwidth is too low for audio.
 
 ## Understanding the code
-
-The app includes a OTNetworkStatsKit.h file. This header file exposes the
-`OTSubscriber networkStatsDelegate` property, the OTSubscriberKitNetworkStatsDelegate, the OTSubscriberKitAudioNetworkStats interface, and the OTSubscriberKitVideoNetworkStats
-interface. These undocumented features in the OpenTok iOS SDK enable the pre-call test
-functionality.
 
 When the view of the main ViewController loads, it instantiates a OTNetworkTest object,
 defined by a class included in this sample app. The code then calls the `[NetworkTest runConnectivityTestWithApiKey:sessionId:token:executeQualityTest:qualityTestDuration:delegate:self]`

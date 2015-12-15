@@ -1,14 +1,14 @@
-OpenTok Pre-Call Test
-=====================
+OpenTok Network Test
+====================
 
 This repository contains sample code that shows how to diagnose if the client's call (publishing
-a stream to an OpenTok session) will be succesful or not, given their network conditions. The
-pre-call test can be implemented as a step the client runs before joining the session. Based on the
+a stream to an OpenTok session) will be successful or not, given their network conditions. The
+network test can be implemented as a step the client runs before joining the session. Based on the
 test results, the app can decide if the client should be allowed to publish a stream to the session
 and whether that stream should use audio-only mode or not. The test is intended to be used in a
 session that connects two clients in a one-to-one call.
 
-The pre-call test is supported in:
+The network test is supported in:
 
 *  [OpenTok Android SDK 2.7](https://tokbox.com/developer/sdks/android/)
 *  [OpenTok iOS SDK 2.7](https://tokbox.com/developer/sdks/ios/)
@@ -61,8 +61,8 @@ in order to qualify a viable end user connection. Also the longer you run the te
 accurate values you will receive. At the same time, you might want to switch audio-only or not
 based on your specific use case. 
 
-The Pre-Call Test is implemented as a sample code to make it easier
-for developer to customize their application logic.
+The OpenTok Network Test is implemented as a sample code to make it easier
+for developers to customize their application logic.
 
 Below are examples of the thresholds for popular video resolution-frame rate combinations.
 The following tables interpret results (for audio-video sessions and audio-only sessions),
@@ -111,8 +111,8 @@ and audio packets received statistics provided by the API. See the sample apps f
 
 ## Sample code
 
-This repo includes sample code showing how to build a pre-call test using version 2.6 of each of
-the OpenTok client SDKs: Android, iOS, and JavaScript. Each sample shows how to determine the
+This repo includes sample code showing how to build a network test using each of the
+OpenTok client SDKs: Android, iOS, and JavaScript. Each sample shows how to determine the
 the appropriate audio and video settings to use in publishing a stream to an OpenTok session. To do
 this, each sample app publishes a test stream to the session and then uses the Network Stats API to
 check the quality of that stream. Based on the quality, the app determines what the client can
@@ -137,7 +137,7 @@ stats API.
 * Why are the Network Stats API results inconsistent?
 
   The WebRTC requires some time to stabilize the quality of the call for the specific
-  connection. If you will allow the pre-call test to run longer, you should receive
+  connection. If you will allow the network test to run longer, you should receive
   more consistent results. Also, please, make sure that you're using routed OpenTok session
   instead of a relayed on. For more information, see [The OpenTok Media Router and media
   modes](https://tokbox.com/developer/guides/create-session/#media-mode)
@@ -148,7 +148,7 @@ stats API.
   if there is another high-bandwidth consumer on the network, WebRTC will 
   try to set its own usage to the minimum.
 
-* The pre-call test shows the "Excellent" (or "Acceptable") result, but the video still gets
+* The network test shows the "Excellent" (or "Acceptable") result, but the video still gets
   pixilated during the call.
 
   You can increase the required thresholds to better qualify the end user connection.

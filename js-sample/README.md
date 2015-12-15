@@ -1,5 +1,5 @@
-OpenTok.js Pre-Call Test Sample
-===============================
+OpenTok.js Network Test Sample
+==============================
 
 This sample shows how to use OpenTok.js to determine the appropriate audio and video settings
 to use in publishing a stream to an OpenTok session. To do this, the app publishes a test

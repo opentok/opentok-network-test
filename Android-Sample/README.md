@@ -1,5 +1,5 @@
-OpenTok Android Pre-Call Test Sample
-====================================
+OpenTok Android Network Test Sample
+===================================
 
 This sample shows how to use this OpenTok Android SDK to determine the appropriate audio and video
 settings to use in publishing a stream to an OpenTok session. To do this, the app publishes a test
