@@ -84,7 +84,7 @@ collect statistics for it.
 The OTNetworkTestDelegate object sets the `networkStatsDelegate` property of the subscriber to
 itself:
 
-_subscriber.networkStatsDelegate = self;
+`_subscriber.networkStatsDelegate = self;`
 
 This delegate includes two methods: 
 
@@ -243,8 +243,8 @@ can support publishing video and audio, based on the video and audio bandwidth a
 packet loss ratio, collected by the OTSubscriberKitNetworkStatsDelegate:
 
 ```
-BOOL canDoVideo = (video_bw < 50000 || video_pl_ratio > 0.03);
-BOOL canDoAudio = (audio_bw < 25000 || audio_pl_ratio > 0.05);
+BOOL canDoVideo = (video_bw >= 150000 && video_pl_ratio <= 0.03);
+BOOL canDoAudio = (audio_bw >= 25000 && audio_pl_ratio <= 0.05);
 ```
 
 The method sets a `result` property with the appropriate result and passes it into
@@ -253,6 +253,7 @@ the `[OTNetworkTest networkTestDidCompleteWithResult:]` delegate method. The vie
 controller receives this result and displays a message in the user interface based on
 the result.
 
-Note that this sample app uses thresholds based on the table in the "Interpreting stream
-statistics" section of the main README file of this repo. You may change the threshold values used
-in your own app, based on the video resolution your app uses and your quality requirements.
+Note that this sample app uses thresholds based on the table in the "Thresholds and interpreting
+network statistics" section of the main README file of this repo. You may change the threshold
+values used in your own app, based on the video resolution your app uses and your quality
+requirements.

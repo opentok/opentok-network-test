@@ -178,6 +178,7 @@ performQualityTest({subscriber: subscriber, timeout: 5000}, function(error, resu
 });
 ```
 
-Note that this sample app uses thresholds based on the table in the "Interpreting stream
-statistics" section of the main README file of this repo. You may change the threshold values used
-in your own app, based on the video resolution your app uses and your quality requirements.
+Note that this sample app uses thresholds based on the table in the "Thresholds and interpreting
+network statistics" section of the main README file of this repo. You may change the threshold
+values used in your own app, based on the video resolution your app uses and your quality
+requirements.
