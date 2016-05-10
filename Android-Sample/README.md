@@ -3,9 +3,8 @@ OpenTok Android Network Test Sample
 
 This sample shows how to use this OpenTok Android SDK to determine the appropriate audio and video
 settings to use in publishing a stream to an OpenTok session. To do this, the app publishes a test
-stream to the session and then uses the API to check the quality of that stream. Based on the
-quality, the app determines what the client can successfully publish to
-the session:
+stream to a test session and then uses the API to check the quality of that stream. Based on the
+quality, the app determines what the client can successfully publish to an OpenTok session:
 
 * The client can publish an audio-video stream at the specified resolution.
 
@@ -14,7 +13,8 @@ the session:
 * The client is unable to publish.
 
 The sample app only subscribes to the test stream. It does not subscribe to other streams in the
-session.
+test session. Use a separate OpenTok session (and session ID) to share audio-video streams between
+clients.
 
 ## Testing the app
 
@@ -45,16 +45,26 @@ To configure the app:
    private static final String APIKEY = "";
    ```
 
-   You can get your a test OpenTok session ID, a test token, and the API key at the
-   [OpenTok dashboard](https://dashboard.tokbox.com/).
+   **Important:** You must use a unique session, with its own session ID, for the network test. This
+   must be a different session than the one you will use to share audio-video streams between
+   clients. Do not publish more than one stream to the test session.
+
+   The app requires that each session uses the routed media mode -- one that uses
+   the [OpenTok Media Router](https://tokbox.com/developer/guides/create-session/#media-mode).
+   A routed session is required to get statistics for the stream published by the local client.
+
+   You can get your API key as well as a test session ID and token at the
+   [OpenTok dashboard](https://dashboard.tokbox.com/). However, in a shipping application, use
+   one of the [OpenTok server SDKs](https://tokbox.com/developer/sdks/server/) to generate a
+   session ID and token.
 
 6. Debug the project on a supported device.
 
    For a list of supported devices, see the "Developer and client requirements"
    on [this page](https://tokbox.com/developer/sdks/android/).
 
-The app uses a test stream to determine the client's ability to publish an stream.
-At the end of the test it reports one of the following:
+ The app uses a test stream and session to determine the client's ability to publish a stream
+ that has audio and video. At the end of the test it reports one of the following:
 
    * You're all set -- your client can publish an audio-video stream.
 
@@ -64,8 +74,8 @@ At the end of the test it reports one of the following:
 
 ## Understanding the code
 
-The MainActivity class connects to the OpenTok session. Upon connecting to the session,
-the app  connects initializes an OpenTok Publisher object it uses to test stream quality. 
+The MainActivity class connects to the test OpenTok session. Upon connecting to the session,
+the app connects initializes an OpenTok Publisher object it uses to test stream quality.
 Upon publishing, the app subscribes to the test stream it publishes:
 
 ```java
