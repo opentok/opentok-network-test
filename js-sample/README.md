@@ -13,8 +13,8 @@ quality, the app determines what the client can successfully publish to an OpenT
 * The client is unable to publish.
 
 The sample app only subscribes to the test stream. It does not subscribe to other streams in the
-test session. Use a separate OpenTok session (and session ID) to share audio-video streams between
-clients.
+test session. Do not use the test session for your actual call. Use a separate OpenTok session
+(and session ID) to share audio-video streams between clients.
 
 ## Testing the app
 
