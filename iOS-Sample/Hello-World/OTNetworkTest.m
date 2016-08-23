@@ -7,7 +7,7 @@
 //
 
 #import "OTNetworkTest.h"
-#import "OTDefaultAudioDevice.h"
+#import "OTDefaultAudioDeviceWithVolumeControl.h"
 
 #define TIME_WINDOW 3000 // 3 seconds
 #define AUDIO_ONLY_TEST_DURATION 6 // 6 seconds
@@ -40,7 +40,6 @@ OTSubscriberKitNetworkStatsDelegate >
     long audio_bw;
     double video_pl_ratio;
     double audio_pl_ratio;
-    OTDefaultAudioDevice* _myAudioDevice;
 }
 
 - (void)runConnectivityTestWithApiKey:(NSString*)apiKey
@@ -63,13 +62,11 @@ OTSubscriberKitNetworkStatsDelegate >
     video_pl_ratio = -1;
     audio_pl_ratio = -1;
 
-    if(!_myAudioDevice)
-    {
-        _myAudioDevice = [[OTDefaultAudioDevice alloc] init];
-    }
-
-    [OTAudioDeviceManager setAudioDevice:_myAudioDevice];
-    [_myAudioDevice setAudioPlayoutMute:YES];
+    
+    [OTAudioDeviceManager setAudioDevice:
+     [OTDefaultAudioDeviceWithVolumeControl sharedInstance]];
+    [[OTDefaultAudioDeviceWithVolumeControl sharedInstance]
+     setPlayoutVolume:0.0];
 
     _token = [token copy];
     _runQualityStatsTest = needsQualityTest;
@@ -98,7 +95,9 @@ OTSubscriberKitNetworkStatsDelegate >
              respondsToSelector:@selector(networkTestDidCompleteWithResult:
                                           error:)])
         {
-            [_myAudioDevice setAudioPlayoutMute:NO];
+            // return system audio settings to normal
+            [[OTDefaultAudioDeviceWithVolumeControl sharedInstance]
+             setPlayoutVolume:1.0];
             [OTAudioDeviceManager setAudioDevice:nil];
             [self cleanupSession];
             [self.networkTestDelegate networkTestDidCompleteWithResult:result
