@@ -1,0 +1,13 @@
+name: OpenTok Network Test
+author: TokBox, Inc.
+website: https://tokbox.com
+tags:
+ - tutorial
+ - reference
+ - feature
+description: A sample application demonstrating how to test an endpoint's network capacity prior to placing a call.
+image: https://upload.wikimedia.org/wikipedia/commons/5/54/Teste_cabo.jpg
+platforms:
+ - JS
+ - iOS
+ - Android
