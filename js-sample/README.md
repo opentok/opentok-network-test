@@ -33,9 +33,9 @@ To configure and test the app:
    must be a different session than the one you will use to share audio-video streams between
    clients. Do not publish more than one stream to the test session.
 
-   The app requires that each session uses the routed media mode -- one that uses
+   The app requires that each session uses either the routed media mode or the relayed media mode -- one that uses
    the [OpenTok Media Router](https://tokbox.com/developer/guides/create-session/#media-mode).
-   A routed session is required to get statistics for the stream published by the local client.
+   Either a routed or a relayed session can get statistics for the stream published by the local client.
 
    You can get your API key as well as a test session ID and token at the
    [OpenTok dashboard](https://dashboard.tokbox.com/). However, in a shipping application, use
