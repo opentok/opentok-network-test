@@ -306,7 +306,7 @@ function bandwidthCalculatorObj(config) {
           if (sampleWindowSize !== 0) {
             reportFunction(calculatePerSecondStats(
               statsBuffer,
-              sampleWindowSize
+              sampleWindowSize + (config.pollingInterval / 1000)
             ));
           }
         });
