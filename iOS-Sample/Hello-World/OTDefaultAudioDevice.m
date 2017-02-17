@@ -997,8 +997,7 @@ static OSStatus playout_cb(void *ref_con,
                        numberOfSamples:tempNumFrames];
     } else
     {
-        uint32_t count =
-        [dev->_audioBus readRenderData:buffer_list->mBuffers[0].mData
+        count = [dev->_audioBus readRenderData:buffer_list->mBuffers[0].mData
                    numberOfSamples:num_frames];
     }
     
