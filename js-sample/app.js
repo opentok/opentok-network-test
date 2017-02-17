@@ -28,15 +28,15 @@ var testStreamingCapability = function(subscriber, callback) {
 
       if (audioSupported) {
         return callback(false, {
-          text: 'You can\'t do video because no camera was found, '
-            + 'but your bandwidth can support an audio only stream',
+          text: 'You can\'t do video because no camera was found, ' +
+            'but your bandwidth can support an audio-only stream',
           icon: 'assets/icon_warning.svg'
         });
       }
 
       return callback(false, {
-          text: 'You can\'t do video because no camera was found, '
-            + 'and your bandwidth is too low for an audio only stream',
+          text: 'You can\'t do video because no camera was found, ' +
+            'and your bandwidth is too low for an audio-only stream',
         icon: 'assets/icon_warning.svg'
       });
     }
@@ -226,7 +226,7 @@ function min(arr) {
 function calculatePerSecondStats(statsBuffer, seconds) {
   var stats = {};
   var activeMediaTypes = Object.keys(statsBuffer[0] || {})
-    .filter(function (key) {
+    .filter(function(key) {
       return key !== 'timestamp';
     });
 
@@ -303,12 +303,12 @@ function bandwidthCalculatorObj(config) {
         video: {}
       };
       var activeMediaTypes = subscriber.stream.channel
-        .map(function (channel) {
+        .map(function(channel) {
           if (channel.active === true) {
             return channel.type;
           }
         })
-        .filter(function (mediaType) {
+        .filter(function(mediaType) {
           return !!mediaType;
         });
 
