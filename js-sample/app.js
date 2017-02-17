@@ -21,6 +21,25 @@ var statusIconEl;
 var testStreamingCapability = function(subscriber, callback) {
   performQualityTest({subscriber: subscriber, timeout: TEST_TIMEOUT_MS}, function(error, results) {
     console.log('Test concluded', results);
+    // If we tried to set video constraints, but no video data was found
+    if (!results.video) {
+      var audioSupported = results.audio.bitsPerSecond > 25000 &&
+          results.audio.packetLossRatioPerSecond < 0.05;
+
+      if (audioSupported) {
+        return callback(false, {
+          text: 'You can\'t do video because no camera was found, ' +
+            'but your bandwidth can support an audio-only stream',
+          icon: 'assets/icon_warning.svg'
+        });
+      }
+
+      return callback(false, {
+          text: 'You can\'t do video because no camera was found, ' +
+            'and your bandwidth is too low for an audio-only stream',
+        icon: 'assets/icon_warning.svg'
+      });
+    }
 
     var audioVideoSupported = results.video.bitsPerSecond > 250000 &&
       results.video.packetLossRatioPerSecond < 0.03 &&
@@ -206,7 +225,12 @@ function min(arr) {
 
 function calculatePerSecondStats(statsBuffer, seconds) {
   var stats = {};
-  ['video', 'audio'].forEach(function(type) {
+  var activeMediaTypes = Object.keys(statsBuffer[0] || {})
+    .filter(function(key) {
+      return key !== 'timestamp';
+    });
+
+  activeMediaTypes.forEach(function(type) {
     stats[type] = {
       packetsPerSecond: sum(pluck(statsBuffer, type), 'packetsReceived') / seconds,
       bitsPerSecond: (sum(pluck(statsBuffer, type), 'bytesReceived') * 8) / seconds,
@@ -278,6 +302,16 @@ function bandwidthCalculatorObj(config) {
         audio: {},
         video: {}
       };
+      var activeMediaTypes = subscriber.stream.channel
+        .map(function(channel) {
+          if (channel.active === true) {
+            return channel.type;
+          }
+        })
+        .filter(function(mediaType) {
+          return !!mediaType;
+        });
+
 
       intervalId = window.setInterval(function() {
         config.subscriber.getStats(function(error, stats) {
@@ -285,7 +319,7 @@ function bandwidthCalculatorObj(config) {
           var nowMs = new Date().getTime();
           var sampleWindowSize;
 
-          ['audio', 'video'].forEach(function(type) {
+          activeMediaTypes.forEach(function(type) {
             snapshot[type] = Object.keys(stats[type]).reduce(function(result, key) {
               result[key] = stats[type][key] - (last[type][key] || 0);
               last[type][key] = stats[type][key];
