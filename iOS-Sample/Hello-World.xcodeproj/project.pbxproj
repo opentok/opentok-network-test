@@ -38,6 +38,7 @@
 		D442614A185F8F5700E23699 /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D4426146185F8F3F00E23699 /* CoreTelephony.framework */; };
 		D442614D185F95CF00E23699 /* OpenTok.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D442612E185F82AB00E23699 /* OpenTok.framework */; };
 		D492D19119547E4C00F4F534 /* GLKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D492D19019547E4C00F4F534 /* GLKit.framework */; };
+		D4D55F771D6CBA7C008DC3AD /* OTDefaultAudioDeviceWithVolumeControl.m in Sources */ = {isa = PBXBuildFile; fileRef = D4D55F761D6CBA7C008DC3AD /* OTDefaultAudioDeviceWithVolumeControl.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -91,6 +92,8 @@
 		D4426148185F8F5000E23699 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		D442614E185F9C3500E23699 /* libstdc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libstdc++.dylib"; path = "usr/lib/libstdc++.dylib"; sourceTree = SDKROOT; };
 		D492D19019547E4C00F4F534 /* GLKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLKit.framework; path = System/Library/Frameworks/GLKit.framework; sourceTree = SDKROOT; };
+		D4D55F751D6CBA7C008DC3AD /* OTDefaultAudioDeviceWithVolumeControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OTDefaultAudioDeviceWithVolumeControl.h; sourceTree = "<group>"; };
+		D4D55F761D6CBA7C008DC3AD /* OTDefaultAudioDeviceWithVolumeControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OTDefaultAudioDeviceWithVolumeControl.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -180,6 +183,8 @@
 		D44260FC185F81D800E23699 /* Hello-World */ = {
 			isa = PBXGroup;
 			children = (
+				D4D55F751D6CBA7C008DC3AD /* OTDefaultAudioDeviceWithVolumeControl.h */,
+				D4D55F761D6CBA7C008DC3AD /* OTDefaultAudioDeviceWithVolumeControl.m */,
 				A57661191B38763800638FA6 /* OTDefaultAudioDevice.h */,
 				A576611A1B38763800638FA6 /* OTDefaultAudioDevice.m */,
 				A5D6F7B21B0FF02800CE1972 /* OTNetworkTest.h */,
@@ -324,6 +329,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D4426110185F81D800E23699 /* ViewController.m in Sources */,
+				D4D55F771D6CBA7C008DC3AD /* OTDefaultAudioDeviceWithVolumeControl.m in Sources */,
 				D4426107185F81D800E23699 /* AppDelegate.m in Sources */,
 				A576611B1B38763800638FA6 /* OTDefaultAudioDevice.m in Sources */,
 				D4426103185F81D800E23699 /* main.m in Sources */,
