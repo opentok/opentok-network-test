@@ -7,13 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0A810D2F1AAE68B300C84720 /* libc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 0A810D2E1AAE68B300C84720 /* libc++.dylib */; };
 		A576611B1B38763800638FA6 /* OTDefaultAudioDevice.m in Sources */ = {isa = PBXBuildFile; fileRef = A576611A1B38763800638FA6 /* OTDefaultAudioDevice.m */; };
-		A5D01FB31A3A133C005D84F9 /* VideoToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5D01FB21A3A133C005D84F9 /* VideoToolbox.framework */; };
 		A5D6F7B41B0FF02800CE1972 /* OTNetworkTest.m in Sources */ = {isa = PBXBuildFile; fileRef = A5D6F7B31B0FF02800CE1972 /* OTNetworkTest.m */; };
 		D44260F7185F81D800E23699 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D44260F6185F81D800E23699 /* Foundation.framework */; };
-		D44260F9185F81D800E23699 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D44260F8185F81D800E23699 /* CoreGraphics.framework */; };
-		D44260FB185F81D800E23699 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D44260FA185F81D800E23699 /* UIKit.framework */; };
 		D4426101185F81D800E23699 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = D44260FF185F81D800E23699 /* InfoPlist.strings */; };
 		D4426103185F81D800E23699 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = D4426102185F81D800E23699 /* main.m */; };
 		D4426107185F81D800E23699 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = D4426106185F81D800E23699 /* AppDelegate.m */; };
@@ -22,22 +18,8 @@
 		D4426110185F81D800E23699 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D442610F185F81D800E23699 /* ViewController.m */; };
 		D4426112185F81D800E23699 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D4426111185F81D800E23699 /* Images.xcassets */; };
 		D442611A185F81D800E23699 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D44260F6185F81D800E23699 /* Foundation.framework */; };
-		D442611B185F81D800E23699 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D44260FA185F81D800E23699 /* UIKit.framework */; };
 		D4426123185F81D800E23699 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = D4426121185F81D800E23699 /* InfoPlist.strings */; };
 		D4426125185F81D800E23699 /* Hello_WorldTests.m in Sources */ = {isa = PBXBuildFile; fileRef = D4426124185F81D800E23699 /* Hello_WorldTests.m */; };
-		D4426131185F875F00E23699 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D4426130185F875F00E23699 /* libxml2.dylib */; };
-		D4426133185F876500E23699 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D4426132185F876500E23699 /* libsqlite3.dylib */; };
-		D4426137185F877100E23699 /* libpthread.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D4426136185F877100E23699 /* libpthread.dylib */; };
-		D4426139185F877600E23699 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D4426138185F877600E23699 /* QuartzCore.framework */; };
-		D442613B185F877B00E23699 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D442613A185F877B00E23699 /* AVFoundation.framework */; };
-		D442613D185F878000E23699 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D442613C185F878000E23699 /* AudioToolbox.framework */; };
-		D442613F185F8EE000E23699 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D442613E185F8EE000E23699 /* CoreMedia.framework */; };
-		D4426141185F8EE700E23699 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D4426140185F8EE700E23699 /* CoreVideo.framework */; };
-		D4426143185F8EEB00E23699 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D4426142185F8EEB00E23699 /* OpenGLES.framework */; };
-		D4426149185F8F5000E23699 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D4426148185F8F5000E23699 /* SystemConfiguration.framework */; };
-		D442614A185F8F5700E23699 /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D4426146185F8F3F00E23699 /* CoreTelephony.framework */; };
-		D442614D185F95CF00E23699 /* OpenTok.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D442612E185F82AB00E23699 /* OpenTok.framework */; };
-		D492D19119547E4C00F4F534 /* GLKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D492D19019547E4C00F4F534 /* GLKit.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -51,16 +33,12 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		0A810D2E1AAE68B300C84720 /* libc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libc++.dylib"; path = "usr/lib/libc++.dylib"; sourceTree = SDKROOT; };
 		A57661191B38763800638FA6 /* OTDefaultAudioDevice.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OTDefaultAudioDevice.h; sourceTree = "<group>"; };
 		A576611A1B38763800638FA6 /* OTDefaultAudioDevice.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OTDefaultAudioDevice.m; sourceTree = "<group>"; };
-		A5D01FB21A3A133C005D84F9 /* VideoToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VideoToolbox.framework; path = System/Library/Frameworks/VideoToolbox.framework; sourceTree = SDKROOT; };
 		A5D6F7B21B0FF02800CE1972 /* OTNetworkTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OTNetworkTest.h; sourceTree = "<group>"; };
 		A5D6F7B31B0FF02800CE1972 /* OTNetworkTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OTNetworkTest.m; sourceTree = "<group>"; };
 		D44260F3185F81D800E23699 /* Hello-World.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Hello-World.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D44260F6185F81D800E23699 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
-		D44260F8185F81D800E23699 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
-		D44260FA185F81D800E23699 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		D44260FE185F81D800E23699 /* Hello-World-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Hello-World-Info.plist"; sourceTree = "<group>"; };
 		D4426100185F81D800E23699 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		D4426102185F81D800E23699 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -76,21 +54,6 @@
 		D4426120185F81D800E23699 /* Hello-WorldTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Hello-WorldTests-Info.plist"; sourceTree = "<group>"; };
 		D4426122185F81D800E23699 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		D4426124185F81D800E23699 /* Hello_WorldTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Hello_WorldTests.m; sourceTree = "<group>"; };
-		D442612E185F82AB00E23699 /* OpenTok.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = OpenTok.framework; sourceTree = "<group>"; };
-		D4426130185F875F00E23699 /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
-		D4426132185F876500E23699 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
-		D4426136185F877100E23699 /* libpthread.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libpthread.dylib; path = usr/lib/libpthread.dylib; sourceTree = SDKROOT; };
-		D4426138185F877600E23699 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
-		D442613A185F877B00E23699 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
-		D442613C185F878000E23699 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
-		D442613E185F8EE000E23699 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
-		D4426140185F8EE700E23699 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
-		D4426142185F8EEB00E23699 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
-		D4426144185F8F2B00E23699 /* libstdc++.6.0.9.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libstdc++.6.0.9.dylib"; path = "usr/lib/libstdc++.6.0.9.dylib"; sourceTree = SDKROOT; };
-		D4426146185F8F3F00E23699 /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
-		D4426148185F8F5000E23699 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
-		D442614E185F9C3500E23699 /* libstdc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libstdc++.dylib"; path = "usr/lib/libstdc++.dylib"; sourceTree = SDKROOT; };
-		D492D19019547E4C00F4F534 /* GLKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLKit.framework; path = System/Library/Frameworks/GLKit.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -98,23 +61,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0A810D2F1AAE68B300C84720 /* libc++.dylib in Frameworks */,
-				A5D01FB31A3A133C005D84F9 /* VideoToolbox.framework in Frameworks */,
-				D442614D185F95CF00E23699 /* OpenTok.framework in Frameworks */,
-				D4426137185F877100E23699 /* libpthread.dylib in Frameworks */,
-				D4426133185F876500E23699 /* libsqlite3.dylib in Frameworks */,
-				D4426131185F875F00E23699 /* libxml2.dylib in Frameworks */,
-				D492D19119547E4C00F4F534 /* GLKit.framework in Frameworks */,
-				D442614A185F8F5700E23699 /* CoreTelephony.framework in Frameworks */,
-				D4426149185F8F5000E23699 /* SystemConfiguration.framework in Frameworks */,
-				D4426143185F8EEB00E23699 /* OpenGLES.framework in Frameworks */,
-				D4426141185F8EE700E23699 /* CoreVideo.framework in Frameworks */,
-				D442613F185F8EE000E23699 /* CoreMedia.framework in Frameworks */,
-				D44260F9185F81D800E23699 /* CoreGraphics.framework in Frameworks */,
-				D442613D185F878000E23699 /* AudioToolbox.framework in Frameworks */,
-				D442613B185F877B00E23699 /* AVFoundation.framework in Frameworks */,
-				D4426139185F877600E23699 /* QuartzCore.framework in Frameworks */,
-				D44260FB185F81D800E23699 /* UIKit.framework in Frameworks */,
 				D44260F7185F81D800E23699 /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -123,7 +69,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D442611B185F81D800E23699 /* UIKit.framework in Frameworks */,
 				D442611A185F81D800E23699 /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -153,26 +98,7 @@
 		D44260F5185F81D800E23699 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				0A810D2E1AAE68B300C84720 /* libc++.dylib */,
-				A5D01FB21A3A133C005D84F9 /* VideoToolbox.framework */,
-				D442612E185F82AB00E23699 /* OpenTok.framework */,
-				D442614E185F9C3500E23699 /* libstdc++.dylib */,
-				D4426144185F8F2B00E23699 /* libstdc++.6.0.9.dylib */,
-				D4426136185F877100E23699 /* libpthread.dylib */,
-				D4426132185F876500E23699 /* libsqlite3.dylib */,
-				D4426130185F875F00E23699 /* libxml2.dylib */,
-				D492D19019547E4C00F4F534 /* GLKit.framework */,
-				D4426148185F8F5000E23699 /* SystemConfiguration.framework */,
-				D4426146185F8F3F00E23699 /* CoreTelephony.framework */,
-				D4426142185F8EEB00E23699 /* OpenGLES.framework */,
-				D4426140185F8EE700E23699 /* CoreVideo.framework */,
-				D442613E185F8EE000E23699 /* CoreMedia.framework */,
-				D442613C185F878000E23699 /* AudioToolbox.framework */,
-				D442613A185F877B00E23699 /* AVFoundation.framework */,
-				D4426138185F877600E23699 /* QuartzCore.framework */,
 				D44260F6185F81D800E23699 /* Foundation.framework */,
-				D44260F8185F81D800E23699 /* CoreGraphics.framework */,
-				D44260FA185F81D800E23699 /* UIKit.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -476,7 +402,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Hello-World/Hello-World-Prefix.pch";
 				INFOPLIST_FILE = "Hello-World/Hello-World-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				VALID_ARCHS = "armv7 armv7s";
@@ -503,7 +429,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Hello-World/Hello-World-Prefix.pch";
 				INFOPLIST_FILE = "Hello-World/Hello-World-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				VALID_ARCHS = "armv7 armv7s";
