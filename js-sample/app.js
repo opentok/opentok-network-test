@@ -302,19 +302,13 @@ function bandwidthCalculatorObj(config) {
         audio: {},
         video: {}
       };
-      var activeMediaTypes = subscriber.stream.channel
-        .map(function(channel) {
-          if (channel.active === true) {
-            return channel.type;
-          }
-        })
-        .filter(function(mediaType) {
-          return !!mediaType;
-        });
-
 
       intervalId = window.setInterval(function() {
         config.subscriber.getStats(function(error, stats) {
+          var activeMediaTypes = Object.keys(stats)
+          .filter(function(key) {
+            return key !== 'timestamp';
+          });
           var snapshot = {};
           var nowMs = new Date().getTime();
           var sampleWindowSize;
