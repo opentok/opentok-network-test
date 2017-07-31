@@ -9,7 +9,7 @@ target 'Hello-World' do
 
   target 'Hello-WorldTests' do
     inherit! :search_paths
-    pod 'OpenTok', '= 2.11.1'
+    pod 'OpenTok', '= 2.11.3'
   end
 
 end
