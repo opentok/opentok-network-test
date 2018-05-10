@@ -114,7 +114,7 @@ and audio packets received statistics provided by the API. See the sample apps f
 
 This repo includes sample code showing how to build a network test using the
 OpenTok Android and iOS client SDKs. Sample code for the OpenTok JavaScript SDK
-can be found here: https://github.com/opentok/opentok-network-test-js.. Each 
+can be found here: https://github.com/opentok/opentok-network-test-js. Each 
 sample shows how to determine the the appropriate audio and video settings to 
 use in publishing a stream to an OpenTok session. To do this, each sample app 
 publishes a test stream to the session and then uses the Network Stats API to
@@ -156,7 +156,7 @@ stats API.
 
   You can increase the required thresholds to better qualify the end user connection.
   Please keep in mind, the network connection can change overtime, especially on mobile devices
-  with changing network conditions..
+  with changing network conditions.
 
 * Why do I get compilation errors on iOS or Android.
 
