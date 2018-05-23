@@ -13,18 +13,20 @@ The network test is supported in:
 *  [OpenTok Android SDK 2.7 and newer](https://tokbox.com/developer/sdks/android/)
 *  [OpenTok iOS SDK 2.7 and newer](https://tokbox.com/developer/sdks/ios/)
 
-JavaScript clients should use the sample code found here: https://github.com/opentok/opentok-network-test-js
+JavaScript clients should use the sample code found here:
+https://github.com/opentok/opentok-network-test-js.
 
 ## How does it work
 
 The sample apps each do the following:
 
-1. Connect to an OpenTok session and publish a test stream to the session.
+1. Connect to an OpenTok session and publish a test stream to a test session.
 
-   Note that the published test stream is visible to all clients in the session. If your
-   app has other clients connected when you publish the test stream, those other clients may
-   subscribe to the test stream. To prevent clients from subscribing to the test stream, 
-   you can add the name "test" to the published stream, and check the stream name before subscribing.
+   Note that the published test stream would be visible to all clients connected to
+   the session. For this reason, you should use a separate test session (with a unique
+   session ID) for the network test.  Do not use the test session for your actual call.
+   Use a separate OpenTok session (and session ID) to share audio-video streams between
+   clients.
 
 2. Subscribe to your own test stream for a test period.
 
@@ -54,13 +56,14 @@ This API is only available in sessions that use the OpenTok Media Router.
 You can use the network statistics to determine the ability to send and receive streams,
 and as a result have a quality experience during the OpenTok call.
 
-Please keep in mind, every applicatoion's use case and every user's perception of the call 
+Please keep in mind, every application's use case and every user's perception of the call 
 quality is different. Therefore, you should adjust the default thresholds and timeframe in 
 accordance with your use case and expectations. For example, the 720p, 30 fps video call 
 requires a much better network connection than 320x480-pixel, 15 fps video. So, in that case,
-you need to set a much higher threshold values in order to qualify a viable end user connection.
+you need to set much higher threshold values in order to qualify a viable end user connection.
 Also, the longer you run the test, the more accurate the values you will receive will be. 
-At the same time, you might want to switch audio-only or not based on your specific use case. 
+At the same time, you might want to switch between publishing video and audio-only, based on
+your specific use case. 
 
 The OpenTok Network Test is implemented as sample code to make it easier
 for developers to customize their application logic.
@@ -117,9 +120,9 @@ OpenTok Android and iOS client SDKs. Sample code for the OpenTok JavaScript SDK
 can be found here: https://github.com/opentok/opentok-network-test-js. Each 
 sample shows how to determine the the appropriate audio and video settings to 
 use in publishing a stream to an OpenTok session. To do this, each sample app 
-publishes a test stream to the session and then uses the Network Stats API to
+publishes a stream to a test session and then uses the Network Stats API to
 check the quality of that stream. Based on the quality, the app determines what 
-the client can successfully publish to the session:
+the client can successfully publish:
 
 * The client can publish an audio-video stream at the specified resolution.
 
