@@ -28,7 +28,7 @@ To configure the app:
    com.tokbox.qualitystats.sample package.
 
 2. Download the [OpenTok Android SDK](https://tokbox.com/opentok/libraries/client/android/).
-   This sample requires version 2.5.0 or later.
+   This sample requires version 2.7.0 or later.
 
 3. Locate the opentok-android-sdk-2.x.x.jar file in the OpenTok/libs directory of the OpenTok
    Android SDK, and drag it into the app/libs directory of the project.
