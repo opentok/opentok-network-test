@@ -7,6 +7,8 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.support.annotation.NonNull;
+import android.Manifest;
 
 import com.opentok.android.OpentokError;
 import com.opentok.android.Publisher;
@@ -19,7 +21,20 @@ import com.opentok.android.SubscriberKit.VideoStatsListener;
 import com.opentok.android.AudioDeviceManager;
 import com.opentok.qualitystats.sample.audio.CustomAudioDevice;
 
-public class MainActivity extends Activity implements Session.SessionListener, PublisherKit.PublisherListener, SubscriberKit.SubscriberListener {
+import pub.devrel.easypermissions.AfterPermissionGranted;
+import pub.devrel.easypermissions.AppSettingsDialog;
+import pub.devrel.easypermissions.EasyPermissions;
+
+import java.util.List;
+
+public class MainActivity extends Activity implements
+        Session.SessionListener,
+        PublisherKit.PublisherListener,
+        SubscriberKit.SubscriberListener,
+        EasyPermissions.PermissionCallbacks{
+
+    private static final int RC_SETTINGS_SCREEN_PERM = 123;
+    private static final int RC_VIDEO_APP_PERM = 124;
 
     private static final String LOGTAG = "quality-stats-demo";
 
@@ -67,7 +82,7 @@ public class MainActivity extends Activity implements Session.SessionListener, P
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        sessionConnect();
+        requestPermissions();
     }
 
     @Override
@@ -88,6 +103,46 @@ public class MainActivity extends Activity implements Session.SessionListener, P
         }
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
+    }
+
+    @Override
+    public void onPermissionsGranted(int requestCode, List<String> perms) {
+
+        Log.d(LOGTAG, "onPermissionsGranted:" + requestCode + ":" + perms.size());
+    }
+
+    @Override
+    public void onPermissionsDenied(int requestCode, List<String> perms) {
+
+        Log.d(LOGTAG, "onPermissionsDenied:" + requestCode + ":" + perms.size());
+
+        if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
+            new AppSettingsDialog.Builder(this)
+                    .setTitle(getString(R.string.title_settings_dialog))
+                    .setRationale(getString(R.string.rationale_ask_again))
+                    .setPositiveButton(getString(R.string.setting))
+                    .setNegativeButton(getString(R.string.cancel))
+                    .setRequestCode(RC_SETTINGS_SCREEN_PERM)
+                    .build()
+                    .show();
+        }
+    }
+
+    @AfterPermissionGranted(RC_VIDEO_APP_PERM)
+    private void requestPermissions() {
+
+        String[] perms = { Manifest.permission.INTERNET, Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO };
+        if (EasyPermissions.hasPermissions(this, perms)) {
+            sessionConnect();
+        } else {
+            EasyPermissions.requestPermissions(this, getString(R.string.rationale_video_app), RC_VIDEO_APP_PERM, perms);
+        }
+    }
     public void sessionConnect() {
         Log.i(LOGTAG, "Connecting session");
         if (mSession == null) {
@@ -97,7 +152,7 @@ public class MainActivity extends Activity implements Session.SessionListener, P
             customAudioDevice.setRendererMute(true);
             AudioDeviceManager.setAudioDevice(customAudioDevice);
 
-            mSession = new Session(this, APIKEY, SESSION_ID);
+            mSession = new Session.Builder(this, APIKEY, SESSION_ID).build();
             mSession.setSessionListener(this);
 
             mProgressDialog = ProgressDialog.show(this, "Checking your available bandwidth", "Please wait");
@@ -109,7 +164,7 @@ public class MainActivity extends Activity implements Session.SessionListener, P
     public void onConnected(Session session) {
         Log.i(LOGTAG, "Session is connected");
 
-        mPublisher = new Publisher(this);
+        mPublisher = new Publisher.Builder(this).build();
         mPublisher.setPublisherListener(this);
         mPublisher.setAudioFallbackEnabled(false);
         mSession.publish(mPublisher);
@@ -184,8 +239,8 @@ public class MainActivity extends Activity implements Session.SessionListener, P
     }
 
     private void subscribeToStream(Stream stream) {
-        mSubscriber = new Subscriber(MainActivity.this, stream);
 
+        mSubscriber = new Subscriber.Builder(MainActivity.this, stream).build();
         mSubscriber.setSubscriberListener(this);
         mSession.subscribe(mSubscriber);
         mSubscriber.setVideoStatsListener(new VideoStatsListener() {
