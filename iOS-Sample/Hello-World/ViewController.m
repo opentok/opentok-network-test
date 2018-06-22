@@ -78,7 +78,7 @@ static NSString* const kToken = @"";
     [self.activityIndicatorView startAnimating];
     if (kApiKey.length == 0 || kSessionId.length == 0 || kToken == 0)
     {
-        self.statusLabel.text = @"Provide api key,session id and token";
+        self.statusLabel.text = @"Provide an api key,session id and token";
         self.activityIndicatorView.hidden = YES;
     }
     else
