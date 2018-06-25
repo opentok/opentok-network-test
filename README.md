@@ -10,8 +10,8 @@ session that connects two clients in a one-to-one call.
 
 The network test is supported in:
 
-*  [OpenTok Android SDK 2.13 and newer](https://tokbox.com/developer/sdks/android/)
-*  [OpenTok iOS SDK 2.13 and newer](https://tokbox.com/developer/sdks/ios/)
+*  [OpenTok Android SDK 2.12 and newer](https://tokbox.com/developer/sdks/android/)
+*  [OpenTok iOS SDK 2.12 and newer](https://tokbox.com/developer/sdks/ios/)
 
 JavaScript clients should use the sample code found here:
 https://github.com/opentok/opentok-network-test-js.
