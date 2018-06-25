@@ -27,16 +27,9 @@ To configure the app:
    The Java code for the application is the MainActivity class in the
    com.tokbox.qualitystats.sample package.
 
-2. Download the [OpenTok Android SDK](https://tokbox.com/opentok/libraries/client/android/).
-   This sample requires version 2.5.0 or later.
+2. Sync Gradle
 
-3. Locate the opentok-android-sdk-2.x.x.jar file in the OpenTok/libs directory of the OpenTok
-   Android SDK, and drag it into the app/libs directory of the project.
-
-4. Locate the armeabi and x86 directories in the OpenTok/libs directory of the OpenTok
-   Android SDK, and drag them into the app/jniLibs directory of the project.
-
-5. In the com.opentok.qualitystats.sample.MainAcdtivity.java class, set the following properties
+3. In the com.opentok.qualitystats.sample.MainAcdtivity.java class, set the following properties
    to a test OpenTok session ID, token, and API key:
 
    ```
@@ -58,7 +51,7 @@ To configure the app:
    one of the [OpenTok server SDKs](https://tokbox.com/developer/sdks/server/) to generate a
    session ID and token.
 
-6. Debug the project on a supported device.
+4. Debug the project on a supported device.
 
    For a list of supported devices, see the "Developer and client requirements"
    on [this page](https://tokbox.com/developer/sdks/android/).
