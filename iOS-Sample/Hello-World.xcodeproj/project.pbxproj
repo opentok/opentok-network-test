@@ -225,9 +225,6 @@
 				LastUpgradeCheck = 0930;
 				ORGANIZATIONNAME = "TokBox, Inc.";
 				TargetAttributes = {
-					D44260F2185F81D800E23699 = {
-						DevelopmentTeam = D3CUYFAV98;
-					};
 					D4426116185F81D800E23699 = {
 						TestTargetID = D44260F2185F81D800E23699;
 					};
@@ -536,7 +533,7 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				DEVELOPMENT_TEAM = D3CUYFAV98;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -563,7 +560,7 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				DEVELOPMENT_TEAM = D3CUYFAV98;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
