@@ -7,7 +7,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.Manifest;
 
 import com.opentok.android.OpentokError;
@@ -18,8 +18,7 @@ import com.opentok.android.Stream;
 import com.opentok.android.Subscriber;
 import com.opentok.android.SubscriberKit;
 import com.opentok.android.SubscriberKit.VideoStatsListener;
-import com.opentok.android.AudioDeviceManager;
-import com.opentok.qualitystats.sample.audio.CustomAudioDevice;
+
 
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.AppSettingsDialog;
@@ -146,12 +145,14 @@ public class MainActivity extends Activity implements
     public void sessionConnect() {
         Log.i(LOGTAG, "Connecting session");
         if (mSession == null) {
+/*Following code is not needed anymore on sdk 2.22.2. Used to mute audio
+New Code to mute subscriber audio in function onConnected
             // Add a custom audio device before session initialization
-            CustomAudioDevice customAudioDevice = new CustomAudioDevice(
-                    MainActivity.this);
-            customAudioDevice.setRendererMute(true);
-            AudioDeviceManager.setAudioDevice(customAudioDevice);
-
+//            CustomAudioDevice customAudioDevice = new CustomAudioDevice(
+//                    MainActivity.this);
+//            customAudioDevice.setRendererMute(true);
+//            AudioDeviceManager.setAudioDevice(customAudioDevice);
+*/
             mSession = new Session.Builder(this, APIKEY, SESSION_ID).build();
             mSession.setSessionListener(this);
 
@@ -224,6 +225,8 @@ public class MainActivity extends Activity implements
     @Override
     public void onConnected(SubscriberKit subscriberKit) {
         Log.i(LOGTAG, "Subscriber onConnected");
+        // Mute Subscriber Audio
+        subscriberKit.setAudioVolume(0);
         mHandler.postDelayed(statsRunnable, TEST_DURATION * 1000);
     }
 
