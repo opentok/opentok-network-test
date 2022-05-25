@@ -1,16 +1,20 @@
 PODS:
-  - OpenTok (2.15.1)
+  - OpenTok (2.22.2):
+    - VonageWebRTC (= 84.0.20)
+  - VonageWebRTC (84.0.20)
 
 DEPENDENCIES:
-  - OpenTok (= 2.15.1)
+  - OpenTok (= 2.22.2)
 
 SPEC REPOS:
-  https://github.com/cocoapods/specs.git:
+  trunk:
     - OpenTok
+    - VonageWebRTC
 
 SPEC CHECKSUMS:
-  OpenTok: 69c72cd0392c2277e62603723564e1f70a0f3fa8
+  OpenTok: 097187cb5a0116431ef5f2fdf5a2b4261bb2be42
+  VonageWebRTC: 20e0e56f656ddbf49287cacbd33e69dbbe5736f8
 
-PODFILE CHECKSUM: de3bc94ff4e525fd0cf00a047676e6bcb33c3734
+PODFILE CHECKSUM: 9d43c430378b95e52b965a63d0f7e29ad8960e1c
 
-COCOAPODS: 1.5.3
+COCOAPODS: 1.11.3

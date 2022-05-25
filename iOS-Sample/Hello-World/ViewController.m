@@ -11,11 +11,11 @@
 // *** Fill the following variables using your own Project info  ***
 // ***          https://dashboard.tokbox.com/projects            ***
 // Replace with your OpenTok API key
-static NSString* const kApiKey = @"";
+static NSString* const kApiKey = @"47448191";
 // Replace with your generated session ID
-static NSString* const kSessionId = @"";
+static NSString* const kSessionId = @"2_MX40NzQ0ODE5MX5-MTY1MzQ2MzQ3NDA3N350RktPT3dxNDFSc1NqVjFlb1BSTjlZcVR-fg";
 // Replace with your generated token
-static NSString* const kToken = @"";
+static NSString* const kToken = @"T1==cGFydG5lcl9pZD00NzQ0ODE5MSZzaWc9YWI0OGJhODUzNjZhMDE0MzRmNmMzMDIxYzJhYTE3NDg5NDk4YmY5NjpzZXNzaW9uX2lkPTJfTVg0ME56UTBPREU1TVg1LU1UWTFNelEyTXpRM05EQTNOMzUwUmt0UFQzZHhOREZTYzFOcVZqRmxiMUJTVGpsWmNWUi1mZyZjcmVhdGVfdGltZT0xNjUzNDYzNDkxJm5vbmNlPTAuMzgzOTY0MjEzMzgwMjkwMSZyb2xlPXB1Ymxpc2hlciZleHBpcmVfdGltZT0xNjUzNDg1MDg5JmluaXRpYWxfbGF5b3V0X2NsYXNzX2xpc3Q9";
 
 
 #pragma mark - View lifecycle
