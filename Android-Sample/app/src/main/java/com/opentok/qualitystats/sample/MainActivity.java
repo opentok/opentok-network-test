@@ -145,14 +145,6 @@ public class MainActivity extends Activity implements
     public void sessionConnect() {
         Log.i(LOGTAG, "Connecting session");
         if (mSession == null) {
-/*Following code is not needed anymore on sdk 2.22.2. Used to mute audio
-New Code to mute subscriber audio in function onConnected
-            // Add a custom audio device before session initialization
-//            CustomAudioDevice customAudioDevice = new CustomAudioDevice(
-//                    MainActivity.this);
-//            customAudioDevice.setRendererMute(true);
-//            AudioDeviceManager.setAudioDevice(customAudioDevice);
-*/
             mSession = new Session.Builder(this, APIKEY, SESSION_ID).build();
             mSession.setSessionListener(this);
 
