@@ -88,7 +88,6 @@ OTSubscriberKitNetworkStatsDelegate >
              respondsToSelector:@selector(networkTestDidCompleteWithResult:
                                           error:)])
         {
-            [OTAudioDeviceManager setAudioDevice:nil];
             [self cleanupSession];
             [self.networkTestDelegate networkTestDidCompleteWithResult:result
                                                                  error:error];
