@@ -63,8 +63,8 @@ public class MainActivity extends Activity implements
 
     static final String LOGTAG = "quality-stats-demo";
     private static final String SESSION_ID = "1_MX40NzUyMTkyMX5-MTY5MDI4MjQwNzI4Mn5IcHI1VUg4QXV2dTVyZmZkUkhyTTFyazJ-fn4";
-    private static final String TOKEN = "T1==cGFydG5lcl9pZD00NzUyMTkyMSZzaWc9OTA3N2ExODk3NzBmOTZiYTIyNDI2MzU3ZDY4YWNlYTE0ZTUxNWViNzpzZXNzaW9uX2lkPTFfTVg0ME56VXlNVGt5TVg1LU1UWTVNREk0TWpRd056STRNbjVJY0hJMVZVZzRRWFYyZFRWeVptWmtVa2h5VFRGeWF6Si1mbjQmY3JlYXRlX3RpbWU9MTY5MDI4MjQyNyZub25jZT0wLjIxOTYwMjY4MTI4NzI4NCZyb2xlPXB1Ymxpc2hlciZleHBpcmVfdGltZT0xNjkyODc0NDI2JmluaXRpYWxfbGF5b3V0X2NsYXNzX2xpc3Q9";
-    private static final String APIKEY = "47521921";
+    private static final String TOKEN = "";
+    private static final String APIKEY = "";
     private static final int TEST_DURATION = 30; //test quality duration in seconds
     private static final int TIME_WINDOW = 1; //3 seconds
     private static final int TIME_VIDEO_TEST = 15; //time interval to check the video quality in seconds
