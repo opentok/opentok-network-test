@@ -1,12 +1,12 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion 33
 
     defaultConfig {
         applicationId "com.opentok.qualitystats.sample"
-        minSdkVersion 16
-        targetSdkVersion 30
+        minSdkVersion 24
+        targetSdkVersion 33
         versionCode 1
         versionName "1.0"
     }
@@ -15,6 +15,9 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+    repositories {
+        maven { url 'https://jitpack.io' }
     }
 
     sourceSets {
@@ -25,8 +28,10 @@ android {
 }
 
 dependencies {
-    implementation 'com.opentok.android:opentok-android-sdk:2.22.2'
+    implementation 'com.opentok.android:opentok-android-sdk:2.25.2'
     implementation 'androidx.appcompat:appcompat:1.0.0'
     implementation 'pub.devrel:easypermissions:3.0.0'
-
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
+    compileOnly 'org.projectlombok:lombok:1.18.28'
+    annotationProcessor 'org.projectlombok:lombok:1.18.28'
 }

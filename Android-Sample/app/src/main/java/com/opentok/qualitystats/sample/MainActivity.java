@@ -1,15 +1,25 @@
 package com.opentok.qualitystats.sample;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.graphics.Color;
+import android.graphics.DashPathEffect;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
-import androidx.annotation.NonNull;
-import android.Manifest;
+import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
 import com.opentok.android.OpentokError;
 import com.opentok.android.Publisher;
 import com.opentok.android.PublisherKit;
@@ -17,69 +27,86 @@ import com.opentok.android.Session;
 import com.opentok.android.Stream;
 import com.opentok.android.Subscriber;
 import com.opentok.android.SubscriberKit;
-import com.opentok.android.SubscriberKit.VideoStatsListener;
+import com.opentok.qualitystats.sample.models.MediaStatsEntry;
+import com.opentok.qualitystats.sample.models.PublisherStats;
+import com.opentok.qualitystats.sample.models.QualityTestResult;
+import com.opentok.qualitystats.sample.models.QualityThreshold;
+import com.opentok.qualitystats.sample.models.SubscriberAudioStats;
+import com.opentok.qualitystats.sample.models.SubscriberVideoStats;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
 
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
 
-import java.util.List;
-
 public class MainActivity extends Activity implements
         Session.SessionListener,
         PublisherKit.PublisherListener,
         SubscriberKit.SubscriberListener,
-        EasyPermissions.PermissionCallbacks{
+        EasyPermissions.PermissionCallbacks {
 
     private static final int RC_SETTINGS_SCREEN_PERM = 123;
     private static final int RC_VIDEO_APP_PERM = 124;
+    private LineChart chartPublisherVideoBitrate;
+    private LineChart chartSubscriberVideoBitrate;
 
-    private static final String LOGTAG = "quality-stats-demo";
 
-    private static final String SESSION_ID = "";
-    private static final String TOKEN = "";
-    private static final String APIKEY = "";
-
-    private static final int TEST_DURATION = 20; //test quality duration in seconds
-    private static final int TIME_WINDOW = 3; //3 seconds
+    static final String LOGTAG = "quality-stats-demo";
+    private static final String SESSION_ID = "1_MX40NzUyMTkyMX5-MTY5MDI4MjQwNzI4Mn5IcHI1VUg4QXV2dTVyZmZkUkhyTTFyazJ-fn4";
+    private static final String TOKEN = "T1==cGFydG5lcl9pZD00NzUyMTkyMSZzaWc9OTA3N2ExODk3NzBmOTZiYTIyNDI2MzU3ZDY4YWNlYTE0ZTUxNWViNzpzZXNzaW9uX2lkPTFfTVg0ME56VXlNVGt5TVg1LU1UWTVNREk0TWpRd056STRNbjVJY0hJMVZVZzRRWFYyZFRWeVptWmtVa2h5VFRGeWF6Si1mbjQmY3JlYXRlX3RpbWU9MTY5MDI4MjQyNyZub25jZT0wLjIxOTYwMjY4MTI4NzI4NCZyb2xlPXB1Ymxpc2hlciZleHBpcmVfdGltZT0xNjkyODc0NDI2JmluaXRpYWxfbGF5b3V0X2NsYXNzX2xpc3Q9";
+    private static final String APIKEY = "47521921";
+    private static final int TEST_DURATION = 30; //test quality duration in seconds
+    private static final int TIME_WINDOW = 1; //3 seconds
     private static final int TIME_VIDEO_TEST = 15; //time interval to check the video quality in seconds
+    private final HashMap<Long, JSONObject> ssrcStatsMap = new HashMap<>();
+    private TextView statsTextView;
+    private TextView statsTextViewSub;
 
+    private final Handler rtcStatsHandler = new Handler();
+
+    private Runnable rtcStatsRunnable;
+
+    private LineChart chart;
+    private final List<Double> testResults = new ArrayList<>();
+    private final Double lastAvailableOutgoingBitrate = null;
 
     private Session mSession;
     private Publisher mPublisher;
     private Subscriber mSubscriber;
 
-    private double mVideoPLRatio = 0.0;
-    private long mVideoBw = 0;
-
-    private double mAudioPLRatio = 0.0;
-    private long mAudioBw = 0;
-
-    private long mPrevVideoPacketsLost = 0;
-    private long mPrevVideoPacketsRcvd = 0;
-    private double mPrevVideoTimestamp = 0;
-    private long mPrevVideoBytes = 0;
-
-    private long mPrevAudioPacketsLost = 0;
-    private long mPrevAudioPacketsRcvd = 0;
-    private double mPrevAudioTimestamp = 0;
-    private long mPrevAudioBytes = 0;
+    private long prevVideoTimestamp = 0;
 
     private long mStartTestTime = 0;
 
-    private boolean audioOnly = false;
+    private final boolean audioOnly = false;
 
-    private Handler mHandler = new Handler();
+    private final Handler mHandler = new Handler();
 
-    private ProgressDialog mProgressDialog;
     private AlertDialog dialog;
 
+    private final Map<Long, Long> ssrcToPrevBytesSent = new HashMap<>();
+
+    private final List<PublisherStats> publisherStatsList = new ArrayList<>();
+    private final List<SubscriberVideoStats> subscriberVideoStatsList = new ArrayList<>();
+    private final List<SubscriberAudioStats> subscriberAudioStatsList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        chart = findViewById(R.id.chart);
+        statsTextView = findViewById(R.id.statsTextView);
+        statsTextViewSub = findViewById(R.id.statsSubscriber);
 
         requestPermissions();
     }
@@ -94,10 +121,10 @@ public class MainActivity extends Activity implements
     }
 
     @Override
-    public void onPause(){
+    public void onPause() {
         super.onPause();
 
-        if(dialog!= null && dialog.isShowing()){
+        if (dialog != null && dialog.isShowing()) {
             dialog.dismiss();
         }
     }
@@ -135,20 +162,21 @@ public class MainActivity extends Activity implements
     @AfterPermissionGranted(RC_VIDEO_APP_PERM)
     private void requestPermissions() {
 
-        String[] perms = { Manifest.permission.INTERNET, Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO };
+        String[] perms = {Manifest.permission.INTERNET, Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO};
         if (EasyPermissions.hasPermissions(this, perms)) {
             sessionConnect();
         } else {
             EasyPermissions.requestPermissions(this, getString(R.string.rationale_video_app), RC_VIDEO_APP_PERM, perms);
         }
     }
+
     public void sessionConnect() {
         Log.i(LOGTAG, "Connecting session");
         if (mSession == null) {
             mSession = new Session.Builder(this, APIKEY, SESSION_ID).build();
             mSession.setSessionListener(this);
 
-            mProgressDialog = ProgressDialog.show(this, "Checking your available bandwidth", "Please wait");
+            //mProgressDialog = ProgressDialog.show(this, "Checking your available bandwidth", "Please wait");
             mSession.connect(TOKEN);
         }
     }
@@ -157,7 +185,7 @@ public class MainActivity extends Activity implements
     public void onConnected(Session session) {
         Log.i(LOGTAG, "Session is connected");
 
-        mPublisher = new Publisher.Builder(this).build();
+        mPublisher = new Publisher.Builder(this).resolution(Publisher.CameraCaptureResolution.HIGH_1080P).build();
         mPublisher.setPublisherListener(this);
         mPublisher.setAudioFallbackEnabled(false);
         mSession.publish(mPublisher);
@@ -166,20 +194,96 @@ public class MainActivity extends Activity implements
     @Override
     public void onDisconnected(Session session) {
         Log.i(LOGTAG, "Session is disconnected");
-
         mPublisher = null;
         mSubscriber = null;
         mSession = null;
-
-        if (mProgressDialog != null && mProgressDialog.isShowing()) {
-            mProgressDialog.dismiss();
-        }
     }
 
     @Override
     public void onError(Session session, OpentokError opentokError) {
         Log.i(LOGTAG, "Session error: " + opentokError.getMessage());
         showAlert("Error", "Session error: " + opentokError.getMessage());
+    }
+
+    private QualityTestResult getRecommendedSetting() {
+        Log.d(LOGTAG, "Recommended Bitrate: " + lastAvailableOutgoingBitrate);
+        for (PublisherStats publisherStats : publisherStatsList) {
+            String videoQualityLimitationReason = publisherStats.getQualityLimitationReason();
+            long totalVideoKbsSent = publisherStats.getTotalVideoKbsSent();
+            double totalVideoBytesSent = publisherStats.getTotalVideoBytesSent();
+            boolean isSimulcast = publisherStats.isScalableVideo();
+            // Log the values
+            Log.i(LOGTAG, "Video Quality Limitation Reason: " + videoQualityLimitationReason);
+            Log.i(LOGTAG, "Total Video Kbps Sent: " + totalVideoKbsSent);
+            Log.i(LOGTAG, "Total Video Bytes Sent: " + totalVideoBytesSent);
+            Log.i(LOGTAG, "Simulcast enable: " + isSimulcast);
+
+        }
+        if (lastAvailableOutgoingBitrate != null) {
+            for (QualityThreshold threshold : qualityThresholds) {
+                if (lastAvailableOutgoingBitrate >= threshold.getTargetBitrate()) {
+                    Log.d(LOGTAG, "Recommended Bitrate: " + threshold.getRecommendedSetting());
+                    return new QualityTestResult(threshold.getRecommendedSetting());
+                }
+            }
+        }
+        Log.d(LOGTAG, "Bitrate is too low for video");
+        return new QualityTestResult( "Bitrate is too low for video");
+    }
+
+
+    private void updateChart() {
+        List<Entry> entries = new ArrayList<>();
+        for (int i = 0; i < testResults.size(); i++) {
+            // i is used as the x-value to represent time in seconds
+            entries.add(new Entry(i, testResults.get(i).floatValue()));
+        }
+
+        LineDataSet dataSet = new LineDataSet(entries, "Available Outgoing Bitrate");
+        dataSet.setColor(Color.BLUE); // Set the line color
+        dataSet.setCircleColor(Color.BLUE); // Set the circle color
+        dataSet.setLineWidth(2f); // Set the line width
+        dataSet.setCircleRadius(3f); // Set the circle radius
+        dataSet.setDrawCircleHole(true); // Disable the circle hole
+        dataSet.setDrawValues(false); // Hide the values displayed on the chart
+        dataSet.setDrawFilled(true); // Enable filling below the line
+        dataSet.setFormLineWidth(1f); // Set the line width of the legend form
+        dataSet.setFormLineDashEffect(new DashPathEffect(new float[]{10f, 5f}, 0f)); // Set the line dash effect of the legend form
+        dataSet.setFormSize(15.f); // Set the size of the legend form
+
+        LineData lineData = new LineData(dataSet);
+        chart.setData(lineData);
+
+        // Set the minimum values for the axes to 0
+        chart.getXAxis().setAxisMinimum(0f);
+        chart.getAxisLeft().setAxisMinimum(0f);
+        chart.getAxisLeft().setAxisMaximum(5550000f); // Set the maximum value to 5550000
+
+        // Disable the right y-axis
+        chart.getAxisRight().setEnabled(false);
+
+        // Set the x-axis to display at the bottom
+        chart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
+
+        // Set the description text
+        chart.getDescription().setText("Time (s)");
+
+        // Customize the chart appearance
+        chart.setDrawGridBackground(false); // Disable the grid background
+        chart.setDrawBorders(false); // Disable the borders
+        chart.getLegend().setEnabled(false); // Disable the legend
+
+        // Customize the x-axis appearance
+        XAxis xAxis = chart.getXAxis();
+        xAxis.setDrawGridLines(false); // Disable the x-axis grid lines
+        xAxis.setDrawAxisLine(false); // Disable the x-axis line
+
+        // Customize the y-axis appearance
+        YAxis yAxis = chart.getAxisLeft();
+        yAxis.setDrawGridLines(false); // Disable the y-axis grid lines
+        yAxis.setDrawAxisLine(false); // Disable the y-axis line
+
+        chart.invalidate(); // refresh the chart
     }
 
     @Override
@@ -220,6 +324,18 @@ public class MainActivity extends Activity implements
         // Mute Subscriber Audio
         subscriberKit.setAudioVolume(0);
         mHandler.postDelayed(statsRunnable, TEST_DURATION * 1000);
+        // Initialize and post the Runnable to get RTC stats every second
+        rtcStatsRunnable = new Runnable() {
+            @Override
+            public void run() {
+                if (mPublisher != null) {
+                    mPublisher.getRtcStatsReport();
+                    rtcStatsHandler.postDelayed(this, 500);
+                }
+            }
+        };
+        rtcStatsHandler.post(rtcStatsRunnable);
+
     }
 
     @Override
@@ -238,33 +354,19 @@ public class MainActivity extends Activity implements
         mSubscriber = new Subscriber.Builder(MainActivity.this, stream).build();
         mSubscriber.setSubscriberListener(this);
         mSession.subscribe(mSubscriber);
-        mSubscriber.setVideoStatsListener(new VideoStatsListener() {
-
-            @Override
-            public void onVideoStats(SubscriberKit subscriber,
-                                     SubscriberKit.SubscriberVideoStats stats) {
-
-                if (mStartTestTime == 0) {
-                    mStartTestTime = System.currentTimeMillis() / 1000;
-                }
-                checkVideoStats(stats);
-
-                //check quality of the video call after TIME_VIDEO_TEST seconds
-                if (((System.currentTimeMillis() / 1000 - mStartTestTime) > TIME_VIDEO_TEST) && !audioOnly) {
-                    checkVideoQuality();
-                }
+        mSubscriber.setVideoStatsListener((subscriber, stats) -> {
+            if (mStartTestTime == 0) {
+                mStartTestTime = System.currentTimeMillis() / 1000;
             }
-
-        });
-
-        mSubscriber.setAudioStatsListener(new SubscriberKit.AudioStatsListener() {
-            @Override
-            public void onAudioStats(SubscriberKit subscriber, SubscriberKit.SubscriberAudioStats stats) {
-
-                checkAudioStats(stats);
-
+            onSubscriberVideoStats(stats);
+            mPublisher.setRtcStatsReportListener(publisherRtcStatsReportListener);
+            //check quality of the video call after TIME_VIDEO_TEST seconds
+            if (((System.currentTimeMillis() / 1000 - mStartTestTime) > TIME_VIDEO_TEST) && !audioOnly) {
+                getRecommendedSetting();
             }
         });
+        mSubscriber.setAudioStatsListener((subscriber, stats) -> onSubscriberAudioStats(stats));
+
     }
 
     private void unsubscribeFromStream(Stream stream) {
@@ -273,110 +375,108 @@ public class MainActivity extends Activity implements
         }
     }
 
-    private void checkVideoStats(SubscriberKit.SubscriberVideoStats stats) {
-        double videoTimestamp = stats.timeStamp / 1000;
+    // Assuming you are in the same class or package
+    private final Queue<SubscriberVideoStats> videoStatsQueue = new LinkedList<>();
+    private final Queue<SubscriberAudioStats> audioStatsQueue = new LinkedList<>();
 
-        //initialize values
-        if (mPrevVideoTimestamp == 0) {
-            mPrevVideoTimestamp = videoTimestamp;
-            mPrevVideoBytes = stats.videoBytesReceived;
+
+    private SubscriberVideoStats onSubscriberVideoStats(SubscriberKit.SubscriberVideoStats videoStats) {
+        double videoTimestamp = videoStats.timeStamp / 1000;
+
+        //initialize values for video
+        if (videoStatsQueue.isEmpty()) {
+            videoStatsQueue.add(SubscriberVideoStats.builder()
+                    .receivedVideoBitrateKbps(0)
+                    .videoBytesReceived(videoStats.videoBytesReceived)
+                    .videoPacketLostRatio(0)
+                    .build());
         }
 
-        if (videoTimestamp - mPrevVideoTimestamp >= TIME_WINDOW) {
-            //calculate video packets lost ratio
-            if (mPrevVideoPacketsRcvd != 0) {
-                long pl = stats.videoPacketsLost - mPrevVideoPacketsLost;
-                long pr = stats.videoPacketsReceived - mPrevVideoPacketsRcvd;
-                long pt = pl + pr;
+        // Video Stats
+        long videoPacketsLost = videoStats.videoPacketsLost - videoStatsQueue.peek().getVideoBytesReceived();
+        long videoPacketsReceived = videoStats.videoPacketsReceived - videoStatsQueue.peek().getVideoBytesReceived();
+        long videoTotalPackets = videoPacketsLost + videoPacketsReceived;
 
-                if (pt > 0) {
-                    mVideoPLRatio = (double) pl / (double) pt;
-                }
-            }
-
-            mPrevVideoPacketsLost = stats.videoPacketsLost;
-            mPrevVideoPacketsRcvd = stats.videoPacketsReceived;
-
-            //calculate video bandwidth
-            mVideoBw = (long) ((8 * (stats.videoBytesReceived - mPrevVideoBytes)) / (videoTimestamp - mPrevVideoTimestamp));
-
-            mPrevVideoTimestamp = videoTimestamp;
-            mPrevVideoBytes = stats.videoBytesReceived;
-
-            Log.i(LOGTAG, "Video bandwidth (bps): " + mVideoBw + " Video Bytes received: " + stats.videoBytesReceived + " Video packet lost: " + stats.videoPacketsLost + " Video packet loss ratio: " + mVideoPLRatio);
-
+        double videoPLRatio = 0.0;
+        if (videoTotalPackets > 0) {
+            videoPLRatio = (double) videoPacketsLost / (double) videoTotalPackets;
         }
+
+        //calculate video bandwidth
+        long videoBw = (long) ((8 * (videoStats.videoBytesReceived - videoStatsQueue.peek().getVideoBytesReceived())) / (videoTimestamp - videoStatsQueue.peek().getTimestamp())) / 1000;
+
+        videoStatsQueue.add(SubscriberVideoStats.builder()
+                .receivedVideoBitrateKbps(videoBw)
+                .videoBytesReceived(videoStats.videoBytesReceived)
+                .videoPacketLostRatio(videoPLRatio)
+                .timestamp(videoStats.timeStamp)
+                .build());
+
+        // Remove older stats if they are outside the TIME_WINDOW
+        while (videoStatsQueue.size() > 1 && (videoTimestamp - videoStatsQueue.peek().getTimestamp()) >= TIME_WINDOW) {
+            videoStatsQueue.poll();
+        }
+
+        // Return the latest SubscriberVideoStats object
+        return SubscriberVideoStats.builder()
+                .receivedVideoBitrateKbps(videoBw)
+                .videoBytesReceived(videoStats.videoBytesReceived)
+                .videoPacketLostRatio(videoPLRatio)
+                .timestamp(videoStats.timeStamp)
+                .build();
     }
 
-    private void checkAudioStats(SubscriberKit.SubscriberAudioStats stats) {
-        double audioTimestamp = stats.timeStamp / 1000;
 
-        //initialize values
-        if (mPrevAudioTimestamp == 0) {
-            mPrevAudioTimestamp = audioTimestamp;
-            mPrevAudioBytes = stats.audioBytesReceived;
+    private SubscriberAudioStats onSubscriberAudioStats(SubscriberKit.SubscriberAudioStats audioStats) {
+        double audioTimestamp = audioStats.timeStamp / 1000;
+
+        //initialize values for audio
+        if (audioStatsQueue.isEmpty()) {
+            audioStatsQueue.add(SubscriberAudioStats.builder()
+                    .receivedAudioBitrateKbps(0)
+                    .audioBytesReceived(audioStats.audioBytesReceived)
+                    .audioPacketLostRatio(0)
+                    .timestamp(audioStats.timeStamp)
+                    .build());
         }
 
-        if (audioTimestamp - mPrevAudioTimestamp >= TIME_WINDOW) {
-            //calculate audio packets lost ratio
-            if (mPrevAudioPacketsRcvd != 0) {
-                long pl = stats.audioPacketsLost - mPrevAudioPacketsLost;
-                long pr = stats.audioPacketsReceived - mPrevAudioPacketsRcvd;
-                long pt = pl + pr;
+        // Audio Stats
+        long audioPacketsLost = audioStats.audioPacketsLost - audioStatsQueue.peek().getAudioBytesReceived();
+        long audioPacketsReceived = audioStats.audioPacketsReceived - audioStatsQueue.peek().getAudioBytesReceived();
+        long audioTotalPackets = audioPacketsLost + audioPacketsReceived;
 
-                if (pt > 0) {
-                    mAudioPLRatio = (double) pl / (double) pt;
-                }
-            }
-            mPrevAudioPacketsLost = stats.audioPacketsLost;
-            mPrevAudioPacketsRcvd = stats.audioPacketsReceived;
-
-            //calculate audio bandwidth
-            mAudioBw = (long) ((8 * (stats.audioBytesReceived - mPrevAudioBytes)) / (audioTimestamp - mPrevAudioTimestamp));
-
-            mPrevAudioTimestamp = audioTimestamp;
-            mPrevAudioBytes = stats.audioBytesReceived;
-
-            Log.i(LOGTAG, "Audio bandwidth (bps): " + mAudioBw + " Audio Bytes received: " + stats.audioBytesReceived + " Audio packet lost: " + stats.audioPacketsLost + " Audio packet loss ratio: " + mAudioPLRatio);
-
+        double audioPLRatio = 0.0;
+        if (audioTotalPackets > 0) {
+            audioPLRatio = (double) audioPacketsLost / (double) audioTotalPackets;
         }
 
-   }
+        //calculate audio bandwidth
+        long audioBw = (long) ((8 * (audioStats.audioBytesReceived - audioStatsQueue.peek().getAudioBytesReceived())) / (audioTimestamp - audioStatsQueue.peek().getTimestamp()));
 
-    private void checkVideoQuality() {
-        if (mSession != null) {
-            Log.i(LOGTAG, "Check video quality stats data");
-            if (mVideoBw < 150000 || mVideoPLRatio > 0.03) {
-                //go to audio call to check the quality with video disabled
-                showAlert("Voice-only", "Your bandwidth is too low for video");
-                mProgressDialog = ProgressDialog.show(this, "Checking your available bandwidth for voice only", "Please wait");
-                mPublisher.setPublishVideo(false);
-                mSubscriber.setSubscribeToVideo(false);
-                mSubscriber.setVideoStatsListener(null);
-                audioOnly = true;
-            } else {
-                //quality is good for video call
-                mSession.disconnect();
-                showAlert("All good", "You're all set!");
-            }
+        audioStatsQueue.add(SubscriberAudioStats.builder()
+                .receivedAudioBitrateKbps(audioBw)
+                .audioBytesReceived(audioStats.audioBytesReceived)
+                .audioPacketLostRatio(audioPLRatio)
+                .timestamp(audioStats.timeStamp)
+                .build());
+
+
+        // Remove older stats if they are outside the TIME_WINDOW
+        while (audioStatsQueue.size() > 1 && (audioTimestamp - audioStatsQueue.peek().getTimestamp()) >= TIME_WINDOW) {
+            audioStatsQueue.poll();
         }
+
+        // Return the latest SubscriberAudioStats object
+        return SubscriberAudioStats.builder()
+                .receivedAudioBitrateKbps(audioBw)
+                .audioBytesReceived(audioStats.audioBytesReceived)
+                .audioPacketLostRatio(audioPLRatio)
+                .timestamp(audioStats.timeStamp)
+                .build();
     }
 
-    private void checkAudioQuality() {
-        if (mSession != null) {
-            Log.i(LOGTAG, "Check audio quality stats data");
-            if (mAudioBw < 25000 || mAudioPLRatio > 0.05) {
-                showAlert("Not good", "You can't connect successfully");
-            } else {
-                showAlert("Voice-only", "Your bandwidth is too low for video");
-            }
-        }
-    }
 
     private void showAlert(String title, String Message) {
-        if (mProgressDialog != null && mProgressDialog.isShowing()) {
-            mProgressDialog.dismiss();
-        }
         dialog = new AlertDialog.Builder(MainActivity.this)
                 .setTitle(title)
                 .setMessage(Message)
@@ -390,19 +490,118 @@ public class MainActivity extends Activity implements
                                     throwable.printStackTrace();
                                 }
                             }
-                        }).setIcon(android.R.drawable.ic_dialog_alert)
+                        }).setIcon(R.drawable.ic_launcher)
                 .show();
     }
 
-    private Runnable statsRunnable = new Runnable() {
+    private final PublisherKit.PublisherRtcStatsReportListener publisherRtcStatsReportListener = (publisherKit, publisherRtcStats) -> {
+        for (PublisherKit.PublisherRtcStats s : publisherRtcStats) {
+            try {
+                JSONArray rtcStatsJsonArray = new JSONArray(s.jsonArrayOfReports);
+                List<MediaStatsEntry> videoStatsList = new ArrayList<>();
+                MediaStatsEntry audioStats = null;
+
+                double jitter = 0.0;
+                long availableOutgoingBitrate = 0;
+                long timestamp = 0;
+                long currentRoundTripTimeMs = 0;
+
+                for (int i = 0; i < rtcStatsJsonArray.length(); i++) {
+                    JSONObject rtcStatObject = rtcStatsJsonArray.getJSONObject(i);
+                    String statType = rtcStatObject.getString("type");
+                    String kind = rtcStatObject.optString("kind", "none");
+                    // Handle video and audio stats
+                    if (statType.equals("outbound-rtp") && (kind.equals("video") || kind.equals("audio"))) {
+                        long ssrc = rtcStatObject.getLong("ssrc");
+                        String qualityLimitationReason = rtcStatObject.optString("qualityLimitationReason", "none");
+                        String resolution = rtcStatObject.optInt("frameWidth", 0) + "x" + rtcStatObject.optInt("frameHeight", 0);
+                        int framerate = rtcStatObject.optInt("framesPerSecond", 0);
+                        int pliCount = rtcStatObject.optInt("pliCount", 0);
+                        int nackCount = rtcStatObject.optInt("nackCount", 0);
+                        long bytesSent = rtcStatObject.optInt("bytesSent", 0);
+                        long bitrateKbps = calculateVideoBitrateKbps(ssrc,
+                                rtcStatObject.optLong("timestamp",0),
+                                bytesSent);
+
+
+                        MediaStatsEntry mediaStatsEntry = MediaStatsEntry.builder()
+                                .ssrc(ssrc)
+                                .qualityLimitationReason(qualityLimitationReason)
+                                .resolution(resolution)
+                                .framerate(framerate)
+                                .pliCount(pliCount)
+                                .nackCount(nackCount)
+                                .bytesSent(bytesSent)
+                                .bitrateKbps(bitrateKbps)
+                                .build();
+
+                        if ("video".equals(kind)) {
+                            videoStatsList.add(mediaStatsEntry);
+                        } else if ("audio".equals(kind)) {
+                            audioStats = mediaStatsEntry;
+                        }
+                    }
+                    // Handle candidate-pair stats
+                    else if (statType.equals("candidate-pair")) {
+                        boolean isNominated = rtcStatObject.optBoolean("nominated", false);
+                        if (isNominated) {
+                            availableOutgoingBitrate = rtcStatObject.optLong("availableOutgoingBitrate", 0);
+                            currentRoundTripTimeMs = rtcStatObject.optLong("currentRoundTripTime", 0) * 1000;
+                            timestamp = rtcStatObject.optLong("timestamp", 0);
+                        }
+                    }
+                }
+
+                prevVideoTimestamp = timestamp;
+
+                PublisherStats publisherStats = PublisherStats.builder()
+                        .videoStats(videoStatsList)
+                        .audioStats(audioStats)
+                        .jitter(jitter)
+                        .currentRoundTripTimeMs(currentRoundTripTimeMs)
+                        .availableOutgoingBitrate(availableOutgoingBitrate)
+                        .timestamp(timestamp)
+                        .build();
+
+                publisherStatsList.add(publisherStats);
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    };
+
+    private long calculateVideoBitrateKbps(long ssrc, long timestamp, long currentBytesSent) {
+        long videoBitrateKbps = 0;
+        if (prevVideoTimestamp > 0 && ssrcToPrevBytesSent.containsKey(ssrc)) {
+            long elapsedTimeMs = timestamp - prevVideoTimestamp;
+            long prevBytesSent = ssrcToPrevBytesSent.get(ssrc);
+            long bytesSentDiff = currentBytesSent - prevBytesSent;
+            videoBitrateKbps = (long) ((bytesSentDiff * 8) / (elapsedTimeMs / 1000.0)); // Calculate Kbps
+        }
+        ssrcToPrevBytesSent.put(ssrc, currentBytesSent);
+        return videoBitrateKbps;
+    }
+    private final Runnable statsRunnable = new Runnable() {
 
         @Override
         public void run() {
             if (mSession != null) {
-                checkAudioQuality();
+                rtcStatsHandler.removeCallbacks(rtcStatsRunnable);
                 mSession.disconnect();
+                // Stop getting RTC stats
+
             }
         }
+    };
+
+    QualityThreshold[] qualityThresholds = new QualityThreshold[]{
+            new QualityThreshold(4000000, 5550000, "1920x1080 @ 30FPS"),
+            new QualityThreshold(2500000, 3150000, "1280x720 @ 30FPS"),
+            new QualityThreshold(1200000, 1550000, "960x540 @ 30FPS"),
+            new QualityThreshold(500000, 650000, "640x360 @ 30FPS"),
+            new QualityThreshold(300000, 350000, "480x270 @ 30FPS"),
+            new QualityThreshold(150000, 150000, "320x180 @ 30FPS")
     };
 
 }

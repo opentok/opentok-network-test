@@ -8,4 +8,60 @@
     android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context=".MainActivity">
 
+    <com.github.mikephil.charting.charts.LineChart
+        android:id="@+id/chart"
+        android:layout_width="match_parent"
+        android:layout_height="200dp" />
+
+    <!-- Add LineChart for Publisher Video Bitrate -->
+
+    <!-- Add LineChart for Subscriber Video Bitrate -->
+
+
+    <TextView
+        android:id="@+id/statsSubscriber"
+        android:layout_width="360dp"
+        android:layout_height="95dp"
+        android:layout_below="@+id/chart"
+        android:layout_alignParentEnd="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="393dp"
+        android:layout_marginEnd="88dp"
+        android:textSize="16sp" />
+
+    <EditText
+        android:id="@+id/editTextText"
+        android:layout_width="188dp"
+        android:layout_height="30dp"
+        android:layout_below="@+id/chart"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="287dp"
+        android:layout_marginEnd="190dp"
+        android:layout_marginBottom="198dp"
+        android:ems="10"
+        android:inputType="text"
+        android:text="Subscriber stats" />
+
+    <TextView
+        android:id="@+id/statsTextView"
+        android:layout_width="395dp"
+        android:layout_height="330dp"
+        android:layout_below="@+id/chart"
+        android:layout_alignParentStart="true"
+        android:layout_centerInParent="true"
+        android:layout_marginStart="19dp"
+        android:layout_marginTop="2dp"
+        android:autoText="false"
+        android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="AvailableOugoingBitrate" />
+
+
+
 </RelativeLayout>
