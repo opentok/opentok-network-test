@@ -365,7 +365,7 @@ public class MainActivity extends Activity implements
             mPublisher.setRtcStatsReportListener(publisherRtcStatsReportListener);
             //check quality of the video call after TIME_VIDEO_TEST seconds
             if (((System.currentTimeMillis() / 1000 - mStartTestTime) > TIME_VIDEO_TEST) && !audioOnly) {
-              //  getRecommendedSetting();
+               getRecommendedSetting();
             }
         });
         mSubscriber.setAudioStatsListener((subscriber, stats) -> onSubscriberAudioStats(stats));
@@ -378,86 +378,83 @@ public class MainActivity extends Activity implements
         }
     }
 
-    private final Queue<SubscriberVideoStats> videoStatsQueue = new LinkedList<>();
-    private final Queue<SubscriberAudioStats> audioStatsQueue = new LinkedList<>();
+    private final Queue<SubscriberKit.SubscriberVideoStats > videoStatsQueue = new LinkedList<>();
+    private final Queue<SubscriberKit.SubscriberAudioStats > audioStatsQueue = new LinkedList<>();
 
     private void onSubscriberVideoStats(SubscriberKit.SubscriberVideoStats videoStats) {
         double videoTimestamp = videoStats.timeStamp ;
         // Initialize values for video
         if (videoStatsQueue.isEmpty()) {
-            videoStatsQueue.add(SubscriberVideoStats.builder()
-                    .videoBytesKbsReceived(0)
-                    .videoBytesReceived(videoStats.videoBytesReceived)
-                    .timestamp(videoStats.timeStamp)
-                    .videoPacketLostRatio(0)
-                    .build());
+            videoStatsQueue.add(videoStats);
             return;
         }
+        SubscriberKit.SubscriberVideoStats  previousVideoStats = videoStatsQueue.peek();
 
-        if ((videoTimestamp - videoStatsQueue.peek().timestamp)< TIME_WINDOW*1000)
+        if ((videoTimestamp - previousVideoStats.timeStamp) < TIME_WINDOW * 1000)
         {
             return;
         }
-         // Video Stats
-        long videoPacketsLost = videoStats.videoPacketsLost -
-        long videoPacketsReceived = videoStats.videoPacketsReceived;
-        long videoTotalPackets = videoPacketsLost + videoPacketsReceived;
 
+        // Video Stats
+        long videoPacketsLostInterval = videoStats.videoPacketsLost - previousVideoStats.videoPacketsLost;
+        long videoPacketsReceivedInterval = videoStats.videoPacketsReceived - previousVideoStats.videoPacketsReceived;
+        long videoTotalPacketsInterval = videoPacketsLostInterval + videoPacketsReceivedInterval;
         double videoPLRatio = 0.0;
-        if (videoTotalPackets > 0) {
-            videoPLRatio = (double) videoPacketsLost / (double) videoTotalPackets;
+        if (videoTotalPacketsInterval > 0) {
+            videoPLRatio = (double) videoPacketsLostInterval / (double) videoTotalPacketsInterval;
         }
-       // Calculate video bandwidth
-        long videoBw = (long) ((8 * (videoStats.videoBytesReceived - videoStatsQueue.peek().getVideoBytesReceived())) / (videoTimestamp - videoStatsQueue.peek().getTimestamp())) / 1000;
 
-        videoStatsQueue.add(SubscriberVideoStats.builder()
-                .videoBytesKbsReceived(videoBw)
+        long elapsedTimeMs = (long) (videoTimestamp - previousVideoStats.timeStamp);
+        long bytesSentDiff = videoStats.videoBytesReceived - previousVideoStats.videoBytesReceived;
+        long videoBitrateKbps = (long) ((bytesSentDiff * 8) / (elapsedTimeMs / 1000.0)) /1000;
+
+        videoStatsQueue.add(videoStats);
+
+        subscriberVideoStatsList.add(SubscriberVideoStats.builder()
+                .videoBytesKbsReceived(videoBitrateKbps)
                 .videoBytesReceived(videoStats.videoBytesReceived)
                 .timestamp(videoStats.timeStamp)
                 .videoPacketLostRatio(videoPLRatio)
                 .build());
 
-
-        // Return the latest SubscriberVideoStats object
-       // return videoStatsQueue.peek();
     }
 
-    private SubscriberAudioStats onSubscriberAudioStats(SubscriberKit.SubscriberAudioStats audioStats) {
+    private void onSubscriberAudioStats(SubscriberKit.SubscriberAudioStats audioStats) {
         double audioTimestamp = audioStats.timeStamp;
 
         // Initialize values for audio
         if (audioStatsQueue.isEmpty()) {
-            audioStatsQueue.add(SubscriberAudioStats.builder()
-                    .receivedAudioBitrateKbps(0)
-                    .audioBytesReceived(audioStats.audioBytesReceived)
-                    .audioPacketLostRatio(0)
-                    .timestamp(audioStats.timeStamp)
-                    .build());
-            return audioStatsQueue.peek();
+            audioStatsQueue.add(audioStats);
+            return;
+        }
+
+        SubscriberKit.SubscriberAudioStats previousAudioStats = audioStatsQueue.peek();
+
+        // Check if the time difference is within the time window
+        if ((audioTimestamp - previousAudioStats.timeStamp) < TIME_WINDOW * 1000) {
+            return;
         }
 
         // Audio Stats
-        long audioPacketsLost = audioStats.audioPacketsLost - audioStatsQueue.peek().getAudioBytesReceived();
-        long audioPacketsReceived = audioStats.audioBytesReceived - audioStatsQueue.peek().getAudioBytesReceived();
-        long audioTotalPackets = audioPacketsLost + audioPacketsReceived;
+        long audioPacketsLostInterval = audioStats.audioPacketsLost - previousAudioStats.audioPacketsLost;
+        long audioPacketsReceivedInterval = audioStats.audioBytesReceived - previousAudioStats.audioBytesReceived;
+        long audioTotalPacketsInterval = audioPacketsLostInterval + audioPacketsReceivedInterval;
 
         double audioPLRatio = 0.0;
-        if (audioTotalPackets > 0) {
-            audioPLRatio = (double) audioPacketsLost / (double) audioTotalPackets;
+        if (audioTotalPacketsInterval > 0) {
+            audioPLRatio = (double) audioPacketsLostInterval / (double) audioTotalPacketsInterval;
         }
 
         // Calculate audio bandwidth
-        long audioBw = (long) ((8 * (audioStats.audioBytesReceived - audioStatsQueue.peek().getAudioBytesReceived())) / (audioTimestamp - audioStatsQueue.peek().getTimestamp()));
+        long elapsedTimeMs = (long) (audioTimestamp - previousAudioStats.timeStamp);
+        long audioBw = (long) ((8 * (audioStats.audioBytesReceived - previousAudioStats.audioBytesReceived)) / (elapsedTimeMs / 1000.0));
 
-        audioStatsQueue.add(SubscriberAudioStats.builder()
-                .receivedAudioBitrateKbps(audioBw)
+        subscriberAudioStatsList.add(SubscriberAudioStats.builder()
+                .audioBitrateKbps(audioBw)
                 .audioBytesReceived(audioStats.audioBytesReceived)
-                .audioPacketLostRatio(audioPLRatio)
                 .timestamp(audioStats.timeStamp)
+                .audioPacketLostRatio(audioPLRatio)
                 .build());
-
-        // Return the latest SubscriberAudioStats object
-        return audioStatsQueue.peek();
     }
 
 

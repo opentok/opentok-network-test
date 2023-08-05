@@ -11,7 +11,7 @@ import lombok.Value;
 
 @AllArgsConstructor
 @Builder
-@Getter
+@Value
 @RequiresApi(api = Build.VERSION_CODES.N)
 public class SubscriberVideoStats {
     long videoBytesKbsReceived;

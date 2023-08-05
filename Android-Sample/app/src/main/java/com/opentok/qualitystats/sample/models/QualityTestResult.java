@@ -1,10 +1,9 @@
 package com.opentok.qualitystats.sample.models;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 
 @Builder
-@AllArgsConstructor
+@All
 public class QualityTestResult {
     String recommendedResolution;
 }

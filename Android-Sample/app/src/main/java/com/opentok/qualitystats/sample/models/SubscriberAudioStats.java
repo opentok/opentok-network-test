@@ -13,7 +13,7 @@ import lombok.Value;
 @Builder
 @RequiresApi(api = Build.VERSION_CODES.N)
 public class SubscriberAudioStats {
-    long receivedAudioBitrateKbps;
+    long audioBitrateKbps;
     long audioBytesReceived;
     double audioPacketLostRatio;
     double timestamp;
