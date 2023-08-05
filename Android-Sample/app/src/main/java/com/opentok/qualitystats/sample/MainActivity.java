@@ -63,8 +63,8 @@ public class MainActivity extends Activity implements
 
     static final String LOGTAG = "quality-stats-demo";
     private static final String SESSION_ID = "1_MX40NzUyMTkyMX5-MTY5MDI4MjQwNzI4Mn5IcHI1VUg4QXV2dTVyZmZkUkhyTTFyazJ-fn4";
-    private static final String TOKEN = "";
-    private static final String APIKEY = "";
+    private static final String TOKEN = "T1==cGFydG5lcl9pZD00NzUyMTkyMSZzaWc9OTA3N2ExODk3NzBmOTZiYTIyNDI2MzU3ZDY4YWNlYTE0ZTUxNWViNzpzZXNzaW9uX2lkPTFfTVg0ME56VXlNVGt5TVg1LU1UWTVNREk0TWpRd056STRNbjVJY0hJMVZVZzRRWFYyZFRWeVptWmtVa2h5VFRGeWF6Si1mbjQmY3JlYXRlX3RpbWU9MTY5MDI4MjQyNyZub25jZT0wLjIxOTYwMjY4MTI4NzI4NCZyb2xlPXB1Ymxpc2hlciZleHBpcmVfdGltZT0xNjkyODc0NDI2JmluaXRpYWxfbGF5b3V0X2NsYXNzX2xpc3Q9";
+    private static final String APIKEY = "47521921";
     private static final int TEST_DURATION = 30; //test quality duration in seconds
     private static final int TIME_WINDOW = 1; //3 seconds
     private static final int TIME_VIDEO_TEST = 15; //time interval to check the video quality in seconds
@@ -362,7 +362,7 @@ public class MainActivity extends Activity implements
             mPublisher.setRtcStatsReportListener(publisherRtcStatsReportListener);
             //check quality of the video call after TIME_VIDEO_TEST seconds
             if (((System.currentTimeMillis() / 1000 - mStartTestTime) > TIME_VIDEO_TEST) && !audioOnly) {
-                getRecommendedSetting();
+              //  getRecommendedSetting();
             }
         });
         mSubscriber.setAudioStatsListener((subscriber, stats) -> onSubscriberAudioStats(stats));
@@ -379,37 +379,37 @@ public class MainActivity extends Activity implements
     private final Queue<SubscriberVideoStats> videoStatsQueue = new LinkedList<>();
     private final Queue<SubscriberAudioStats> audioStatsQueue = new LinkedList<>();
 
-
     private SubscriberVideoStats onSubscriberVideoStats(SubscriberKit.SubscriberVideoStats videoStats) {
-        double videoTimestamp = videoStats.timeStamp / 1000;
+        double videoTimestamp = videoStats.timeStamp ;
 
-        //initialize values for video
+        // Initialize values for video
         if (videoStatsQueue.isEmpty()) {
             videoStatsQueue.add(SubscriberVideoStats.builder()
-                    .receivedVideoBitrateKbps(0)
+                    .videoBytesKbsReceived(0)
                     .videoBytesReceived(videoStats.videoBytesReceived)
+                    .timestamp(videoStats.timeStamp)
                     .videoPacketLostRatio(0)
                     .build());
+            return videoStatsQueue.peek();
         }
 
         // Video Stats
         long videoPacketsLost = videoStats.videoPacketsLost - videoStatsQueue.peek().getVideoBytesReceived();
-        long videoPacketsReceived = videoStats.videoPacketsReceived - videoStatsQueue.peek().getVideoBytesReceived();
+        long videoPacketsReceived = videoStats.videoBytesReceived - videoStatsQueue.peek().getVideoBytesReceived();
         long videoTotalPackets = videoPacketsLost + videoPacketsReceived;
 
         double videoPLRatio = 0.0;
         if (videoTotalPackets > 0) {
             videoPLRatio = (double) videoPacketsLost / (double) videoTotalPackets;
         }
-
-        //calculate video bandwidth
+       // Calculate video bandwidth
         long videoBw = (long) ((8 * (videoStats.videoBytesReceived - videoStatsQueue.peek().getVideoBytesReceived())) / (videoTimestamp - videoStatsQueue.peek().getTimestamp())) / 1000;
 
         videoStatsQueue.add(SubscriberVideoStats.builder()
-                .receivedVideoBitrateKbps(videoBw)
+                .videoBytesKbsReceived(videoBw)
                 .videoBytesReceived(videoStats.videoBytesReceived)
-                .videoPacketLostRatio(videoPLRatio)
                 .timestamp(videoStats.timeStamp)
+                .videoPacketLostRatio(videoPLRatio)
                 .build());
 
         // Remove older stats if they are outside the TIME_WINDOW
@@ -418,19 +418,13 @@ public class MainActivity extends Activity implements
         }
 
         // Return the latest SubscriberVideoStats object
-        return SubscriberVideoStats.builder()
-                .receivedVideoBitrateKbps(videoBw)
-                .videoBytesReceived(videoStats.videoBytesReceived)
-                .videoPacketLostRatio(videoPLRatio)
-                .timestamp(videoStats.timeStamp)
-                .build();
+        return videoStatsQueue.peek();
     }
 
-
     private SubscriberAudioStats onSubscriberAudioStats(SubscriberKit.SubscriberAudioStats audioStats) {
-        double audioTimestamp = audioStats.timeStamp / 1000;
+        double audioTimestamp = audioStats.timeStamp;
 
-        //initialize values for audio
+        // Initialize values for audio
         if (audioStatsQueue.isEmpty()) {
             audioStatsQueue.add(SubscriberAudioStats.builder()
                     .receivedAudioBitrateKbps(0)
@@ -438,11 +432,12 @@ public class MainActivity extends Activity implements
                     .audioPacketLostRatio(0)
                     .timestamp(audioStats.timeStamp)
                     .build());
+            return audioStatsQueue.peek();
         }
 
         // Audio Stats
         long audioPacketsLost = audioStats.audioPacketsLost - audioStatsQueue.peek().getAudioBytesReceived();
-        long audioPacketsReceived = audioStats.audioPacketsReceived - audioStatsQueue.peek().getAudioBytesReceived();
+        long audioPacketsReceived = audioStats.audioBytesReceived - audioStatsQueue.peek().getAudioBytesReceived();
         long audioTotalPackets = audioPacketsLost + audioPacketsReceived;
 
         double audioPLRatio = 0.0;
@@ -450,7 +445,7 @@ public class MainActivity extends Activity implements
             audioPLRatio = (double) audioPacketsLost / (double) audioTotalPackets;
         }
 
-        //calculate audio bandwidth
+        // Calculate audio bandwidth
         long audioBw = (long) ((8 * (audioStats.audioBytesReceived - audioStatsQueue.peek().getAudioBytesReceived())) / (audioTimestamp - audioStatsQueue.peek().getTimestamp()));
 
         audioStatsQueue.add(SubscriberAudioStats.builder()
@@ -460,19 +455,13 @@ public class MainActivity extends Activity implements
                 .timestamp(audioStats.timeStamp)
                 .build());
 
-
         // Remove older stats if they are outside the TIME_WINDOW
         while (audioStatsQueue.size() > 1 && (audioTimestamp - audioStatsQueue.peek().getTimestamp()) >= TIME_WINDOW) {
             audioStatsQueue.poll();
         }
 
         // Return the latest SubscriberAudioStats object
-        return SubscriberAudioStats.builder()
-                .receivedAudioBitrateKbps(audioBw)
-                .audioBytesReceived(audioStats.audioBytesReceived)
-                .audioPacketLostRatio(audioPLRatio)
-                .timestamp(audioStats.timeStamp)
-                .build();
+        return audioStatsQueue.peek();
     }
 
 

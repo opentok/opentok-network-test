@@ -13,9 +13,8 @@ import lombok.Value;
 @Builder
 @RequiresApi(api = Build.VERSION_CODES.N)
 public class SubscriberVideoStats {
-    long receivedVideoBitrateKbps;
+    long videoBytesKbsReceived;
     long videoBytesReceived;
     double timestamp;
     double videoPacketLostRatio;
-    String resolution;
 }
