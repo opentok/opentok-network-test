@@ -57,6 +57,9 @@ public class MainActivity extends Activity implements
 
     private static final int RC_SETTINGS_SCREEN_PERM = 123;
     private static final int RC_VIDEO_APP_PERM = 124;
+
+    private static final int SUB_STATS_INTERVAL = 1;
+
     private LineChart chartPublisherVideoBitrate;
     private LineChart chartSubscriberVideoBitrate;
 
@@ -375,13 +378,11 @@ public class MainActivity extends Activity implements
         }
     }
 
-    // Assuming you are in the same class or package
     private final Queue<SubscriberVideoStats> videoStatsQueue = new LinkedList<>();
     private final Queue<SubscriberAudioStats> audioStatsQueue = new LinkedList<>();
 
-    private SubscriberVideoStats onSubscriberVideoStats(SubscriberKit.SubscriberVideoStats videoStats) {
+    private void onSubscriberVideoStats(SubscriberKit.SubscriberVideoStats videoStats) {
         double videoTimestamp = videoStats.timeStamp ;
-
         // Initialize values for video
         if (videoStatsQueue.isEmpty()) {
             videoStatsQueue.add(SubscriberVideoStats.builder()
@@ -390,12 +391,16 @@ public class MainActivity extends Activity implements
                     .timestamp(videoStats.timeStamp)
                     .videoPacketLostRatio(0)
                     .build());
-            return videoStatsQueue.peek();
+            return;
         }
 
-        // Video Stats
-        long videoPacketsLost = videoStats.videoPacketsLost - videoStatsQueue.peek().getVideoBytesReceived();
-        long videoPacketsReceived = videoStats.videoBytesReceived - videoStatsQueue.peek().getVideoBytesReceived();
+        if ((videoTimestamp - videoStatsQueue.peek().timestamp)< TIME_WINDOW*1000)
+        {
+            return;
+        }
+         // Video Stats
+        long videoPacketsLost = videoStats.videoPacketsLost -
+        long videoPacketsReceived = videoStats.videoPacketsReceived;
         long videoTotalPackets = videoPacketsLost + videoPacketsReceived;
 
         double videoPLRatio = 0.0;
@@ -412,13 +417,9 @@ public class MainActivity extends Activity implements
                 .videoPacketLostRatio(videoPLRatio)
                 .build());
 
-        // Remove older stats if they are outside the TIME_WINDOW
-        while (videoStatsQueue.size() > 1 && (videoTimestamp - videoStatsQueue.peek().getTimestamp()) >= TIME_WINDOW) {
-            videoStatsQueue.poll();
-        }
 
         // Return the latest SubscriberVideoStats object
-        return videoStatsQueue.peek();
+       // return videoStatsQueue.peek();
     }
 
     private SubscriberAudioStats onSubscriberAudioStats(SubscriberKit.SubscriberAudioStats audioStats) {
@@ -454,11 +455,6 @@ public class MainActivity extends Activity implements
                 .audioPacketLostRatio(audioPLRatio)
                 .timestamp(audioStats.timeStamp)
                 .build());
-
-        // Remove older stats if they are outside the TIME_WINDOW
-        while (audioStatsQueue.size() > 1 && (audioTimestamp - audioStatsQueue.peek().getTimestamp()) >= TIME_WINDOW) {
-            audioStatsQueue.poll();
-        }
 
         // Return the latest SubscriberAudioStats object
         return audioStatsQueue.peek();
