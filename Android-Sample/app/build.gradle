@@ -4,6 +4,7 @@ android {
     compileSdkVersion 33
 
     defaultConfig {
+        namespace "com.opentok.qualitystats.sample"
         applicationId "com.opentok.qualitystats.sample"
         minSdkVersion 24
         targetSdkVersion 33
@@ -29,7 +30,7 @@ android {
 
 dependencies {
     implementation 'com.opentok.android:opentok-android-sdk:2.25.2'
-    implementation 'androidx.appcompat:appcompat:1.0.0'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'pub.devrel:easypermissions:3.0.0'
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
     compileOnly 'org.projectlombok:lombok:1.18.28'

@@ -3,7 +3,6 @@ package com.opentok.qualitystats.sample;
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.DashPathEffect;
@@ -65,12 +64,16 @@ public class MainActivity extends Activity implements
 
 
     static final String LOGTAG = "quality-stats-demo";
-    private static final String SESSION_ID = "1_MX40NzUyMTkyMX5-MTY5MDI4MjQwNzI4Mn5IcHI1VUg4QXV2dTVyZmZkUkhyTTFyazJ-fn4";
-    private static final String TOKEN = "T1==cGFydG5lcl9pZD00NzUyMTkyMSZzaWc9OTA3N2ExODk3NzBmOTZiYTIyNDI2MzU3ZDY4YWNlYTE0ZTUxNWViNzpzZXNzaW9uX2lkPTFfTVg0ME56VXlNVGt5TVg1LU1UWTVNREk0TWpRd056STRNbjVJY0hJMVZVZzRRWFYyZFRWeVptWmtVa2h5VFRGeWF6Si1mbjQmY3JlYXRlX3RpbWU9MTY5MDI4MjQyNyZub25jZT0wLjIxOTYwMjY4MTI4NzI4NCZyb2xlPXB1Ymxpc2hlciZleHBpcmVfdGltZT0xNjkyODc0NDI2JmluaXRpYWxfbGF5b3V0X2NsYXNzX2xpc3Q9";
+    /*
+    private static final String SESSION_ID = "1_MX40NjQ4MTk3Mn5-MTY5MjE1NTcxMjI5Mn5IdkprcjhOdHVhVlY0c241MHJybHZFUEN-fn4";
+    private static final String TOKEN = "T1==cGFydG5lcl9pZD00NjQ4MTk3MiZzaWc9ZGRkZTJlNmQ4MzA0OWQ5YjkzM2QwNjY5M2QzYWJlMTc4NjNiZmUwNzpzZXNzaW9uX2lkPTFfTVg0ME5qUTRNVGszTW41LU1UWTVNakUxTlRjeE1qSTVNbjVJZGtwcmNqaE9kSFZoVmxZMGMyNDFNSEp5YkhaRlVFTi1mbjQmY3JlYXRlX3RpbWU9MTY5MjE1NTcxMiZub25jZT0wLjQ5ODE3NjEzNjkzMjUxOTcmcm9sZT1tb2RlcmF0b3ImZXhwaXJlX3RpbWU9MTY5NDc0NzcxMiZpbml0aWFsX2xheW91dF9jbGFzc19saXN0PQ==";
+    private static final String APIKEY = "46481972";*/
+    private static final String SESSION_ID = "1_MX40NzUyMTkyMX5-MTY5MjE1NzIxNTk1N35HOEk0elNJMGFDYnZKbHhCamhFdVJoWEJ-fn4";
+    private static final String TOKEN = "T1==cGFydG5lcl9pZD00NzUyMTkyMSZzaWc9OTE2NTQ2MTIzMTNkN2MxMmIxM2I2NDBiMGYxNGYzZDUzN2M5OWI5ZTpzZXNzaW9uX2lkPTFfTVg0ME56VXlNVGt5TVg1LU1UWTVNakUxTnpJeE5UazFOMzVIT0VrMGVsTkpNR0ZEWW5aS2JIaENhbWhGZFZKb1dFSi1mbjQmY3JlYXRlX3RpbWU9MTY5MjE1NzIxNiZub25jZT0wLjAzNDAyODYxMDI2MTU0MjU4JnJvbGU9bW9kZXJhdG9yJmV4cGlyZV90aW1lPTE2OTQ3NDkyMTYmaW5pdGlhbF9sYXlvdXRfY2xhc3NfbGlzdD0=";
     private static final String APIKEY = "47521921";
     private static final int TEST_DURATION = 30; //test quality duration in seconds
     private static final int TIME_WINDOW = 1; //3 seconds
-    private static final int TIME_VIDEO_TEST = 15; //time interval to check the video quality in seconds
+    private static final int TIME_VIDEO_TEST = 20; //time interval to check the video quality in seconds
     private final HashMap<Long, JSONObject> ssrcStatsMap = new HashMap<>();
     private TextView statsTextView;
     private TextView statsTextViewSub;
@@ -81,7 +84,7 @@ public class MainActivity extends Activity implements
 
     private LineChart chart;
     private final List<Double> testResults = new ArrayList<>();
-    private final Double lastAvailableOutgoingBitrate = null;
+    private Double estimatedAvailableOutgoingBitrate = 0.0;
 
     private Session mSession;
     private Publisher mPublisher;
@@ -188,7 +191,10 @@ public class MainActivity extends Activity implements
     public void onConnected(Session session) {
         Log.i(LOGTAG, "Session is connected");
 
-        mPublisher = new Publisher.Builder(this).resolution(Publisher.CameraCaptureResolution.HIGH_1080P).build();
+        mPublisher = new Publisher.Builder(this)
+                .resolution(Publisher.CameraCaptureResolution.HIGH_1080P)
+                //.resolution(Publisher.CameraCaptureResolution.HIGH)
+                .build();
         mPublisher.setPublisherListener(this);
         mPublisher.setAudioFallbackEnabled(false);
         mSession.publish(mPublisher);
@@ -209,25 +215,37 @@ public class MainActivity extends Activity implements
     }
 
     private QualityTestResult getRecommendedSetting() {
-        Log.d(LOGTAG, "Recommended Bitrate: " + lastAvailableOutgoingBitrate);
+        final int NUMBER_OF_OUTGOING_AVAILABLE_BITRATE_SAMPLES = 5;
+        LinkedList<Long> outgoingBitrateValues = new LinkedList<>();
         for (PublisherStats publisherStats : publisherStatsList) {
+            if (outgoingBitrateValues.size() == NUMBER_OF_OUTGOING_AVAILABLE_BITRATE_SAMPLES) {
+                outgoingBitrateValues.removeFirst();
+            }
+            long availableOutgoingBitrate = publisherStats.getAvailableOutgoingBitrate();
+            outgoingBitrateValues.addLast(availableOutgoingBitrate);
             String videoQualityLimitationReason = publisherStats.getQualityLimitationReason();
             long totalVideoKbsSent = publisherStats.getTotalVideoKbsSent();
             double totalVideoBytesSent = publisherStats.getTotalVideoBytesSent();
             boolean isSimulcast = publisherStats.isScalableVideo();
             // Log the values
-            Log.i(LOGTAG, "Video Quality Limitation Reason: " + videoQualityLimitationReason);
-            Log.i(LOGTAG, "Total Video Kbps Sent: " + totalVideoKbsSent);
-            Log.i(LOGTAG, "Total Video Bytes Sent: " + totalVideoBytesSent);
-            Log.i(LOGTAG, "Simulcast enable: " + isSimulcast);
-
+            //Log.i(LOGTAG, "Video Quality Limitation Reason: " + videoQualityLimitationReason);
+            //Log.i(LOGTAG, "Total Video Kbps Sent: " + totalVideoKbsSent);
+            //Log.i(LOGTAG, "Total Video Bytes Sent: " + totalVideoBytesSent);
+            //Log.i(LOGTAG, "Simulcast enable: " + isSimulcast);
         }
-        if (lastAvailableOutgoingBitrate != null) {
-            for (QualityThreshold threshold : qualityThresholds) {
-                if (lastAvailableOutgoingBitrate >= threshold.getTargetBitrate()) {
-                    Log.d(LOGTAG, "Recommended Bitrate: " + threshold.getRecommendedSetting());
-                    return new QualityTestResult(threshold.getRecommendedSetting());
-                }
+        // simple average of the last NUMBER_OF_OUTGOING_AVAILABLE_BITRATE_SAMPLES measurements
+        // TODO: change to exponential average so the latest measurements have more weight?
+        estimatedAvailableOutgoingBitrate = 0.0;
+        int i = 0;
+        for (long o : outgoingBitrateValues) {
+            estimatedAvailableOutgoingBitrate = (estimatedAvailableOutgoingBitrate+ (o - estimatedAvailableOutgoingBitrate)/(i+1));
+            i++;
+        }
+        Log.d(LOGTAG, "Estimated available outgoing bitrate: " + estimatedAvailableOutgoingBitrate);
+        for (QualityThreshold threshold : qualityThresholds) {
+            if (estimatedAvailableOutgoingBitrate >= threshold.getTargetBitrate()) {
+                Log.d(LOGTAG, "Recommended Bitrate: " + threshold.getRecommendedSetting());
+                return new QualityTestResult(threshold.getRecommendedSetting());
             }
         }
         Log.d(LOGTAG, "Bitrate is too low for video");
@@ -546,7 +564,18 @@ public class MainActivity extends Activity implements
                         .build();
 
                 publisherStatsList.add(publisherStats);
-
+                {
+                    // log
+                    String videoQualityLimitationReason = publisherStats.getQualityLimitationReason();
+                    long totalVideoKbsSent = publisherStats.getTotalVideoKbsSent();
+                    double totalVideoBytesSent = publisherStats.getTotalVideoBytesSent();
+                    boolean isSimulcast = publisherStats.isScalableVideo();
+                    //Log.i(LOGTAG, "Video Quality Limitation Reason: " + videoQualityLimitationReason);
+                    Log.i(LOGTAG, "Total Video Kbps Sent: " + totalVideoKbsSent);
+                    //Log.i(LOGTAG, "Total Video Bytes Sent: " + totalVideoBytesSent);
+                    Log.i(LOGTAG, "availableOutgoingBitrate Kpbs: " + Math.round(availableOutgoingBitrate/1000));
+                    //Log.i(LOGTAG, "Simulcast enable: " + isSimulcast);
+                }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
