@@ -1,21 +1,27 @@
 package com.opentok.qualitystats.sample.models.stats;
 
 public class QualityStats {
-    long sentVideoBitrateKbps;
-    long sentAudioBitrateKbps;
-    long receivedAudioBitrateKbps;
-    long receivedVideoBitrateKbps;
-    double currentRoundTripTimeMs;
-    long availableOutgoingBitrate;
-    double audioPacketLostRatio;
-    double videoPacketLostRatio;
-    long timestamp;
-    double jitter;
-    String qualityLimitationReason;
-    PublisherStats publisherStats; // Changed access modifier to private
+    private final long sentVideoBitrateKbps;
+    private final long sentAudioBitrateKbps;
+    private final long receivedAudioBitrateKbps;
+    private final long receivedVideoBitrateKbps;
+    private final String receivedVideoResolution;
+    private final String sentVideoResolution;
+    private final long receivedVideoFramerate;
+    private final long sentVideoFramerate;
+    private final double currentRoundTripTimeMs;
+    private final long availableOutgoingBitrate;
+    private final double audioPacketLostRatio;
+    private final double videoPacketLostRatio;
+    private final long timestamp;
+    private final double jitter;
+    private final String qualityLimitationReason;
+    private final PublisherStats publisherStats;
 
     public QualityStats(long sentVideoBitrateKbps, long sentAudioBitrateKbps,
                         long receivedAudioBitrateKbps, long receivedVideoBitrateKbps,
+                        String receivedVideoResolution, String sentVideoResolution,
+                        long receivedVideoFramerate, long sentVideoFramerate,
                         double currentRoundTripTimeMs, long availableOutgoingBitrate,
                         double audioPacketLostRatio, double videoPacketLostRatio,
                         long timestamp, double jitter, String qualityLimitationReason,
@@ -24,6 +30,10 @@ public class QualityStats {
         this.sentAudioBitrateKbps = sentAudioBitrateKbps;
         this.receivedAudioBitrateKbps = receivedAudioBitrateKbps;
         this.receivedVideoBitrateKbps = receivedVideoBitrateKbps;
+        this.receivedVideoResolution = receivedVideoResolution;
+        this.sentVideoResolution = sentVideoResolution;
+        this.receivedVideoFramerate = receivedVideoFramerate;
+        this.sentVideoFramerate = sentVideoFramerate;
         this.currentRoundTripTimeMs = currentRoundTripTimeMs;
         this.availableOutgoingBitrate = availableOutgoingBitrate;
         this.audioPacketLostRatio = audioPacketLostRatio;
@@ -34,16 +44,37 @@ public class QualityStats {
         this.publisherStats = publisherStats;
     }
 
+    public String getReceivedVideoResolution() {
+        return receivedVideoResolution;
+    }
+
+    public String getSentVideoResolution() {
+        return sentVideoResolution;
+    }
+
+    public long getReceivedVideoFramerate() {
+        return receivedVideoFramerate;
+    }
+
+    public long getSentVideoFramerate() {
+        return sentVideoFramerate;
+    }
+
+
     public static class Builder {
         private long sentVideoBitrateKbps;
         private long sentAudioBitrateKbps;
         private long receivedAudioBitrateKbps;
         private long receivedVideoBitrateKbps;
+        private String receivedVideoResolution;
+        private String sentVideoResolution;
+        private long receivedVideoFramerate;
+        private long sentVideoFramerate;
+        private double currentRoundTripTimeMs;
         private long availableOutgoingBitrate;
         private double audioPacketLostRatio;
         private double videoPacketLostRatio;
         private long timestamp;
-        private double currentRoundTripTimeMs;
         private double jitter;
         private String qualityLimitationReason;
         private PublisherStats publisherStats;
@@ -108,15 +139,40 @@ public class QualityStats {
             return this;
         }
 
+        public Builder receivedVideoResolution(String receivedVideoResolution) {
+            this.receivedVideoResolution = receivedVideoResolution;
+            return this;
+        }
+
+        public Builder sentVideoResolution(String sentVideoResolution) {
+            this.sentVideoResolution = sentVideoResolution;
+            return this;
+        }
+
+        public Builder receivedVideoFramerate(long receivedVideoFramerate) {
+            this.receivedVideoFramerate = receivedVideoFramerate;
+            return this;
+        }
+
+        public Builder sentVideoFramerate(long sentVideoFramerate) {
+            this.sentVideoFramerate = sentVideoFramerate;
+            return this;
+        }
+
+        // ... Other existing methods ...
+
         public QualityStats build() {
             return new QualityStats(sentVideoBitrateKbps, sentAudioBitrateKbps,
                     receivedAudioBitrateKbps, receivedVideoBitrateKbps,
+                    receivedVideoResolution, sentVideoResolution,
+                    receivedVideoFramerate, sentVideoFramerate,
                     currentRoundTripTimeMs, availableOutgoingBitrate,
                     audioPacketLostRatio, videoPacketLostRatio,
                     timestamp, jitter, qualityLimitationReason,
                     publisherStats);
         }
     }
+
 
     public long getSentVideoBitrateKbps() {
         return sentVideoBitrateKbps;

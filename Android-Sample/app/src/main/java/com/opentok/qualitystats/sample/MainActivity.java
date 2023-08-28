@@ -48,7 +48,7 @@ public class MainActivity extends Activity {
         VideoQualityTest videoQualityTest = new VideoQualityTest(this, config, new VideoQualityTest.VideoQualityTestListener() {
             @Override
             public void onTestResult(String recommendedSetting) {
-                // Handle test result
+                Log.d(LOGTAG, "Recommended resolution: " + recommendedSetting);
             }
 
             @Override
@@ -59,11 +59,16 @@ public class MainActivity extends Activity {
                 Log.d(LOGTAG, "Received Video Bitrate: " + stats.getReceivedVideoBitrateKbps() + " Kbps");
                 Log.d(LOGTAG, "Current Round Trip Time: " + stats.getCurrentRoundTripTimeMs() + " ms");
                 Log.d(LOGTAG, "Available Outgoing Bitrate: " + stats.getAvailableOutgoingBitrate() + " bps");
+                Log.d(LOGTAG, "Audio Packet Lost Ratio %: " + stats.getAudioPacketLostRatio() + "");
+                Log.d(LOGTAG, "Video Packet Lost Ratio: %" + stats.getVideoPacketLostRatio());
+                Log.d(LOGTAG, "Jitter: " + stats.getJitter());
+                Log.d(LOGTAG, "Quality Limitation Reason: " + stats.getQualityLimitationReason());
+                Log.d(LOGTAG, "Sent video resolution: " + stats.getSentVideoResolution());
             }
 
             @Override
             public void onError(String error) {
-                // Handle error
+                Log.d(LOGTAG, "Error " + error);
             }
         });
 

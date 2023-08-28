@@ -31,6 +31,24 @@ public class PublisherStats {
         this.timestamp = timestamp;
     }
 
+    public String getResolutionBySrc() {
+        StringBuilder resolutionBuilder = new StringBuilder();
+
+        if (videoStats != null) {
+            for (MediaStatsEntry videoStat : videoStats) {
+                resolutionBuilder.append(videoStat.getSsrc())
+                        .append(" -> ")
+                        .append(videoStat.getResolution())
+                        .append(" (")
+                        .append(videoStat.getFramerate())
+                        .append("fps)")
+                        .append("  ");
+            }
+        }
+
+        return resolutionBuilder.toString();
+    }
+
     public double getTotalVideoBytesSent() {
         return videoStats.stream()
                 .mapToLong(MediaStatsEntry::getBytesSent)

@@ -6,6 +6,10 @@ import android.content.Context;
 import android.os.Handler;
 import android.util.Log;
 
+import com.google.gson.Gson;
+import com.google.gson.annotations.SerializedName;
+
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -271,6 +275,7 @@ public class VideoQualityTest extends AppCompatActivity
             public void run() {
                 if (mPublisher != null) {
                     mPublisher.getRtcStatsReport();
+                    mSubscriber.getRtcStatsReport();
                     rtcStatsHandler.postDelayed(this, 500);
                 }
             }
@@ -311,6 +316,7 @@ public class VideoQualityTest extends AppCompatActivity
             }
             onSubscriberVideoStats(stats);
             mPublisher.setRtcStatsReportListener(publisherRtcStatsReportListener);
+            mSubscriber.setRtcStatsReportListener(subscriberRtcStatsReportListener);
             //check quality of the video call after TIME_VIDEO_TEST seconds
             if (((System.currentTimeMillis() / 1000 - mStartTestTime) > config.getTestDurationSec())) {
                 getRecommendedSetting();
@@ -448,7 +454,7 @@ public class VideoQualityTest extends AppCompatActivity
                         String resolution = rtcStatObject.optInt("frameWidth", 0) + "x" + rtcStatObject.optInt("frameHeight", 0);
                         int framerate = rtcStatObject.optInt("framesPerSecond", 0);
                         int pliCount = rtcStatObject.optInt("pliCount", 0);
-                        int nackCount = rtcStatObject.optInt("nackCount", 0);
+                        int nackCount = rtcStatObject.optInt("nackCont", 0);
                         long bytesSent = rtcStatObject.optInt("bytesSent", 0);
                         long bitrateKbps = calculateVideoBitrateKbps(ssrc,
                                 rtcStatObject.optLong("timestamp", 0),
@@ -501,6 +507,11 @@ public class VideoQualityTest extends AppCompatActivity
         }
     };
 
+    private final SubscriberKit.SubscriberRtcStatsReportListener subscriberRtcStatsReportListener = (subscriberKit, subscriberRtcStats) -> {
+        Log.d(LOGTAG, subscriberRtcStats);
+    };
+
+
     private QualityStats calculateQualityStats() {
         SubscriberVideoStats latestSubscriberVideoStats = null;
         SubscriberAudioStats latestSubscriberAudioStats = null;
@@ -531,6 +542,7 @@ public class VideoQualityTest extends AppCompatActivity
                     .timestamp(latestPublisherStats.getTimestamp())
                     .jitter(latestPublisherStats.getJitter())
                     .qualityLimitationReason(latestPublisherStats.getQualityLimitationReason())
+                    .sentVideoResolution(latestPublisherStats.getResolutionBySrc())
                     .build();
         }
 
