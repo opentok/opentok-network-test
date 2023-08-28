@@ -53,17 +53,20 @@ public class MainActivity extends Activity {
 
             @Override
             public void onTestUpdate(QualityStats stats) {
+                Log.d(LOGTAG, "---------------------------------------------------------------");
                 Log.d(LOGTAG, "Sent Video Bitrate: " + stats.getSentVideoBitrateKbps() + " Kbps");
                 Log.d(LOGTAG, "Sent Audio Bitrate: " + stats.getSentAudioBitrateKbps() + " Kbps");
                 Log.d(LOGTAG, "Received Audio Bitrate: " + stats.getReceivedAudioBitrateKbps() + " Kbps");
                 Log.d(LOGTAG, "Received Video Bitrate: " + stats.getReceivedVideoBitrateKbps() + " Kbps");
                 Log.d(LOGTAG, "Current Round Trip Time: " + stats.getCurrentRoundTripTimeMs() + " ms");
                 Log.d(LOGTAG, "Available Outgoing Bitrate: " + stats.getAvailableOutgoingBitrate() + " bps");
-                Log.d(LOGTAG, "Audio Packet Lost Ratio %: " + stats.getAudioPacketLostRatio() + "");
-                Log.d(LOGTAG, "Video Packet Lost Ratio: %" + stats.getVideoPacketLostRatio());
+                Log.d(LOGTAG, "Audio Packet Lost Ratio  " + stats.getAudioPacketLostRatio() * 100 + "%");
+                Log.d(LOGTAG, "Video Packet Lost Ratio  " + stats.getVideoPacketLostRatio() * 100 + "%");
                 Log.d(LOGTAG, "Jitter: " + stats.getJitter());
                 Log.d(LOGTAG, "Quality Limitation Reason: " + stats.getQualityLimitationReason());
                 Log.d(LOGTAG, "Sent video resolution: " + stats.getSentVideoResolution());
+                Log.d(LOGTAG, "Received video resolution: " + stats.getReceivedVideoResolution());
+                Log.d(LOGTAG, "---------------------------------------------------------------");
             }
 
             @Override

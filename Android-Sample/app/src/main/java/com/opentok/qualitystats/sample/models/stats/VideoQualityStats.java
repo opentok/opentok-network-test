@@ -7,13 +7,11 @@ import androidx.annotation.RequiresApi;
 import java.util.List;
 import java.util.Objects;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Value;
 
 @Builder
 @RequiresApi(api = Build.VERSION_CODES.N)
-public class PublisherStats {
+public class VideoQualityStats {
     List<MediaStatsEntry> videoStats;
     MediaStatsEntry audioStats;
     double jitter;
@@ -21,8 +19,8 @@ public class PublisherStats {
     long availableOutgoingBitrate;
     long timestamp;
 
-    public PublisherStats(List<MediaStatsEntry> videoStats, MediaStatsEntry audioStats, double jitter,
-                          double currentRoundTripTimeMs, long availableOutgoingBitrate, long timestamp) {
+    public VideoQualityStats(List<MediaStatsEntry> videoStats, MediaStatsEntry audioStats, double jitter,
+                             double currentRoundTripTimeMs, long availableOutgoingBitrate, long timestamp) {
         this.videoStats = videoStats;
         this.audioStats = audioStats;
         this.jitter = jitter;
@@ -36,7 +34,8 @@ public class PublisherStats {
 
         if (videoStats != null) {
             for (MediaStatsEntry videoStat : videoStats) {
-                resolutionBuilder.append(videoStat.getSsrc())
+                resolutionBuilder.append("ssrc: ")
+                        .append(videoStat.getSsrc())
                         .append(" -> ")
                         .append(videoStat.getResolution())
                         .append(" (")

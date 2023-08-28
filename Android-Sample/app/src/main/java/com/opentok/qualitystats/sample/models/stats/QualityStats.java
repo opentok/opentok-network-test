@@ -16,7 +16,7 @@ public class QualityStats {
     private final long timestamp;
     private final double jitter;
     private final String qualityLimitationReason;
-    private final PublisherStats publisherStats;
+    private final VideoQualityStats videoQualityStats;
 
     public QualityStats(long sentVideoBitrateKbps, long sentAudioBitrateKbps,
                         long receivedAudioBitrateKbps, long receivedVideoBitrateKbps,
@@ -25,7 +25,7 @@ public class QualityStats {
                         double currentRoundTripTimeMs, long availableOutgoingBitrate,
                         double audioPacketLostRatio, double videoPacketLostRatio,
                         long timestamp, double jitter, String qualityLimitationReason,
-                        PublisherStats publisherStats) {
+                        VideoQualityStats videoQualityStats) {
         this.sentVideoBitrateKbps = sentVideoBitrateKbps;
         this.sentAudioBitrateKbps = sentAudioBitrateKbps;
         this.receivedAudioBitrateKbps = receivedAudioBitrateKbps;
@@ -41,7 +41,7 @@ public class QualityStats {
         this.timestamp = timestamp;
         this.jitter = jitter;
         this.qualityLimitationReason = qualityLimitationReason;
-        this.publisherStats = publisherStats;
+        this.videoQualityStats = videoQualityStats;
     }
 
     public String getReceivedVideoResolution() {
@@ -77,7 +77,7 @@ public class QualityStats {
         private long timestamp;
         private double jitter;
         private String qualityLimitationReason;
-        private PublisherStats publisherStats;
+        private VideoQualityStats videoQualityStats;
 
         public Builder sentVideoBitrateKbps(long sentVideoBitrateKbps) {
             this.sentVideoBitrateKbps = sentVideoBitrateKbps;
@@ -134,8 +134,8 @@ public class QualityStats {
             return this;
         }
 
-        public Builder publisherStats(PublisherStats publisherStats) {
-            this.publisherStats = publisherStats;
+        public Builder publisherStats(VideoQualityStats videoQualityStats) {
+            this.videoQualityStats = videoQualityStats;
             return this;
         }
 
@@ -169,7 +169,7 @@ public class QualityStats {
                     currentRoundTripTimeMs, availableOutgoingBitrate,
                     audioPacketLostRatio, videoPacketLostRatio,
                     timestamp, jitter, qualityLimitationReason,
-                    publisherStats);
+                    videoQualityStats);
         }
     }
 
@@ -218,8 +218,8 @@ public class QualityStats {
         return qualityLimitationReason;
     }
 
-    public PublisherStats getPublisherStats() {
-        return publisherStats;
+    public VideoQualityStats getPublisherStats() {
+        return videoQualityStats;
     }
 }
 

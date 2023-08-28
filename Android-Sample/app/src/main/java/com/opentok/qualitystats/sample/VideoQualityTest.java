@@ -6,9 +6,6 @@ import android.content.Context;
 import android.os.Handler;
 import android.util.Log;
 
-import com.google.gson.Gson;
-import com.google.gson.annotations.SerializedName;
-
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -25,7 +22,7 @@ import com.opentok.qualitystats.sample.models.QualityTestResult;
 import com.opentok.qualitystats.sample.models.QualityThreshold;
 import com.opentok.qualitystats.sample.models.VideoQualityTestConfig;
 import com.opentok.qualitystats.sample.models.stats.MediaStatsEntry;
-import com.opentok.qualitystats.sample.models.stats.PublisherStats;
+import com.opentok.qualitystats.sample.models.stats.VideoQualityStats;
 import com.opentok.qualitystats.sample.models.stats.QualityStats;
 import com.opentok.qualitystats.sample.models.stats.SubscriberAudioStats;
 import com.opentok.qualitystats.sample.models.stats.SubscriberVideoStats;
@@ -61,7 +58,8 @@ public class VideoQualityTest extends AppCompatActivity
     private final VideoQualityTestListener listener;
     private final Handler rtcStatsHandler = new Handler();
     private final Map<Long, Long> ssrcToPrevBytesSent = new HashMap<>();
-    private final List<PublisherStats> publisherStatsList = new ArrayList<>();
+    private final List<VideoQualityStats> publisherVideoQualityStatsList = new ArrayList<>();
+    private final List<VideoQualityStats> subscriberVideoQualityStatsList = new ArrayList<>();
     private final List<SubscriberVideoStats> subscriberVideoStatsList = new ArrayList<>();
     private final List<SubscriberAudioStats> subscriberAudioStatsList = new ArrayList<>();
     private Session mSession;
@@ -202,18 +200,13 @@ public class VideoQualityTest extends AppCompatActivity
     private QualityTestResult getRecommendedSetting() {
         final int NUMBER_OF_OUTGOING_AVAILABLE_BITRATE_SAMPLES = 5;
         LinkedList<Long> outgoingBitrateValues = new LinkedList<>();
-        for (PublisherStats publisherStats : publisherStatsList) {
+        for (VideoQualityStats videoQualityStats : publisherVideoQualityStatsList) {
             if (outgoingBitrateValues.size() == NUMBER_OF_OUTGOING_AVAILABLE_BITRATE_SAMPLES) {
                 outgoingBitrateValues.removeFirst();
             }
-            long availableOutgoingBitrate = publisherStats.getAvailableOutgoingBitrate();
+            long availableOutgoingBitrate = videoQualityStats.getAvailableOutgoingBitrate();
             outgoingBitrateValues.addLast(availableOutgoingBitrate);
-            String videoQualityLimitationReason = publisherStats.getQualityLimitationReason();
-            long totalVideoKbsSent = publisherStats.getTotalVideoKbsSent();
-            double totalVideoBytesSent = publisherStats.getTotalVideoBytesSent();
-            boolean isSimulcast = publisherStats.isScalableVideo();
         }
-        // simple average of the last NUMBER_OF_OUTGOING_AVAILABLE_BITRATE_SAMPLES measurements
         // TODO: change to exponential average so the latest measurements have more weight?
         estimatedAvailableOutgoingBitrate = 0.0;
         int i = 0;
@@ -319,7 +312,7 @@ public class VideoQualityTest extends AppCompatActivity
             mSubscriber.setRtcStatsReportListener(subscriberRtcStatsReportListener);
             //check quality of the video call after TIME_VIDEO_TEST seconds
             if (((System.currentTimeMillis() / 1000 - mStartTestTime) > config.getTestDurationSec())) {
-                getRecommendedSetting();
+                //getRecommendedSetting();
             }
         });
         mSubscriber.setAudioStatsListener((subscriber, stats) -> onSubscriberAudioStats(stats));
@@ -486,12 +479,16 @@ public class VideoQualityTest extends AppCompatActivity
                             currentRoundTripTimeMs = rtcStatObject.optDouble("currentRoundTripTime", 0) * 1000;
                             timestamp = rtcStatObject.optLong("timestamp", 0);
                         }
+                    } else if (statType.equals("remote-inbound-rtp")) {
+                        if ("video".equals(kind)) {
+                            jitter = rtcStatObject.optDouble("jitter", -1);
+                        }
                     }
                 }
 
                 prevVideoTimestamp = timestamp;
 
-                PublisherStats publisherStats = PublisherStats.builder()
+                VideoQualityStats videoQualityStats = VideoQualityStats.builder()
                         .videoStats(videoStatsList)
                         .audioStats(audioStats)
                         .jitter(jitter)
@@ -500,7 +497,7 @@ public class VideoQualityTest extends AppCompatActivity
                         .timestamp(timestamp)
                         .build();
 
-                publisherStatsList.add(publisherStats);
+                publisherVideoQualityStatsList.add(videoQualityStats);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -508,13 +505,90 @@ public class VideoQualityTest extends AppCompatActivity
     };
 
     private final SubscriberKit.SubscriberRtcStatsReportListener subscriberRtcStatsReportListener = (subscriberKit, subscriberRtcStats) -> {
-        Log.d(LOGTAG, subscriberRtcStats);
+        try {
+            JSONArray rtcStatsJsonArray = new JSONArray(subscriberRtcStats);
+            List<MediaStatsEntry> videoStatsList = new ArrayList<>();
+            MediaStatsEntry audioStats = null;
+
+            VideoQualityStats videoQualityStats = processRtcStats(rtcStatsJsonArray, videoStatsList, audioStats);
+            subscriberVideoQualityStatsList.add(videoQualityStats);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     };
 
+    private VideoQualityStats processRtcStats(JSONArray rtcStatsJsonArray, List<MediaStatsEntry> videoStatsList, MediaStatsEntry audioStats) throws JSONException {
+        double jitter = 0.0;
+        long availableOutgoingBitrate = 0;
+        long timestamp = 0;
+        double currentRoundTripTimeMs = 0;
+
+        for (int i = 0; i < rtcStatsJsonArray.length(); i++) {
+            JSONObject rtcStatObject = rtcStatsJsonArray.getJSONObject(i);
+            String statType = rtcStatObject.getString("type");
+
+            if (statType.equals("inbound-rtp")) {
+                MediaStatsEntry mediaStatsEntry = processInboundRtp(rtcStatObject);
+                String kind = rtcStatObject.optString("kind", "none");
+
+                if ("video".equals(kind)) {
+                    videoStatsList.add(mediaStatsEntry);
+                } else if ("audio".equals(kind)) {
+                    audioStats = mediaStatsEntry;
+                }
+
+                jitter = rtcStatObject.optDouble("jitter", -1);
+            } else if (statType.equals("candidate-pair")) {
+                boolean isNominated = rtcStatObject.optBoolean("nominated", false);
+
+                if (isNominated) {
+                    availableOutgoingBitrate = rtcStatObject.optLong("availableOutgoingBitrate", 0);
+                    currentRoundTripTimeMs = rtcStatObject.optDouble("currentRoundTripTime", 0) * 1000;
+                    timestamp = rtcStatObject.optLong("timestamp", 0);
+                }
+            }
+        }
+
+        prevVideoTimestamp = timestamp;
+
+        return VideoQualityStats.builder()
+                .videoStats(videoStatsList)
+                .audioStats(audioStats)
+                .jitter(jitter)
+                .currentRoundTripTimeMs(currentRoundTripTimeMs)
+                .availableOutgoingBitrate(availableOutgoingBitrate)
+                .timestamp(timestamp)
+                .build();
+    }
+
+    private MediaStatsEntry processInboundRtp(JSONObject rtcStatObject) throws JSONException {
+        long ssrc = rtcStatObject.getLong("ssrc");
+        String qualityLimitationReason = rtcStatObject.optString("qualityLimitationReason", "none");
+        String resolution = rtcStatObject.optInt("frameWidth", 0) + "x" + rtcStatObject.optInt("frameHeight", 0);
+        int framerate = rtcStatObject.optInt("framesPerSecond", 0);
+        int pliCount = rtcStatObject.optInt("pliCount", 0);
+        int nackCount = rtcStatObject.optInt("nackCount", 0);
+        long bytesSent = rtcStatObject.optInt("bytesSent", 0);
+        long bitrateKbps = calculateVideoBitrateKbps(ssrc, rtcStatObject.optLong("timestamp", 0), bytesSent);
+
+        return MediaStatsEntry.builder()
+                .ssrc(ssrc)
+                .qualityLimitationReason(qualityLimitationReason)
+                .resolution(resolution)
+                .framerate(framerate)
+                .pliCount(pliCount)
+                .nackCount(nackCount)
+                .bytesSent(bytesSent)
+                .bitrateKbps(bitrateKbps)
+                .build();
+    }
 
     private QualityStats calculateQualityStats() {
         SubscriberVideoStats latestSubscriberVideoStats = null;
         SubscriberAudioStats latestSubscriberAudioStats = null;
+        VideoQualityStats latestPublisherVideoQualityStats = null;
+        VideoQualityStats latestSubscriberVideoQualityStats = null;
 
         if (!subscriberVideoStatsList.isEmpty()) {
             latestSubscriberVideoStats = subscriberVideoStatsList.get(subscriberVideoStatsList.size() - 1);
@@ -524,25 +598,29 @@ public class VideoQualityTest extends AppCompatActivity
             latestSubscriberAudioStats = subscriberAudioStatsList.get(subscriberAudioStatsList.size() - 1);
         }
 
-        PublisherStats latestPublisherStats = null;
-        if (!publisherStatsList.isEmpty()) {
-            latestPublisherStats = publisherStatsList.get(publisherStatsList.size() - 1);
+        if (!publisherVideoQualityStatsList.isEmpty()) {
+            latestPublisherVideoQualityStats = publisherVideoQualityStatsList.get(publisherVideoQualityStatsList.size() - 1);
         }
 
-        if (latestSubscriberVideoStats != null && latestSubscriberAudioStats != null && latestPublisherStats != null) {
+        if (!subscriberVideoQualityStatsList.isEmpty()) {
+            latestSubscriberVideoQualityStats = subscriberVideoQualityStatsList.get(subscriberVideoQualityStatsList.size() - 1);
+        }
+
+        if (latestSubscriberVideoStats != null && latestSubscriberAudioStats != null && latestPublisherVideoQualityStats != null) {
             return new QualityStats.Builder()
-                    .sentVideoBitrateKbps(latestPublisherStats.getTotalVideoKbsSent())
-                    .sentAudioBitrateKbps(latestPublisherStats.getAudioStats().getBitrateKbps())
+                    .sentVideoBitrateKbps(latestPublisherVideoQualityStats.getTotalVideoKbsSent())
+                    .sentAudioBitrateKbps(latestPublisherVideoQualityStats.getAudioStats().getBitrateKbps())
                     .receivedAudioBitrateKbps(latestSubscriberAudioStats.getAudioBitrateKbps())
                     .receivedVideoBitrateKbps(latestSubscriberVideoStats.getVideoBytesKbsReceived())
-                    .currentRoundTripTimeMs(latestPublisherStats.getCurrentRoundTripTimeMs())
-                    .availableOutgoingBitrate(latestPublisherStats.getAvailableOutgoingBitrate())
+                    .currentRoundTripTimeMs(latestPublisherVideoQualityStats.getCurrentRoundTripTimeMs())
+                    .availableOutgoingBitrate(latestPublisherVideoQualityStats.getAvailableOutgoingBitrate())
                     .audioPacketLostRatio(latestSubscriberAudioStats.getAudioPacketLostRatio())
                     .videoPacketLostRatio(latestSubscriberVideoStats.getVideoPacketLostRatio())
-                    .timestamp(latestPublisherStats.getTimestamp())
-                    .jitter(latestPublisherStats.getJitter())
-                    .qualityLimitationReason(latestPublisherStats.getQualityLimitationReason())
-                    .sentVideoResolution(latestPublisherStats.getResolutionBySrc())
+                    .timestamp(latestPublisherVideoQualityStats.getTimestamp())
+                    .jitter(latestSubscriberVideoQualityStats.getJitter())
+                    .qualityLimitationReason(latestPublisherVideoQualityStats.getQualityLimitationReason())
+                    .sentVideoResolution(latestPublisherVideoQualityStats.getResolutionBySrc())
+                    .receivedVideoResolution(latestSubscriberVideoQualityStats.getResolutionBySrc())
                     .build();
         }
 
