@@ -1,4 +1,4 @@
-package com.opentok.qualitystats.sample.models;
+package com.opentok.qualitystats.sample.models.stats;
 
 import android.os.Build;
 
@@ -11,17 +11,25 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Value;
 
-@Value
-@AllArgsConstructor
 @Builder
 @RequiresApi(api = Build.VERSION_CODES.N)
 public class PublisherStats {
     List<MediaStatsEntry> videoStats;
     MediaStatsEntry audioStats;
     double jitter;
-    long currentRoundTripTimeMs;
+    double currentRoundTripTimeMs;
     long availableOutgoingBitrate;
     long timestamp;
+
+    public PublisherStats(List<MediaStatsEntry> videoStats, MediaStatsEntry audioStats, double jitter,
+                          double currentRoundTripTimeMs, long availableOutgoingBitrate, long timestamp) {
+        this.videoStats = videoStats;
+        this.audioStats = audioStats;
+        this.jitter = jitter;
+        this.currentRoundTripTimeMs = currentRoundTripTimeMs;
+        this.availableOutgoingBitrate = availableOutgoingBitrate;
+        this.timestamp = timestamp;
+    }
 
     public double getTotalVideoBytesSent() {
         return videoStats.stream()
@@ -47,5 +55,29 @@ public class PublisherStats {
                 .filter(reason -> !reason.equals("none") && !reason.equals("undefined"))
                 .findFirst()
                 .orElse("");
+    }
+
+    public List<MediaStatsEntry> getVideoStats() {
+        return videoStats;
+    }
+
+    public MediaStatsEntry getAudioStats() {
+        return audioStats;
+    }
+
+    public double getJitter() {
+        return jitter;
+    }
+
+    public double getCurrentRoundTripTimeMs() {
+        return currentRoundTripTimeMs;
+    }
+
+    public long getAvailableOutgoingBitrate() {
+        return availableOutgoingBitrate;
+    }
+
+    public long getTimestamp() {
+        return timestamp;
     }
 }
