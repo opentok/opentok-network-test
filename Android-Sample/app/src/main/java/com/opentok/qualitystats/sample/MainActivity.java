@@ -51,7 +51,6 @@ public class MainActivity extends Activity {
                 .testDurationSec(30)
                 .build();
 
-        // Create a VideoQualityTest instance
         NetworkQualityTest networkQualityTest = new NetworkQualityTest(this, config,
                 new NetworkQualityTestCallbackListener() {
                     @Override
@@ -61,6 +60,8 @@ public class MainActivity extends Activity {
 
                     @Override
                     public void onQualityTestStatsUpdate(CallbackQualityStats stats) {
+                        if (stats == null)
+                            return;
                         Log.d(LOGTAG, "---------------------------------------------------------------");
                         Log.d(LOGTAG, "Sent Video Bitrate: " + stats.getSentVideoBitrateKbps() + " Kbps");
                         Log.d(LOGTAG, "Sent Audio Bitrate: " + stats.getSentAudioBitrateKbps() + " Kbps");
@@ -74,6 +75,7 @@ public class MainActivity extends Activity {
                         Log.d(LOGTAG, "Quality Limitation Reason: " + stats.getQualityLimitationReason());
                         Log.d(LOGTAG, "Sent video resolution: " + stats.getSentVideoResolution());
                         Log.d(LOGTAG, "Received video resolution: " + stats.getReceivedVideoResolution());
+                        Log.d(LOGTAG, "Scalable video ? " + stats.isScalableVideo());
                         Log.d(LOGTAG, "---------------------------------------------------------------");
                     }
 

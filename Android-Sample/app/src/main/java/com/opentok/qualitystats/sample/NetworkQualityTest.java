@@ -76,7 +76,7 @@ public class NetworkQualityTest extends AppCompatActivity
 
     private boolean isErrorOccurred = false;
     private long prevVideoTimestamp = 0;
-    private long mStartTestTime = 0;
+    private final long mStartTestTime = 0;
 
     public NetworkQualityTest(Activity context, NetworkQualityTestConfig config,
                               NetworkQualityTestCallbackListener listener) {
@@ -287,9 +287,8 @@ public class NetworkQualityTest extends AppCompatActivity
         Log.i(LOGTAG, "Subscriber onConnected");
         muteSubscriberAudio(subscriberKit);
         setupQualityStatsRunnable();
-        setupStopStatsRunnable();
+        //setupStopStatsRunnable();
         setupRtcStatsRunnable();
-        startQualityStatsRunnable();
     }
 
     private void muteSubscriberAudio(SubscriberKit subscriberKit) {
@@ -314,7 +313,7 @@ public class NetworkQualityTest extends AppCompatActivity
 
     private void setupRtcStatsRunnable() {
         rtcStatsRunnable = () -> {
-            if (mPublisher != null) {
+            if (mPublisher != null && mSubscriber != null) {
                 mPublisher.getRtcStatsReport();
                 mSubscriber.getRtcStatsReport();
                 rtcStatsHandler.postDelayed(rtcStatsRunnable, 500);
@@ -350,17 +349,7 @@ public class NetworkQualityTest extends AppCompatActivity
         // listen to stats
         mSubscriber.setRtcStatsReportListener(subscriberRtcStatsReportListener);
         mPublisher.setRtcStatsReportListener(publisherRtcStatsReportListener);
-        mSubscriber.setVideoStatsListener((subscriber, stats) -> {
-            if (mStartTestTime == 0) {
-                mStartTestTime = System.currentTimeMillis() / 1000;
-            }
-            onSubscriberVideoStats(stats);
-
-            //check quality of the video call after TIME_VIDEO_TEST seconds
-            if (((System.currentTimeMillis() / 1000 - mStartTestTime) > config.getTestDurationSec())) {
-                //getRecommendedSetting();
-            }
-        });
+        mSubscriber.setVideoStatsListener((subscriber, stats) -> onSubscriberVideoStats(stats));
         mSubscriber.setAudioStatsListener((subscriber, stats) -> onSubscriberAudioStats(stats));
 
     }
@@ -540,8 +529,10 @@ public class NetworkQualityTest extends AppCompatActivity
                 .timestamp(timestamp)
                 .build();
 
-        publisherNetworkQualityStatsList.add(networkQualityStats);
-
+        if (direction.equals(OUTBOUND_RTP))
+            publisherNetworkQualityStatsList.add(networkQualityStats);
+        if (direction.equals(INBOUND_RTP))
+            subscriberNetworkQualityStatsList.add(networkQualityStats);
     }
 
     private RtcTrackStats processOutboundRtpStats(JSONObject rtcStatObject) throws JSONException {

@@ -218,6 +218,10 @@ public class CallbackQualityStats {
         return jitter;
     }
 
+    public boolean isScalableVideo() {
+        return isScalableVideo;
+    }
+
     public String getQualityLimitationReason() {
         return qualityLimitationReason;
     }
