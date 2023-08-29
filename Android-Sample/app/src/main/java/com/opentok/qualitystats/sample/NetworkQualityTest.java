@@ -286,9 +286,7 @@ public class NetworkQualityTest extends AppCompatActivity
     public void onConnected(SubscriberKit subscriberKit) {
         Log.i(LOGTAG, "Subscriber onConnected");
         muteSubscriberAudio(subscriberKit);
-        setupQualityStatsRunnable();
-        //setupStopStatsRunnable();
-        setupRtcStatsRunnable();
+        startQualityStatsRunnable();
     }
 
     private void muteSubscriberAudio(SubscriberKit subscriberKit) {
@@ -322,6 +320,8 @@ public class NetworkQualityTest extends AppCompatActivity
     }
 
     private void startQualityStatsRunnable() {
+        setupQualityStatsRunnable();
+        setupRtcStatsRunnable();
         rtcStatsHandler.post(rtcStatsRunnable);
         mHandler.post(qualityStatsRunnable);
     }
