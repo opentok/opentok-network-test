@@ -2,11 +2,9 @@ package com.opentok.qualitystats.sample.models;
 
 import com.opentok.android.Publisher;
 
-import lombok.Builder;
 import lombok.NonNull;
-import lombok.Value;
 
-public class VideoQualityTestConfig {
+public class NetworkQualityTestConfig {
     private static final int DEFAULT_TEST_DURATION = 30;
 
     String sessionId;
@@ -15,15 +13,15 @@ public class VideoQualityTestConfig {
     Publisher.CameraCaptureResolution resolution;
     int testDurationSec;
 
-    public VideoQualityTestConfig(@NonNull String sessionId, @NonNull String apiKey,
-                                  @NonNull String token,
-                                  Publisher.CameraCaptureResolution resolution,
-                                  Integer testDurationSec) {
+    public NetworkQualityTestConfig(@NonNull String sessionId, @NonNull String apiKey,
+                                    @NonNull String token,
+                                    Publisher.CameraCaptureResolution resolution,
+                                    Integer testDurationSec) {
         this.sessionId = sessionId;
         this.apiKey = apiKey;
         this.token = token;
         this.resolution = resolution == null ? Publisher.CameraCaptureResolution.HIGH : resolution;
-        this.testDurationSec = testDurationSec == null ? 30 : testDurationSec;
+        this.testDurationSec = testDurationSec == null ? DEFAULT_TEST_DURATION : testDurationSec;
     }
 
     public static class Builder {
@@ -61,8 +59,8 @@ public class VideoQualityTestConfig {
             return this;
         }
 
-        public VideoQualityTestConfig build() {
-            return new VideoQualityTestConfig(sessionId, apiKey, token, resolution, testDurationSec);
+        public NetworkQualityTestConfig build() {
+            return new NetworkQualityTestConfig(sessionId, apiKey, token, resolution, testDurationSec);
         }
     }
 

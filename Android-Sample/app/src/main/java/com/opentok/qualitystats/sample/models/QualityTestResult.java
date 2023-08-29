@@ -6,4 +6,8 @@ public class QualityTestResult {
     public QualityTestResult(String recommendedResolution) {
         this.recommendedResolution = recommendedResolution;
     }
+
+    public String getRecommendedResolution() {
+        return recommendedResolution;
+    }
 }

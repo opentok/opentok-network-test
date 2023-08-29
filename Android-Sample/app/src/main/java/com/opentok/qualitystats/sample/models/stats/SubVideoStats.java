@@ -4,40 +4,19 @@ import android.os.Build;
 
 import androidx.annotation.RequiresApi;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Value;
-
 @RequiresApi(api = Build.VERSION_CODES.N)
-public class SubscriberVideoStats {
+public class SubVideoStats {
     private final long videoBytesKbsReceived;
     private final long videoBytesReceived;
     private final double timestamp;
     private final double videoPacketLostRatio;
 
-    private SubscriberVideoStats(long videoBytesKbsReceived, long videoBytesReceived,
-                                 double timestamp, double videoPacketLostRatio) {
+    private SubVideoStats(long videoBytesKbsReceived, long videoBytesReceived,
+                          double timestamp, double videoPacketLostRatio) {
         this.videoBytesKbsReceived = videoBytesKbsReceived;
         this.videoBytesReceived = videoBytesReceived;
         this.timestamp = timestamp;
         this.videoPacketLostRatio = videoPacketLostRatio;
-    }
-
-    public long getVideoBytesKbsReceived() {
-        return videoBytesKbsReceived;
-    }
-
-    public long getVideoBytesReceived() {
-        return videoBytesReceived;
-    }
-
-    public double getTimestamp() {
-        return timestamp;
-    }
-
-    public double getVideoPacketLostRatio() {
-        return videoPacketLostRatio;
     }
 
     public static class Builder {
@@ -66,9 +45,25 @@ public class SubscriberVideoStats {
             return this;
         }
 
-        public SubscriberVideoStats build() {
-            return new SubscriberVideoStats(videoBytesKbsReceived, videoBytesReceived,
+        public SubVideoStats build() {
+            return new SubVideoStats(videoBytesKbsReceived, videoBytesReceived,
                     timestamp, videoPacketLostRatio);
         }
+    }
+
+    public long getVideoBytesKbsReceived() {
+        return videoBytesKbsReceived;
+    }
+
+    public long getVideoBytesReceived() {
+        return videoBytesReceived;
+    }
+
+    public double getTimestamp() {
+        return timestamp;
+    }
+
+    public double getVideoPacketLostRatio() {
+        return videoPacketLostRatio;
     }
 }

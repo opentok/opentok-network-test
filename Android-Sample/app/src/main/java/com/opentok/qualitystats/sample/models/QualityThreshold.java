@@ -1,8 +1,5 @@
 package com.opentok.qualitystats.sample.models;
 
-import lombok.Value;
-
-@Value
 public class QualityThreshold {
     long targetBitrate;
     long targetBitrateSimulcast;
@@ -12,5 +9,17 @@ public class QualityThreshold {
         this.targetBitrate = targetBitrate;
         this.targetBitrateSimulcast = targetBitrateSimulcast;
         this.recommendedSetting = recommendedSetting;
+    }
+
+    public long getTargetBitrate() {
+        return targetBitrate;
+    }
+
+    public long getTargetBitrateSimulcast() {
+        return targetBitrateSimulcast;
+    }
+
+    public String getRecommendedSetting() {
+        return recommendedSetting;
     }
 }

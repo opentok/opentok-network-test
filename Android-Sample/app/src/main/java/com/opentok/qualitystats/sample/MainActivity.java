@@ -13,8 +13,10 @@ import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
-import com.opentok.qualitystats.sample.models.VideoQualityTestConfig;
-import com.opentok.qualitystats.sample.models.stats.QualityStats;
+import com.opentok.android.Publisher;
+import com.opentok.qualitystats.sample.models.NetworkQualityTestCallbackListener;
+import com.opentok.qualitystats.sample.models.NetworkQualityTestConfig;
+import com.opentok.qualitystats.sample.models.stats.CallbackQualityStats;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +27,9 @@ public class MainActivity extends Activity {
     private static final String TOKEN = "T1==cGFydG5lcl9pZD00NzczMDk4MSZzaWc9Zjc1YmI4NWRmZDQwOTI5MzBhOGEwODc2NWFlZTI5YWNmZGQwMDZlMDpzZXNzaW9uX2lkPTJfTVg0ME56Y3pNRGs0TVg1LU1UWTVNekl4TURNNE5qZ3dNMzU1V2pkb1QwNUtSMVJFVkV0dWIxRkhaemtyWVRaVWMwSi1mbjQmY3JlYXRlX3RpbWU9MTY5MzIxMDM4NyZub25jZT0wLjE5MDYwODMyNTQyODEwODU3JnJvbGU9bW9kZXJhdG9yJmV4cGlyZV90aW1lPTE2OTU4MDIzODcmaW5pdGlhbF9sYXlvdXRfY2xhc3NfbGlzdD0=";
     private static final String APIKEY = "47730981";
     private final List<Double> testResults = new ArrayList<>();
-    private LineChart chart;
+
+    private LineChart videoUploadSpeedChart;
+    private LineChart audioUploadSpeedChart;
     private View statsTextViewSub;
     private View statsTextView;
 
@@ -33,54 +37,58 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        chart = findViewById(R.id.chart);
+        videoUploadSpeedChart = findViewById(R.id.chart);
+        audioUploadSpeedChart = findViewById(R.id.chart);
         statsTextView = findViewById(R.id.statsTextView);
         statsTextViewSub = findViewById(R.id.statsSubscriber);
 
-        // Create a VideoQualityTestConfig instance
-        VideoQualityTestConfig config = new VideoQualityTestConfig.Builder()
+        // Setup NetworkQualityTestConfig
+        NetworkQualityTestConfig config = new NetworkQualityTestConfig.Builder()
                 .sessionId(SESSION_ID)
                 .apiKey(APIKEY)
                 .token(TOKEN)
+                .resolution(Publisher.CameraCaptureResolution.HIGH_1080P)
+                .testDurationSec(30)
                 .build();
 
         // Create a VideoQualityTest instance
-        VideoQualityTest videoQualityTest = new VideoQualityTest(this, config, new VideoQualityTest.VideoQualityTestListener() {
-            @Override
-            public void onTestResult(String recommendedSetting) {
-                Log.d(LOGTAG, "Recommended resolution: " + recommendedSetting);
-            }
+        NetworkQualityTest networkQualityTest = new NetworkQualityTest(this, config,
+                new NetworkQualityTestCallbackListener() {
+                    @Override
+                    public void onQualityTestResults(String recommendedSetting) {
+                        Log.d(LOGTAG, "Recommended resolution: " + recommendedSetting);
+                    }
 
-            @Override
-            public void onTestUpdate(QualityStats stats) {
-                Log.d(LOGTAG, "---------------------------------------------------------------");
-                Log.d(LOGTAG, "Sent Video Bitrate: " + stats.getSentVideoBitrateKbps() + " Kbps");
-                Log.d(LOGTAG, "Sent Audio Bitrate: " + stats.getSentAudioBitrateKbps() + " Kbps");
-                Log.d(LOGTAG, "Received Audio Bitrate: " + stats.getReceivedAudioBitrateKbps() + " Kbps");
-                Log.d(LOGTAG, "Received Video Bitrate: " + stats.getReceivedVideoBitrateKbps() + " Kbps");
-                Log.d(LOGTAG, "Current Round Trip Time: " + stats.getCurrentRoundTripTimeMs() + " ms");
-                Log.d(LOGTAG, "Available Outgoing Bitrate: " + stats.getAvailableOutgoingBitrate() + " bps");
-                Log.d(LOGTAG, "Audio Packet Lost Ratio  " + stats.getAudioPacketLostRatio() * 100 + "%");
-                Log.d(LOGTAG, "Video Packet Lost Ratio  " + stats.getVideoPacketLostRatio() * 100 + "%");
-                Log.d(LOGTAG, "Jitter: " + stats.getJitter());
-                Log.d(LOGTAG, "Quality Limitation Reason: " + stats.getQualityLimitationReason());
-                Log.d(LOGTAG, "Sent video resolution: " + stats.getSentVideoResolution());
-                Log.d(LOGTAG, "Received video resolution: " + stats.getReceivedVideoResolution());
-                Log.d(LOGTAG, "---------------------------------------------------------------");
-            }
+                    @Override
+                    public void onQualityTestStatsUpdate(CallbackQualityStats stats) {
+                        Log.d(LOGTAG, "---------------------------------------------------------------");
+                        Log.d(LOGTAG, "Sent Video Bitrate: " + stats.getSentVideoBitrateKbps() + " Kbps");
+                        Log.d(LOGTAG, "Sent Audio Bitrate: " + stats.getSentAudioBitrateKbps() + " Kbps");
+                        Log.d(LOGTAG, "Received Audio Bitrate: " + stats.getReceivedAudioBitrateKbps() + " Kbps");
+                        Log.d(LOGTAG, "Received Video Bitrate: " + stats.getReceivedVideoBitrateKbps() + " Kbps");
+                        Log.d(LOGTAG, "Current Round Trip Time: " + stats.getCurrentRoundTripTimeMs() + " ms");
+                        Log.d(LOGTAG, "Available Outgoing Bitrate: " + stats.getAvailableOutgoingBitrate() + " bps");
+                        Log.d(LOGTAG, "Audio Packet Lost Ratio  " + stats.getAudioPacketLostRatio() * 100 + "%");
+                        Log.d(LOGTAG, "Video Packet Lost Ratio  " + stats.getVideoPacketLostRatio() * 100 + "%");
+                        Log.d(LOGTAG, "Jitter: " + stats.getJitter());
+                        Log.d(LOGTAG, "Quality Limitation Reason: " + stats.getQualityLimitationReason());
+                        Log.d(LOGTAG, "Sent video resolution: " + stats.getSentVideoResolution());
+                        Log.d(LOGTAG, "Received video resolution: " + stats.getReceivedVideoResolution());
+                        Log.d(LOGTAG, "---------------------------------------------------------------");
+                    }
 
-            @Override
-            public void onError(String error) {
-                Log.d(LOGTAG, "Error " + error);
-            }
-        });
+                    @Override
+                    public void onError(String error) {
+                        Log.d(LOGTAG, "Error " + error);
+                    }
+                });
 
         // Start the quality test
-        videoQualityTest.startTest();
+        networkQualityTest.startTest();
     }
 
 
-    private void updateChart() {
+    private void updateChart(LineChart chart, long value) {
         List<Entry> entries = new ArrayList<>();
         for (int i = 0; i < testResults.size(); i++) {
             // i is used as the x-value to represent time in seconds
