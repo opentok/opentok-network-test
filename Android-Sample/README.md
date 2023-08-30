@@ -106,14 +106,10 @@ test session. Do not use the test session for your actual call. Use a separate O
 
 6. **Stop the test**
 
-    To ensure proper resource release, you should handle cleanup when needed. In your `onPause` or `onDestroy` methods, call the `disconnectSession` method to stop the test and release resources.
+    To stop the test, you can call stopTest. If the test is halted before 5 seconds, an error will be triggered.
 
     ```java
-    @Override
-    protected void onPause() {
-        super.onPause();
-        networkQualityTest.disconnectSession();
-    }
+     networkQualityTest.stopTest();
     ```
 
 ## Permissions

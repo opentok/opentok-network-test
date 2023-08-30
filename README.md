@@ -19,7 +19,8 @@ https://github.com/opentok/opentok-network-test-js.
 ## How does it work
 
 ## Android
-Please check the README inside android-sample folder
+
+Please check the README file inside the "android-sample" folder.
 
 ## iOS
 The sample apps each do the following:

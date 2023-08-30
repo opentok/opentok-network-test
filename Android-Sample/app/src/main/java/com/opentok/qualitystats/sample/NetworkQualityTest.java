@@ -77,6 +77,7 @@ public class NetworkQualityTest extends AppCompatActivity
 
     private boolean isErrorOccurred = false;
     private long prevVideoTimestamp = 0;
+    private long startTestStartTime = 0;
 
     public NetworkQualityTest(Activity context, NetworkQualityTestConfig config,
                               NetworkQualityTestCallbackListener listener) {
@@ -114,13 +115,6 @@ public class NetworkQualityTest extends AppCompatActivity
             mSession = new Session.Builder(context, config.getApiKey(), config.getSessionId()).build();
             mSession.setSessionListener(this);
             mSession.connect(config.getToken());
-        }
-    }
-
-    private void disconnectSession() {
-        if (mSession != null) {
-            mSession.disconnect();
-
         }
     }
 
@@ -183,18 +177,6 @@ public class NetworkQualityTest extends AppCompatActivity
         }
     }
 
-    private void stopStatsCollection() {
-        rtcStatsHandler.removeCallbacks(rtcStatsRunnable);
-        mHandler.removeCallbacks(qualityStatsRunnable);
-    }
-
-    private void handleError(String error) {
-        stopStatsCollection();
-        mSession.disconnect();
-        listener.onError(error);
-    }
-
-
     @Override
     public void onStreamDropped(Session session, Stream stream) {
         Log.i(LOGTAG, "Session onStreamDropped");
@@ -233,9 +215,28 @@ public class NetworkQualityTest extends AppCompatActivity
     @Override
     public void onConnected(SubscriberKit subscriberKit) {
         Log.i(LOGTAG, "Subscriber onConnected");
+        startTestStartTime = System.currentTimeMillis();
         muteSubscriberAudio(subscriberKit);
         startQualityStatsRunnable();
         setupStopStatsRunnable();
+    }
+
+    public void stopTest() {
+        mHandler.removeCallbacks(stopStatsRunnable);
+
+        if (mSession != null) {
+            rtcStatsHandler.removeCallbacks(rtcStatsRunnable);
+            mPublisher.setPublishVideo(false);
+            mSession.disconnect();
+
+            long elapsedTime = System.currentTimeMillis() - startTestStartTime;
+            if (elapsedTime < 5000) {
+                handleError("Test was stopped before 5 seconds.");
+            } else {
+                QualityTestResult recommendedSetting = getRecommendedSetting();
+                listener.onQualityTestResults(recommendedSetting.getRecommendedResolution());
+            }
+        }
     }
 
     private void muteSubscriberAudio(SubscriberKit subscriberKit) {
@@ -252,6 +253,17 @@ public class NetworkQualityTest extends AppCompatActivity
                 mHandler.postDelayed(qualityStatsRunnable, 1000); // Call every one second
             }
         };
+    }
+
+    private void stopStatsCollection() {
+        rtcStatsHandler.removeCallbacks(rtcStatsRunnable);
+        mHandler.removeCallbacks(qualityStatsRunnable);
+    }
+
+    private void handleError(String error) {
+        stopStatsCollection();
+        mSession.disconnect();
+        listener.onError(error);
     }
 
     private void setupStopStatsRunnable() {
