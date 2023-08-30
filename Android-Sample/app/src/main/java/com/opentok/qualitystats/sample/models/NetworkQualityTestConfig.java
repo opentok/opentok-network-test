@@ -2,8 +2,6 @@ package com.opentok.qualitystats.sample.models;
 
 import com.opentok.android.Publisher;
 
-import lombok.NonNull;
-
 public class NetworkQualityTestConfig {
     private static final int DEFAULT_TEST_DURATION = 30;
 
@@ -13,10 +11,14 @@ public class NetworkQualityTestConfig {
     Publisher.CameraCaptureResolution resolution;
     int testDurationSec;
 
-    public NetworkQualityTestConfig(@NonNull String sessionId, @NonNull String apiKey,
-                                    @NonNull String token,
+
+    public NetworkQualityTestConfig(String sessionId, String apiKey, String token,
                                     Publisher.CameraCaptureResolution resolution,
                                     Integer testDurationSec) {
+        if (sessionId == null || apiKey == null || token == null) {
+            throw new IllegalArgumentException("sessionId, apiKey, and token cannot be null");
+        }
+
         this.sessionId = sessionId;
         this.apiKey = apiKey;
         this.token = token;

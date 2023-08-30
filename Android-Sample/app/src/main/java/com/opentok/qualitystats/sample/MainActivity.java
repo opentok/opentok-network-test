@@ -9,7 +9,6 @@ import android.util.Log;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
@@ -162,18 +161,22 @@ public class MainActivity extends Activity {
         // Customize the x-axis appearance
         XAxis xAxis = chart.getXAxis();
         xAxis.setDrawGridLines(false); // Disable the x-axis grid lines
-        xAxis.setDrawAxisLine(false); // Disable the x-axis line
+        xAxis.setDrawAxisLine(true); // Disable the x-axis line
 
         // Customize the y-axis appearance
         YAxis yAxis = chart.getAxisLeft();
         yAxis.setDrawGridLines(false); // Disable the y-axis grid lines
-        yAxis.setDrawAxisLine(false); // Disable the y-axis line
-        yAxis.setValueFormatter(new ValueFormatter() {
-            @Override
-            public String getFormattedValue(float value) {
-                return (int) value + " kb/s"; // Format the Y-axis value
-            }
-        });
+        yAxis.setDrawAxisLine(true); // Disable the y-axis line
+
+        if (!label.equals("AvailableOutgoingBitrate")) {
+            yAxis.setValueFormatter(new ValueFormatter() {
+                @Override
+                public String getFormattedValue(float value) {
+                    return (int) value + " kb/s"; // Format the Y-axis value
+                }
+            });
+        }
+
         chart.invalidate(); // refresh the chart
     }
 

@@ -29,10 +29,8 @@ android {
 }
 
 dependencies {
-    implementation 'com.opentok.android:opentok-android-sdk:2.25.2'
+    implementation 'com.opentok.android:opentok-android-sdk:2.25.3'
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'pub.devrel:easypermissions:3.0.0'
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
-    compileOnly 'org.projectlombok:lombok:1.18.28'
-    annotationProcessor 'org.projectlombok:lombok:1.18.28'
 }
