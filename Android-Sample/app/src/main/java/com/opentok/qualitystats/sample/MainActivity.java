@@ -25,9 +25,9 @@ import java.util.List;
 
 public class MainActivity extends Activity {
     static final String LOGTAG = "quality-stats-demo";
-    private static final String SESSION_ID = "2_MX40NzczMDk4MX5-MTY5MzIxMDM4NjgwM355WjdoT05KR1REVEtub1FHZzkrYTZUc0J-fn4";
-    private static final String TOKEN = "T1==cGFydG5lcl9pZD00NzczMDk4MSZzaWc9Zjc1YmI4NWRmZDQwOTI5MzBhOGEwODc2NWFlZTI5YWNmZGQwMDZlMDpzZXNzaW9uX2lkPTJfTVg0ME56Y3pNRGs0TVg1LU1UWTVNekl4TURNNE5qZ3dNMzU1V2pkb1QwNUtSMVJFVkV0dWIxRkhaemtyWVRaVWMwSi1mbjQmY3JlYXRlX3RpbWU9MTY5MzIxMDM4NyZub25jZT0wLjE5MDYwODMyNTQyODEwODU3JnJvbGU9bW9kZXJhdG9yJmV4cGlyZV90aW1lPTE2OTU4MDIzODcmaW5pdGlhbF9sYXlvdXRfY2xhc3NfbGlzdD0=";
-    private static final String APIKEY = "47730981";
+    private static final String SESSION_ID = "YOUR_SESSION_ID";
+    private static final String TOKEN = "YOUR_TOKEN_ID";
+    private static final String APIKEY = "YOUR_API_KEY";
     private final List<Long> availableOutgoingNitrateResult = new ArrayList<>();
     private final List<Long> sentVideoBitrateResults = new ArrayList<>();
     private final List<Long> sentAudioBitrateResults = new ArrayList<>();
