@@ -493,7 +493,7 @@ public class NetworkQualityTest extends AppCompatActivity
         String qualityLimitationReason = rtcStatObject.optString(QUALITY_LIMITATION_REASON, NONE);
         String resolution = rtcStatObject.optInt(FRAME_WIDTH, 0)
                 + "x" + rtcStatObject.optInt(FRAME_HEIGHT, 0);
-        int framerate = rtcStatObject.optInt(FRAMES_PER_SECOND, 0);
+        int frameRate = rtcStatObject.optInt(FRAMES_PER_SECOND, 0);
         int pliCount = rtcStatObject.optInt(PLI_COUNT, 0);
         int nackCount = rtcStatObject.optInt(NACK_COUNT, 0);
         long bytesSent = rtcStatObject.optInt(BYTES_SENT, 0);
@@ -505,7 +505,7 @@ public class NetworkQualityTest extends AppCompatActivity
                 .ssrc(ssrc)
                 .qualityLimitationReason(qualityLimitationReason)
                 .resolution(resolution)
-                .frameRate(framerate)
+                .frameRate(frameRate)
                 .pliCount(pliCount)
                 .nackCount(nackCount)
                 .bytesSent(bytesSent)

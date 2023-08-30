@@ -75,6 +75,8 @@ public class MainActivity extends Activity {
                                 + "Received Audio Bitrate: " + stats.getReceivedAudioBitrateKbps() + " Kbps\n"
                                 + "Received Video Resolution: " + stats.getReceivedVideoResolution() + "\n"
                                 + "Quality Limitation Reason: " + stats.getQualityLimitationReason() + "\n"
+                                + "Audio Packet Lost Ratio  " + stats.getAudioPacketLostRatio() * 100 + "% \n"
+                                + "Video Packet Lost Ratio  " + stats.getVideoPacketLostRatio() * 100 + "%\n"
                                 + "Current Round Trip Time: " + stats.getCurrentRoundTripTimeMs() + " ms";
 
                         statsTextView.setText(sentVideoInfo);
