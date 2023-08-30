@@ -95,22 +95,23 @@ public class MainActivity extends Activity {
                         Log.d(LOGTAG, "Received video resolution: " + stats.getReceivedVideoResolution());
                         Log.d(LOGTAG, "Scalable video ? " + stats.isScalableVideo());
                         Log.d(LOGTAG, "---------------------------------------------------------------");
+
                         availableOutgoingNitrateResult.add(stats.getAvailableOutgoingBitrate());
                         sentVideoBitrateResults.add(stats.getSentVideoBitrateKbps());
-                        updateChart(videoUploadSpeedChart, sentVideoBitrateResults, "Sent Video Bitrate");
-
                         sentAudioBitrateResults.add(stats.getSentAudioBitrateKbps());
-                        updateChart(audioUploadSpeedChart, sentAudioBitrateResults, "Sent Audio Bitrate");
-                        updateChart(availableOutgoingBitrateChart, availableOutgoingNitrateResult, "AvailableOutgoingBitrate");
-                    }
 
+                        updateChart(videoUploadSpeedChart, sentVideoBitrateResults, "Sent Video Bitrate");
+                        updateChart(audioUploadSpeedChart, sentAudioBitrateResults, "Sent Audio Bitrate");
+                        updateChart(availableOutgoingBitrateChart,
+                                availableOutgoingNitrateResult, "AvailableOutgoingBitrate");
+                    }
 
                     @Override
                     public void onError(String error) {
                         Log.d(LOGTAG, "Error " + error);
+                        showErrorPopup(error);
                     }
                 });
-
         // Start the quality test
         networkQualityTest.startTest();
     }
@@ -180,6 +181,16 @@ public class MainActivity extends Activity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Recommended Setting");
         builder.setMessage("Recommended Setting: " + recommendedSetting);
+        builder.setPositiveButton("OK", (dialog, which) -> dialog.dismiss());
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    private void showErrorPopup(String error) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Error");
+        builder.setMessage("Error " + error);
         builder.setPositiveButton("OK", (dialog, which) -> dialog.dismiss());
 
         AlertDialog dialog = builder.create();
