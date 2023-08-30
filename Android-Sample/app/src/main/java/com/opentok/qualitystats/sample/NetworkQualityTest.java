@@ -158,15 +158,6 @@ public class NetworkQualityTest extends AppCompatActivity
         }
     }
 
-    public void sessionConnect() {
-        Log.i(LOGTAG, "Connecting session");
-        if (mSession == null) {
-            mSession = new Session.Builder(this, config.getApiKey(), config.getSessionId()).build();
-            mSession.setSessionListener(this);
-            mSession.connect(config.getToken());
-        }
-    }
-
     @Override
     public void onConnected(Session session) {
         Log.i(LOGTAG, "Session is connected");
@@ -286,6 +277,7 @@ public class NetworkQualityTest extends AppCompatActivity
         Log.i(LOGTAG, "Subscriber onConnected");
         muteSubscriberAudio(subscriberKit);
         startQualityStatsRunnable();
+        setupStopStatsRunnable();
     }
 
     private void muteSubscriberAudio(SubscriberKit subscriberKit) {
@@ -407,7 +399,10 @@ public class NetworkQualityTest extends AppCompatActivity
         SubscriberKit.SubscriberAudioStats previousAudioStats = audioStatsQueue.peek();
 
         // Check if the time difference is within the time window
-        long elapsedTimeMs = (long) (currentAudioTimestamp - previousAudioStats.timeStamp);
+        long elapsedTimeMs = 0;
+        if (previousAudioStats != null) {
+            elapsedTimeMs = (long) (currentAudioTimestamp - previousAudioStats.timeStamp);
+        }
         if (elapsedTimeMs < TIME_WINDOW_SECONDS_TO_MS) {
             return;
         }
