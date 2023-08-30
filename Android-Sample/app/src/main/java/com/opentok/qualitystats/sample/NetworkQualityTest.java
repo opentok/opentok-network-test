@@ -76,7 +76,6 @@ public class NetworkQualityTest extends AppCompatActivity
 
     private boolean isErrorOccurred = false;
     private long prevVideoTimestamp = 0;
-    private final long mStartTestTime = 0;
 
     public NetworkQualityTest(Activity context, NetworkQualityTestConfig config,
                               NetworkQualityTestCallbackListener listener) {
