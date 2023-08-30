@@ -127,13 +127,13 @@ public class MainActivity extends Activity {
         dataSet.setColor(Color.BLUE); // Set the line color
         dataSet.setCircleColor(Color.BLUE); // Set the circle color
         dataSet.setLineWidth(2f); // Set the line width
-        dataSet.setCircleRadius(3f); // Set the circle radius
-        dataSet.setDrawCircleHole(true); // Disable the circle hole
+        dataSet.setCircleRadius(2f); // Set the circle radius
+        dataSet.setDrawCircleHole(false); // Disable the circle hole
         dataSet.setDrawValues(false); // Hide the values displayed on the chart
         dataSet.setDrawFilled(true); // Enable filling below the line
         dataSet.setFormLineWidth(1f); // Set the line width of the legend form
         dataSet.setFormLineDashEffect(new DashPathEffect(new float[]{10f, 5f}, 0f)); // Set the line dash effect of the legend form
-        dataSet.setFormSize(15.f); // Set the size of the legend form
+        dataSet.setFormSize(10.f); // Set the size of the legend form
 
         LineData lineData = new LineData(dataSet);
         chart.setData(lineData);

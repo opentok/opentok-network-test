@@ -55,6 +55,7 @@ public class NetworkQualityTest extends AppCompatActivity
     private static final long MILLIS_TO_SECONDS = 1000;
     private static final long BITS_PER_BYTE = 8;
     private static final long TIME_WINDOW_SECONDS_TO_MS = TIME_WINDOW * 1000;
+    private static final double RATIO_TARGET_BITRATE = 0.7;
 
     private final Handler mHandler = new Handler();
     private final Queue<SubscriberKit.SubscriberVideoStats> videoStatsQueue = new LinkedList<>();
@@ -89,12 +90,6 @@ public class NetworkQualityTest extends AppCompatActivity
     }
 
     @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        disconnectSession();
-    }
-
-    @Override
     public void onPause() {
         super.onPause();
     }
@@ -125,6 +120,7 @@ public class NetworkQualityTest extends AppCompatActivity
     private void disconnectSession() {
         if (mSession != null) {
             mSession.disconnect();
+
         }
     }
 
@@ -137,7 +133,6 @@ public class NetworkQualityTest extends AppCompatActivity
 
     @Override
     public void onPermissionsGranted(int requestCode, List<String> perms) {
-
         Log.d(LOGTAG, "onPermissionsGranted:" + requestCode + ":" + perms.size());
     }
 
@@ -197,43 +192,6 @@ public class NetworkQualityTest extends AppCompatActivity
         stopStatsCollection();
         mSession.disconnect();
         listener.onError(error);
-    }
-
-    private QualityTestResult getRecommendedSetting() {
-        final int SAMPLE_SIZE = 5;
-        Queue<Long> outgoingBitrateSamples = new LinkedList<>();
-        double estimatedOutgoingBitrate = 0.0;
-        boolean scalableVideo = publisherNetworkQualityStatsList.stream()
-                .anyMatch(NetworkQualityStats::isScalableVideo);
-
-        // Collect the last few outgoing bitrates
-        for (NetworkQualityStats stats : publisherNetworkQualityStatsList) {
-            if (outgoingBitrateSamples.size() == SAMPLE_SIZE) {
-                outgoingBitrateSamples.poll();
-            }
-            outgoingBitrateSamples.offer(stats.getAvailableOutgoingBitrate());
-        }
-
-        // Estimate the available outgoing bitrate by i size
-        int i = 0;
-        for (long bitrate : outgoingBitrateSamples) {
-            estimatedOutgoingBitrate += (bitrate - estimatedOutgoingBitrate) / (i + 1);
-            i++;
-        }
-
-        Log.d(LOGTAG, "Estimated available outgoing bitrate: " + estimatedOutgoingBitrate);
-
-        // Determine the recommended setting based on quality thresholds
-        for (QualityThreshold threshold : qualityThresholds) {
-            double targetBitrate = scalableVideo ? threshold.getTargetBitrateSimulcast() : threshold.getTargetBitrate();
-            if (estimatedOutgoingBitrate >= targetBitrate) {
-                Log.d(LOGTAG, "Recommended Bitrate: " + threshold.getRecommendedSetting());
-                return new QualityTestResult(threshold.getRecommendedSetting());
-            }
-        }
-
-        Log.d(LOGTAG, "Bitrate is too low for video");
-        return new QualityTestResult("Bitrate is too low for video");
     }
 
 
@@ -460,6 +418,7 @@ public class NetworkQualityTest extends AppCompatActivity
         public void run() {
             if (mSession != null) {
                 rtcStatsHandler.removeCallbacks(rtcStatsRunnable);
+                mPublisher.setPublishVideo(false);
                 mSession.disconnect();
                 listener.onQualityTestResults(getRecommendedSetting().getRecommendedResolution());
             }
@@ -591,6 +550,43 @@ public class NetworkQualityTest extends AppCompatActivity
                     .build();
         }
         return null;
+    }
+
+    private QualityTestResult getRecommendedSetting() {
+        final int SAMPLE_SIZE = 5;
+        Queue<Long> outgoingBitrateSamples = new LinkedList<>();
+        double estimatedOutgoingBitrate = 0.0;
+        boolean scalableVideo = publisherNetworkQualityStatsList.stream()
+                .anyMatch(NetworkQualityStats::isScalableVideo);
+
+        // Collect the last few outgoing bitrates
+        for (NetworkQualityStats stats : publisherNetworkQualityStatsList) {
+            if (outgoingBitrateSamples.size() == SAMPLE_SIZE) {
+                outgoingBitrateSamples.poll();
+            }
+            outgoingBitrateSamples.offer(stats.getAvailableOutgoingBitrate());
+        }
+
+        // Estimate the available outgoing bitrate by i size
+        int i = 0;
+        for (long bitrate : outgoingBitrateSamples) {
+            estimatedOutgoingBitrate += (bitrate - estimatedOutgoingBitrate) / (i + 1);
+            i++;
+        }
+
+        Log.d(LOGTAG, "Estimated available outgoing bitrate: " + estimatedOutgoingBitrate);
+
+        // Determine the recommended setting based on quality thresholds
+        for (QualityThreshold threshold : qualityThresholds) {
+            double targetBitrate = scalableVideo ? threshold.getTargetBitrateSimulcast() : threshold.getTargetBitrate();
+            if (estimatedOutgoingBitrate >= targetBitrate * RATIO_TARGET_BITRATE) {
+                Log.d(LOGTAG, "Recommended Bitrate: " + threshold.getRecommendedSetting());
+                return new QualityTestResult(threshold.getRecommendedSetting());
+            }
+        }
+
+        Log.d(LOGTAG, "Bitrate is too low for video");
+        return new QualityTestResult("Bitrate is too low for video");
     }
 
     private <T> Optional<T> getLastElement(List<T> list) {

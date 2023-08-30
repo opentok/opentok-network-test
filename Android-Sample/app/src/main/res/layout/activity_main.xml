@@ -74,15 +74,17 @@
 
     <TextView
         android:id="@+id/statsTextView"
-        android:layout_width="342dp"
-        android:layout_height="142dp"
+        android:layout_width="381dp"
+        android:layout_height="149dp"
         android:layout_below="@+id/chart"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
         android:layout_centerInParent="true"
-        android:layout_marginStart="21dp"
-        android:layout_marginTop="357dp"
-        android:layout_marginEnd="32dp"
+        android:layout_marginStart="36dp"
+        android:layout_marginTop="356dp"
+        android:layout_marginEnd="42dp"
+        android:layout_marginBottom="26dp"
         android:autoText="false"
         android:textSize="12sp" />
 
