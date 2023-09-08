@@ -1,5 +1,6 @@
 package com.opentok.qualitystats.sample;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.graphics.Color;
@@ -7,6 +8,8 @@ import android.graphics.DashPathEffect;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.XAxis;
@@ -23,11 +26,19 @@ import com.opentok.qualitystats.sample.models.stats.CallbackQualityStats;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends Activity {
+import pub.devrel.easypermissions.AfterPermissionGranted;
+import pub.devrel.easypermissions.AppSettingsDialog;
+import pub.devrel.easypermissions.EasyPermissions;
+
+public class MainActivity extends Activity implements EasyPermissions.PermissionCallbacks {
     static final String LOGTAG = "quality-stats-demo";
     private static final String SESSION_ID = "YOUR_SESSION_ID";
     private static final String TOKEN = "YOUR_TOKEN_ID";
     private static final String APIKEY = "YOUR_API_KEY";
+
+    private static final int RC_VIDEO_APP_PERM = 124;
+    private static final int RC_SETTINGS_SCREEN_PERM = 123;
+
     private final List<Long> availableOutgoingNitrateResult = new ArrayList<>();
     private final List<Long> sentVideoBitrateResults = new ArrayList<>();
     private final List<Long> sentAudioBitrateResults = new ArrayList<>();
@@ -36,6 +47,7 @@ public class MainActivity extends Activity {
     private LineChart videoUploadSpeedChart;
     private LineChart audioUploadSpeedChart;
     private TextView statsTextView;
+    private NetworkQualityTest networkQualityTest;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +67,7 @@ public class MainActivity extends Activity {
                 .testDurationSec(30)
                 .build();
 
-        NetworkQualityTest networkQualityTest = new NetworkQualityTest(this, config,
+        networkQualityTest = new NetworkQualityTest(this, config,
                 new NetworkQualityTestCallbackListener() {
                     @Override
                     public void onQualityTestResults(String recommendedSetting) {
@@ -113,10 +125,47 @@ public class MainActivity extends Activity {
                         showErrorPopup(error);
                     }
                 });
+
         // Start the quality test
         networkQualityTest.startTest();
     }
 
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
+    }
+
+    @Override
+    public void onPermissionsGranted(int requestCode, List<String> perms) {
+        Log.d(LOGTAG, "onPermissionsGranted:" + requestCode + ":" + perms.size());
+    }
+
+    @Override
+    public void onPermissionsDenied(int requestCode, List<String> perms) {
+        Log.d(LOGTAG, "onPermissionsDenied:" + requestCode + ":" + perms.size());
+        if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
+            new AppSettingsDialog.Builder(this)
+                    .setTitle(getString(R.string.title_settings_dialog))
+                    .setRationale(getString(R.string.rationale_ask_again))
+                    .setPositiveButton(getString(R.string.setting))
+                    .setNegativeButton(getString(R.string.cancel))
+                    .setRequestCode(RC_VIDEO_APP_PERM)
+                    .build()
+                    .show();
+        }
+    }
+
+    @AfterPermissionGranted(RC_VIDEO_APP_PERM)
+    private void requestPermissions() {
+        String[] perms = {android.Manifest.permission.INTERNET, android.Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO};
+        if (EasyPermissions.hasPermissions(this, perms)) {
+            networkQualityTest.startTest();
+        } else {
+            EasyPermissions.requestPermissions(this, getString(R.string.rationale_video_app), RC_VIDEO_APP_PERM, perms);
+        }
+    }
 
     private void updateChart(LineChart chart, List<Long> results, String label) {
         List<Entry> entries = new ArrayList<>();
