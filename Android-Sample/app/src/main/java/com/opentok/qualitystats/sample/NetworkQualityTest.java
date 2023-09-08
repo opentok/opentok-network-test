@@ -40,13 +40,13 @@ import java.util.Queue;
 public class NetworkQualityTest extends Activity
         implements SessionListener, PublisherKit.PublisherListener, SubscriberKit.SubscriberListener {
 
-    private static final String LOGTAG = "network-quality-stats";
-
+    private static final String LOG_TAG = "network-quality-stats";
     private static final int TIME_WINDOW = 1;
     private static final long MILLIS_TO_SECONDS = 1000;
     private static final long BITS_PER_BYTE = 8;
     private static final long TIME_WINDOW_SECONDS_TO_MS = TIME_WINDOW * 1000;
     private static final double RATIO_TARGET_BITRATE = 0.7;
+    private static final double MIN_TEST_DURATION_SEC = 5;
 
     private final Handler mHandler = new Handler();
     private final Queue<SubscriberKit.SubscriberVideoStats> videoStatsQueue = new LinkedList<>();
@@ -78,6 +78,7 @@ public class NetworkQualityTest extends Activity
     }
 
     public void startTest() {
+        Log.i(LOG_TAG, "Starting network test..");
         connectSession();
     }
 
@@ -87,7 +88,7 @@ public class NetworkQualityTest extends Activity
     }
 
     private void connectSession() {
-        Log.i(LOGTAG, "Connecting session");
+        Log.i(LOG_TAG, "Connecting session..");
         if (mSession == null) {
             mSession = new Session.Builder(context, config.getApiKey(), config.getSessionId()).build();
             mSession.setSessionListener(this);
@@ -97,7 +98,7 @@ public class NetworkQualityTest extends Activity
 
     @Override
     public void onConnected(Session session) {
-        Log.i(LOGTAG, "Session is connected");
+        Log.i(LOG_TAG, "Session is connected");
 
         mPublisher = new Publisher.Builder(context)
                 .resolution(config.getResolution())
@@ -109,7 +110,7 @@ public class NetworkQualityTest extends Activity
 
     @Override
     public void onDisconnected(Session session) {
-        Log.i(LOGTAG, "Session is disconnected");
+        Log.i(LOG_TAG, "Session is disconnected");
         mPublisher = null;
         mSubscriber = null;
         mSession = null;
@@ -118,7 +119,7 @@ public class NetworkQualityTest extends Activity
 
     @Override
     public void onError(Session session, OpentokError opentokError) {
-        Log.i(LOGTAG, "Session error: " + opentokError.getMessage());
+        Log.i(LOG_TAG, "Session error: " + opentokError.getMessage());
         if (!isErrorOccurred) {
             isErrorOccurred = true;
             handleError(opentokError.getMessage());
@@ -127,17 +128,17 @@ public class NetworkQualityTest extends Activity
 
     @Override
     public void onStreamDropped(Session session, Stream stream) {
-        Log.i(LOGTAG, "Session onStreamDropped");
+        Log.i(LOG_TAG, "Session onStreamDropped");
     }
 
     @Override
     public void onStreamReceived(Session session, Stream stream) {
-        Log.i(LOGTAG, "Session onStreamReceived");
+        Log.i(LOG_TAG, "Session onStreamReceived");
     }
 
     @Override
     public void onStreamCreated(PublisherKit publisherKit, Stream stream) {
-        Log.i(LOGTAG, "Publisher onStreamCreated");
+        Log.i(LOG_TAG, "Publisher onStreamCreated");
         if (mSubscriber == null) {
             subscribeToStream(stream);
         }
@@ -145,7 +146,7 @@ public class NetworkQualityTest extends Activity
 
     @Override
     public void onStreamDestroyed(PublisherKit publisherKit, Stream stream) {
-        Log.i(LOGTAG, "Publisher onStreamDestroyed");
+        Log.i(LOG_TAG, "Publisher onStreamDestroyed");
         if (mSubscriber == null) {
             unsubscribeFromStream(stream);
         }
@@ -153,7 +154,7 @@ public class NetworkQualityTest extends Activity
 
     @Override
     public void onError(PublisherKit publisherKit, OpentokError opentokError) {
-        Log.i(LOGTAG, "Publisher error: " + opentokError.getMessage());
+        Log.i(LOG_TAG, "Publisher error: " + opentokError.getMessage());
         if (!isErrorOccurred) {
             isErrorOccurred = true;
             handleError(opentokError.getMessage());
@@ -162,7 +163,7 @@ public class NetworkQualityTest extends Activity
 
     @Override
     public void onConnected(SubscriberKit subscriberKit) {
-        Log.i(LOGTAG, "Subscriber onConnected");
+        Log.i(LOG_TAG, "Subscriber onConnected");
         startTestStartTime = System.currentTimeMillis();
         muteSubscriberAudio(subscriberKit);
         startQualityStatsRunnable();
@@ -178,7 +179,7 @@ public class NetworkQualityTest extends Activity
             mSession.disconnect();
 
             long elapsedTime = System.currentTimeMillis() - startTestStartTime;
-            if (elapsedTime < 5000) {
+            if (elapsedTime < MIN_TEST_DURATION_SEC) {
                 handleError("Test was stopped before 5 seconds.");
             } else {
                 QualityTestResult recommendedSetting = getRecommendedSetting();
@@ -238,12 +239,12 @@ public class NetworkQualityTest extends Activity
 
     @Override
     public void onDisconnected(SubscriberKit subscriberKit) {
-        Log.i(LOGTAG, "Subscriber onDisconnected");
+        Log.i(LOG_TAG, "Subscriber onDisconnected");
     }
 
     @Override
     public void onError(SubscriberKit subscriberKit, OpentokError opentokError) {
-        Log.i(LOGTAG, "Subscriber error: " + opentokError.getMessage());
+        Log.i(LOG_TAG, "Subscriber error: " + opentokError.getMessage());
         if (!isErrorOccurred) {
             isErrorOccurred = true;
             handleError("Subscriber error: " + opentokError.getMessage());
@@ -364,7 +365,8 @@ public class NetworkQualityTest extends Activity
             long previousBytesSent = ssrcToPrevBytesSent.get(ssrc);
             long bytesSentDifference = currentBytesSent - previousBytesSent;
 
-            videoBitrateKbps = (long) ((bytesSentDifference * BITS_PER_BYTE) / (elapsedTimeMs / (double) MILLIS_TO_SECONDS));
+            videoBitrateKbps = (long) ((bytesSentDifference * BITS_PER_BYTE)
+                    / (elapsedTimeMs / (double) MILLIS_TO_SECONDS));
         }
 
         ssrcToPrevBytesSent.put(ssrc, currentBytesSent);
@@ -397,7 +399,8 @@ public class NetworkQualityTest extends Activity
         }
     };
 
-    private void processRtcStats(JSONArray rtcStatsJsonArray, String direction) throws JSONException {
+    private void processRtcStats(JSONArray rtcStatsJsonArray, String direction)
+            throws JSONException {
         List<RtcTrackStats> videoStatsList = new ArrayList<>();
         RtcTrackStats audioStats = null;
         double jitter = 0.0;
@@ -534,18 +537,18 @@ public class NetworkQualityTest extends Activity
             i++;
         }
 
-        Log.d(LOGTAG, "Estimated available outgoing bitrate: " + estimatedOutgoingBitrate);
+        Log.d(LOG_TAG, "Estimated available outgoing bitrate: " + estimatedOutgoingBitrate);
 
         // Determine the recommended setting based on quality thresholds
         for (QualityThreshold threshold : qualityThresholds) {
             double targetBitrate = scalableVideo ? threshold.getTargetBitrateSimulcast() : threshold.getTargetBitrate();
             if (estimatedOutgoingBitrate >= targetBitrate * RATIO_TARGET_BITRATE) {
-                Log.d(LOGTAG, "Recommended Bitrate: " + threshold.getRecommendedSetting());
+                Log.d(LOG_TAG, "Recommended Bitrate: " + threshold.getRecommendedSetting());
                 return new QualityTestResult(threshold.getRecommendedSetting());
             }
         }
 
-        Log.d(LOGTAG, "Bitrate is too low for video");
+        Log.d(LOG_TAG, "Bitrate is too low for video");
         return new QualityTestResult("Bitrate is too low for video");
     }
 

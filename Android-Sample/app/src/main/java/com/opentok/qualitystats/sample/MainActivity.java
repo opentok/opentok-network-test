@@ -32,12 +32,12 @@ import pub.devrel.easypermissions.EasyPermissions;
 
 public class MainActivity extends Activity implements EasyPermissions.PermissionCallbacks {
     static final String LOGTAG = "quality-stats-demo";
-    private static final String SESSION_ID = "YOUR_SESSION_ID";
-    private static final String TOKEN = "YOUR_TOKEN_ID";
-    private static final String APIKEY = "YOUR_API_KEY";
+
+    private static final String SESSION_ID = "1_MX40NzczMDk4MX5-MTY5NDE2MzE5NDM2NX5HZXZNKzNvekY5Wjg4ZTBKU1c0dEdYVUd-fn4";
+    private static final String TOKEN = "T1==cGFydG5lcl9pZD00NzczMDk4MSZzaWc9NDU3MzA1ZDE4ZTExNzE1ZWY0YzJkNzliY2M4NmEyODFhYTY4ZmVlZjpzZXNzaW9uX2lkPTFfTVg0ME56Y3pNRGs0TVg1LU1UWTVOREUyTXpFNU5ETTJOWDVIWlhaTkt6TnZla1k1V2pnNFpUQktVMWMwZEVkWVZVZC1mbjQmY3JlYXRlX3RpbWU9MTY5NDE2MzE5NCZub25jZT0wLjE2NTkyMzUzNjM2MjA3ODU3JnJvbGU9bW9kZXJhdG9yJmV4cGlyZV90aW1lPTE2OTY3NTUxOTQmaW5pdGlhbF9sYXlvdXRfY2xhc3NfbGlzdD0=";
+    private static final String APIKEY = "47730981";
 
     private static final int RC_VIDEO_APP_PERM = 124;
-    private static final int RC_SETTINGS_SCREEN_PERM = 123;
 
     private final List<Long> availableOutgoingNitrateResult = new ArrayList<>();
     private final List<Long> sentVideoBitrateResults = new ArrayList<>();
@@ -126,8 +126,7 @@ public class MainActivity extends Activity implements EasyPermissions.Permission
                     }
                 });
 
-        // Start the quality test
-        networkQualityTest.startTest();
+        requestPermissions();
     }
 
 

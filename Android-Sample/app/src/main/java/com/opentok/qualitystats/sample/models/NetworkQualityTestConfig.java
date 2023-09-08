@@ -18,7 +18,6 @@ public class NetworkQualityTestConfig {
         if (sessionId == null || apiKey == null || token == null) {
             throw new IllegalArgumentException("sessionId, apiKey, and token cannot be null");
         }
-
         this.sessionId = sessionId;
         this.apiKey = apiKey;
         this.token = token;
