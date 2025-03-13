@@ -1,8 +1,8 @@
-OpenTok Network Test
+Vonage Video API Network Test
 ====================
 
 This repository contains sample code that shows how to diagnose if the client's call (publishing
-a stream to an OpenTok session) will be successful or not, given their network conditions. The
+a stream to a Vonage Video API session) will be successful or not, given their network conditions. The
 network test can be implemented as a step the client runs before joining the session. Based on the
 test results, the app can decide if the client should be allowed to publish a stream to the session
 and whether that stream should publish video or use audio-only mode. The test is intended to be used in a
@@ -10,22 +10,22 @@ session that connects two clients in a one-to-one call.
 
 The network test is supported in:
 
-*  [OpenTok Android SDK 2.12 and newer](https://tokbox.com/developer/sdks/android/)
-*  [OpenTok iOS SDK 2.12 and newer](https://tokbox.com/developer/sdks/ios/)
+*  [Vonage Video API Android SDK 2.23 and newer](https://developer.vonage.com/en/video/client-sdks/android/overview)
+*  [Vonage Video API iOS SDK 2.23 and newer](https://developer.vonage.com/en/video/client-sdks/ios/overview)
 
 JavaScript clients should use the sample code found here:
-https://github.com/opentok/opentok-network-test-js.
+https://github.com/Vonage/vonage-video-js-api-network-test.
 
 ## How does it work
 
 The sample apps each do the following:
 
-1. Connect to an OpenTok session and publish a test stream to a test session.
+1. Connect to a Vonage Video API session and publish a test stream to a test session.
 
    Note that the published test stream would be visible to all clients connected to
    the session. For this reason, you should use a separate test session (with a unique
    session ID) for the network test.  Do not use the test session for your actual call.
-   Use a separate OpenTok session (and session ID) to share audio-video streams between
+   Use a separate Vonage Video API session (and session ID) to share audio-video streams between
    clients.
 
 2. Subscribe to your own test stream for a test period.
@@ -49,12 +49,12 @@ This API lets you dynamically monitor the following statistics for a subscriber'
 
 * Audio and video packets received
 
-This API is only available in sessions that use the OpenTok Media Router.
+This API is only available in sessions that use the Vonage Video API Media Router.
 
 ## Thresholds and interpreting network statistics
 
 You can use the network statistics to determine the ability to send and receive streams,
-and as a result have a quality experience during the OpenTok call.
+and as a result have a quality experience during the Vonage Video API call.
 
 Please keep in mind, every application's use case and every user's perception of the call 
 quality is different. Therefore, you should adjust the default thresholds and timeframe in 
@@ -65,7 +65,7 @@ Also, the longer you run the test, the more accurate the values you will receive
 At the same time, you might want to switch between publishing video and audio-only, based on
 your specific use case. 
 
-The OpenTok Network Test is implemented as sample code to make it easier
+The Vonage Video API Network Test is implemented as sample code to make it easier
 for developers to customize their application logic.
 
 Below are examples of the thresholds for popular video resolution-frame rate combinations.
@@ -92,7 +92,7 @@ For the given qualities and resolutions, all the following conditions must met.
 | Acceptable | 320x240 @ 30           | > 150       | < 3%        |
 
 Note that the default publish settings for video are 640x480 pixels @ 30 fps in the
-OpenTok iOS SDK. The default is 352x288 @ 30 fps in the OpenTok Android SDK.
+Vonage Video API iOS SDK. The default is 352x288 @ 30 fps in the Vonage Video API Android SDK.
 
 You can calculate the video kbps and packet loss based on the video bytes received and
 video packets received statistics provided by the Network Statistics API. See the sample app
@@ -116,10 +116,10 @@ and audio packets received statistics provided by the API. See the sample apps f
 ## Sample code
 
 This repo includes sample code showing how to build a network test using the
-OpenTok Android and iOS client SDKs. Sample code for the OpenTok JavaScript SDK
-can be found here: https://github.com/opentok/opentok-network-test-js. Each 
+Vonage Video API Android and iOS client SDKs. Sample code for the Vonage Video API JavaScript SDK
+can be found here: https://github.com/Vonage/vonage-video-js-api-network-test. Each 
 sample shows how to determine the the appropriate audio and video settings to 
-use in publishing a stream to an OpenTok session. To do this, each sample app 
+use in publishing a stream to a Vonage Video API session. To do this, each sample app 
 publishes a stream to a test session and then uses the Network Stats API to
 check the quality of that stream. Based on the quality, the app determines what 
 the client can successfully publish:
@@ -135,18 +135,18 @@ stats API.
 
 ## Frequently Asked Questions (FAQ)
 
-* Why does the OpenTok Network Stats API values are different from my Speedtest.net results?
+* Why are the Vonage Video API Network Stats API values different from my Speedtest.net results?
 
   Speedtest.net tests your network connection, while the Network Stats API shows how
-  the WebRTC engine (and OpenTok) will perform on your connection. 
+  the WebRTC engine (and Vonage Video API) will perform on your connection. 
 
 * Why are the Network Stats API results inconsistent?
 
   The WebRTC requires some time to stabilize the quality of the call for the specific
   connection. If you will allow the network test to run longer, you should receive
-  more consistent results. Also, please, make sure that you're using routed OpenTok session
-  instead of a relayed on. For more information, see [The OpenTok Media Router and media
-  modes](https://tokbox.com/developer/guides/create-session/#media-mode)
+  more consistent results. Also, please, make sure that you're using routed Vonage Video API session
+  instead of a relayed on. For more information, see [The Vonage Video API Media Router and media
+  modes](https://developer.vonage.com/en/video/guides/create-session#the-media-router-and-media-modes)
 
 * Why the output values are really low even though my user is streaming Netflix movies?
 
@@ -163,4 +163,4 @@ stats API.
 
 * Why do I get compilation errors on iOS or Android.
 
-  You need to be using a recent and supported version of the OpenTok iOS SDK or OpenTok Android SDK.
+  You need to be using a recent and supported version of the Vonage Video API iOS SDK or Vonage Video API Android SDK.

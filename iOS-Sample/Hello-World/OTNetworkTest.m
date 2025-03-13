@@ -41,7 +41,7 @@ OTSubscriberKitNetworkStatsDelegate >
     double audio_pl_ratio;
 }
 
-- (void)runConnectivityTestWithApiKey:(NSString*)apiKey
+- (void)runConnectivityTestWithApplicationId:(NSString*)applicationId
                            sessionId:(NSString*)sesssionId
                                token:(NSString*)token
                   executeQualityTest:(BOOL)needsQualityTest
@@ -66,7 +66,7 @@ OTSubscriberKitNetworkStatsDelegate >
     _qualityTestDuration = qualityTestDuration;
     self.networkTestDelegate = delegate;
     
-    _session = [[OTSession alloc] initWithApiKey:apiKey
+    _session = [[OTSession alloc] initWithApplicationId:applicationId
                                        sessionId:sesssionId
                                         delegate:self];
     [self doConnect];
@@ -333,7 +333,7 @@ audioNetworkStatsUpdated:(OTSubscriberKitAudioNetworkStats*)stats
     NSLog(@"sessionDidConnect (%@)", session.sessionId);
     
     // Step 2: We have successfully connected, now instantiate a publisher and
-    // begin pushing A/V streams into OpenTok.
+    // begin pushing A/V streams into Video Vonage API.
     [self doPublish];
 }
 

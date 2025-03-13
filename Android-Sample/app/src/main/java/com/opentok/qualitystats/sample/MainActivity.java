@@ -39,7 +39,7 @@ public class MainActivity extends Activity implements
 
     private static final String SESSION_ID = "";
     private static final String TOKEN = "";
-    private static final String APIKEY = "";
+    private static final String APPLICATION_ID = "";
 
     private static final int TEST_DURATION = 20; //test quality duration in seconds
     private static final int TIME_WINDOW = 3; //3 seconds
@@ -145,7 +145,7 @@ public class MainActivity extends Activity implements
     public void sessionConnect() {
         Log.i(LOGTAG, "Connecting session");
         if (mSession == null) {
-            mSession = new Session.Builder(this, APIKEY, SESSION_ID).build();
+            mSession = new Session.Builder(this, APPLICATION_ID, SESSION_ID).build();
             mSession.setSessionListener(this);
 
             mProgressDialog = ProgressDialog.show(this, "Checking your available bandwidth", "Please wait");

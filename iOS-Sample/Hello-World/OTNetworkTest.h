@@ -21,7 +21,7 @@ enum OTNetworkTestResult {
 {
     
 }
-- (void)runConnectivityTestWithApiKey:(NSString*)apiKey
+- (void)runConnectivityTestWithApplicationId:(NSString*)applicationId
                            sessionId:(NSString*)sesssionId
                                token:(NSString*)token
                   executeQualityTest:(BOOL)needsQualityTest

@@ -1,10 +1,10 @@
-OpenTok iOS Network Test Sample
+Vonage Video API iOS Network Test Sample
 ===============================
 
-This sample shows how to use this OpenTok iOS SDK to determine the appropriate audio and video
-settings to use in publishing a stream to an OpenTok session. To do this, the app publishes a test
+This sample shows how to use this Vonage Video API iOS SDK to determine the appropriate audio and video
+settings to use in publishing a stream to an Vonage Video API session. To do this, the app publishes a test
 stream to a test session and then uses the API to check the quality of that stream. Based on the
-quality, the app determines what the client can successfully publish to an OpenTok session:
+quality, the app determines what the client can successfully publish to a Vonage Video API session:
 
 * The client can publish an audio-video stream at the specified resolution.
 
@@ -13,7 +13,7 @@ quality, the app determines what the client can successfully publish to an OpenT
 * The client is unable to publish.
 
 The sample app only subscribes to the test stream. It does not subscribe to other streams in the
-test session. Do not use the test session for your actual call. Use a separate OpenTok session
+test session. Do not use the test session for your actual call. Use a separate Vonage Video API session
 (and session ID) to share audio-video streams between clients.
 
 ## Testing the app
@@ -22,13 +22,13 @@ To configure the app:
 
 1. Open the project in Xcode.
 
-2. Add the OpenTok.framework file from the OpenTok iOS SDK to the Frameworks directory.
+2. Add the OpenTok.framework file from the Vonage Video API iOS SDK to the Frameworks directory.
 
-3. Set the following environment variables to your OpenTok API key and API secret:
+3. Set the following environment variables to your Vonage Video API application ID and API secret:
 
    ```
-   // Replace with your OpenTok API key
-   static NSString* const kApiKey = @"";
+   // Replace with your Vonage Video API application ID
+   static NSString* const kApplicationId = @"";
    // Replace with your generated session ID
    static NSString* const kSessionId = @"";
    // Replace with your generated token
@@ -40,12 +40,10 @@ To configure the app:
    clients. Do not publish more than one stream to the test session.
 
    The app requires that each session uses the routed media mode -- one that uses
-   the [OpenTok Media Router](https://tokbox.com/developer/guides/create-session/#media-mode).
+   the [Vonage Video API Media Router](https://developer.vonage.com/en/video/guides/create-session#the-media-router-and-media-modes).
    A routed session is required to get statistics for the stream published by the local client.
 
-   You can get your API key as well as a test session ID and token at the
-   [OpenTok dashboard](https://dashboard.tokbox.com/). However, in a shipping application, use
-   one of the [OpenTok server SDKs](https://tokbox.com/developer/sdks/server/) to generate a
+   Use one of the [Vonage server SDKs](https://developer.vonage.com/en/video/server-sdks/overview) to generate a
    session ID and token.
 
 Now you can debug the app on a supported iOS device.
@@ -62,16 +60,16 @@ that has audio and video. At the end of the test it reports one of the following
 ## Understanding the code
 
 When the view of the main ViewController loads, it instantiates a OTNetworkTest object,
-defined by a class included in this sample app. The code then calls the `[NetworkTest runConnectivityTestWithApiKey:sessionId:token:executeQualityTest:qualityTestDuration:delegate:self]`
+defined by a class included in this sample app. The code then calls the `[NetworkTest runConnectivityTestWithApplicationId:sessionId:token:executeQualityTest:qualityTestDuration:delegate:self]`
 method:
 
 ```
 _networkTest = [[OTNetworkTest alloc] init];
 
 [self.activityIndicatorView startAnimating];
-if (kApiKey.length == 0 || kSessionId.length == 0 || kToken == 0)
+if (kApplicationId.length == 0 || kSessionId.length == 0 || kToken == 0)
 {
-    self.statusLabel.text = @"Provide api key,session id and token";
+    self.statusLabel.text = @"Provide application ID,session ID and token";
     self.activityIndicatorView.hidden = YES;
 }
 else
@@ -79,7 +77,7 @@ else
     self.statusLabel.text = @"Checking network...";
 }
 self.resultLabel.text = @"";
-[_networkTest runConnectivityTestWithApiKey:kApiKey
+[_networkTest runConnectivityTestWithApplicationId:kApplicationId
                                   sessionId:kSessionId
                                       token:kToken
                          executeQualityTest:YES
@@ -87,7 +85,7 @@ self.resultLabel.text = @"";
                                    delegate:self];
 ```
 
-The OTNetworkTestDelegate class connects to the test OpenTok session and publishes a test stream
+The OTNetworkTestDelegate class connects to the test Vonage Video API session and publishes a test stream
 to the session. Upon the stream being created, the app subscribes to it, so that it can
 collect statistics for it.
 

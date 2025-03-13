@@ -10,8 +10,8 @@
 
 // *** Fill the following variables using your own Project info  ***
 // ***          https://dashboard.tokbox.com/projects            ***
-// Replace with your OpenTok API key
-static NSString* const kApiKey = @"";
+// Replace with your Vonage Video API application ID
+static NSString* const kApplicationId = @"";
 // Replace with your generated session ID
 static NSString* const kSessionId = @"";
 // Replace with your generated token
@@ -70,15 +70,15 @@ static NSString* const kToken = @"";
 
 - (void)viewDidLoad
 {
-    self.title = @"OpenTok Test Network";
+    self.title = @"Vonage Video API Test Network";
     [super viewDidLoad];
     
     _networkTest = [[OTNetworkTest alloc] init];
     
     [self.activityIndicatorView startAnimating];
-    if (kApiKey.length == 0 || kSessionId.length == 0 || kToken == 0)
+    if (kApplicationId.length == 0 || kSessionId.length == 0 || kToken == 0)
     {
-        self.statusLabel.text = @"Provide an api key,session id and token";
+        self.statusLabel.text = @"Provide an application ID,session ID and token";
         self.activityIndicatorView.hidden = YES;
     }
     else
@@ -86,7 +86,7 @@ static NSString* const kToken = @"";
         self.statusLabel.text = @"Checking network...";
     }
     self.resultLabel.text = @"";
-    [_networkTest runConnectivityTestWithApiKey:kApiKey
+    [_networkTest runConnectivityTestWithApplicationId:kApplicationId
                                       sessionId:kSessionId
                                           token:kToken
                              executeQualityTest:YES
