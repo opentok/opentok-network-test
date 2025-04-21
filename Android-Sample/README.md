@@ -54,46 +54,120 @@ test session. Do not use the test session for your actual call. Use a separate O
     - `resolution`: The camera capture resolution for the publisher. Defaults to `HIGH` if not specified.
     - `testDurationSec`: The duration of the test in seconds. Defaults to `30 sec` if not specified.
 
-4. **Handle Callbacks**
+## Handle Callbacks
 
-    Once the test is running, you'll receive callbacks in the provided listener methods:
-    
-    - `onQualityTestResults`: Receive the final test results and the recommended setting based on quality thresholds.
-    - `onQualityTestStatsUpdate`: Receive real-time statistics updates during the test.
-    - `onError`: Handle errors that occur during the test.
+Once the test is running, you'll receive callbacks in the provided listener methods:
 
-    Here an example of ```NetworkQualityTestCallbackListener```:
-    ```java
-    new NetworkQualityTestCallbackListener() {
-        @Override
-        public void onQualityTestResults(String recommendedSetting) {
-            Log.d(LOGTAG, "Recommended resolution: " + recommendedSetting);
-        }
+### `onQualityTestResults`
+Receive the final stats and the recommended setting based on quality thresholds.
 
-        @Override
-        public void onQualityTestStatsUpdate(CallbackQualityStats stats) {
-            Log.d(LOGTAG, "---------------------------------------------------------------");
-            Log.d(LOGTAG, "Sent Video Bitrate: " + stats.getSentVideoBitrateKbps() + " Kbps");
-            Log.d(LOGTAG, "Sent Audio Bitrate: " + stats.getSentAudioBitrateKbps() + " Kbps");
-            Log.d(LOGTAG, "Received Audio Bitrate: " + stats.getReceivedAudioBitrateKbps() + " Kbps");
-            Log.d(LOGTAG, "Received Video Bitrate: " + stats.getReceivedVideoBitrateKbps() + " Kbps");
-            Log.d(LOGTAG, "Current Round Trip Time: " + stats.getCurrentRoundTripTimeMs() + " ms");
-            Log.d(LOGTAG, "Available Outgoing Bitrate: " + stats.getAvailableOutgoingBitrate() + " bps");
-            Log.d(LOGTAG, "Audio Packet Lost Ratio  " + stats.getAudioPacketLostRatio() * 100 + "%");
-            Log.d(LOGTAG, "Video Packet Lost Ratio  " + stats.getVideoPacketLostRatio() * 100 + "%");
-            Log.d(LOGTAG, "Jitter: " + stats.getJitter());
-            Log.d(LOGTAG, "Quality Limitation Reason: " + stats.getQualityLimitationReason());
-            Log.d(LOGTAG, "Sent video resolution: " + stats.getSentVideoResolution());
-            Log.d(LOGTAG, "Received video resolution: " + stats.getReceivedVideoResolution());
-            Log.d(LOGTAG, "---------------------------------------------------------------");
-        }
+#### Recommended Resolutions:
 
-        @Override
-        public void onError(String error) {
-            Log.d(LOGTAG, "Error " + error);
-        }
+If the estimated outgoing bitrate meets the required threshold for any of the defined quality levels, the method will return one of the following resolutions:
 
-    ```
+- **"1920x1080 @ 30FPS"**  
+  Recommended if the estimated outgoing bitrate is **greater than or equal to 4 Mbps** (4000000 bits/sec).
+
+- **"1280x720 @ 30FPS"**  
+  Recommended if the estimated outgoing bitrate is **greater than or equal to 2.5 Mbps** (2500000 bits/sec) but less than **4 Mbps**.
+
+- **"960x540 @ 30FPS"**  
+  Recommended if the estimated outgoing bitrate is **greater than or equal to 1.2 Mbps** (1200000 bits/sec) but less than **2.5 Mbps**.
+
+- **"640x360 @ 30FPS"**  
+  Recommended if the estimated outgoing bitrate is **greater than or equal to 500 Kbps** (500000 bits/sec) but less than **1.2 Mbps**.
+
+- **"480x270 @ 30FPS"**  
+  Recommended if the estimated outgoing bitrate is **greater than or equal to 300 Kbps** (300000 bits/sec) but less than **500 Kbps**.
+
+- **"320x180 @ 30FPS"**  
+  Recommended if the estimated outgoing bitrate is **greater than or equal to 150 Kbps** (150000 bits/sec) but less than **300 Kbps**.
+
+#### Bitrate Too Low for Video:
+
+If the estimated outgoing bitrate is too low to support any video resolution, the method will return:
+
+- **"Bitrate is too low for video"**  
+  This message is returned if the estimated outgoing bitrate is **lower than 150 Kbps** (150000 bits/sec).
+
+### `onQualityTestStatsUpdate`
+Receive real-time statistics updates during the test.
+
+**Stats Logged:**
+
+- **Sent Video Bitrate** (`stats.getSentVideoBitrateKbps()`):  
+  Bitrate (in Kbps) of the video being sent from the local device to the receiver.
+
+- **Sent Audio Bitrate** (`stats.getSentAudioBitrateKbps()`):  
+  Bitrate (in Kbps) of the audio being sent from the local device to the receiver.
+
+- **Received Audio Bitrate** (`stats.getReceivedAudioBitrateKbps()`):  
+  Bitrate (in Kbps) of the audio being received by the local device from the remote participant.
+
+- **Received Video Bitrate** (`stats.getReceivedVideoBitrateKbps()`):  
+  Bitrate (in Kbps) of the video being received by the local device from the remote participant.
+
+- **Current Round Trip Time** (`stats.getCurrentRoundTripTimeMs()`):  
+  Round-trip time (RTT) in milliseconds, indicating the time it takes for a packet to travel from the sender to the receiver and back.
+
+- **Available Outgoing Bitrate** (`stats.getAvailableOutgoingBitrate()`):  
+  Available outgoing bitrate (in bps) that can be used for sending video or audio data.
+
+- **Audio Packet Lost Ratio** (`stats.getAudioPacketLostRatio()`):  
+  The percentage of audio packets lost during transmission.
+
+- **Video Packet Lost Ratio** (`stats.getVideoPacketLostRatio()`):  
+  The percentage of video packets lost during transmission.
+
+- **Jitter** (`stats.getJitter()`):  
+  The variation in packet arrival times (in milliseconds), a measure of network instability.
+
+- **Quality Limitation Reason** (`stats.getQualityLimitationReason()`):  
+  The reason the quality of the media stream is limited (e.g., low network bandwidth, high packet loss).
+
+- **Sent Video Resolution** (`stats.getSentVideoResolution()`):  
+  The resolution of the video being sent from the local device to the receiver.
+
+- **Received Video Resolution** (`stats.getReceivedVideoResolution()`):  
+  The resolution of the video being received by the local device from the remote participant.
+
+###  `onError`
+Handle errors that occur during the test.
+
+---
+
+### Example of `NetworkQualityTestCallbackListener` Implementation:
+```java
+new NetworkQualityTestCallbackListener() {
+    @Override
+    public void onQualityTestResults(String recommendedSetting) {
+        Log.d(LOGTAG, "Recommended resolution: " + recommendedSetting);
+    }
+
+    @Override
+    public void onQualityTestStatsUpdate(CallbackQualityStats stats) {
+        Log.d(LOGTAG, "---------------------------------------------------------------");
+        Log.d(LOGTAG, "Sent Video Bitrate: " + stats.getSentVideoBitrateKbps() + " Kbps");
+        Log.d(LOGTAG, "Sent Audio Bitrate: " + stats.getSentAudioBitrateKbps() + " Kbps");
+        Log.d(LOGTAG, "Received Audio Bitrate: " + stats.getReceivedAudioBitrateKbps() + " Kbps");
+        Log.d(LOGTAG, "Received Video Bitrate: " + stats.getReceivedVideoBitrateKbps() + " Kbps");
+        Log.d(LOGTAG, "Current Round Trip Time: " + stats.getCurrentRoundTripTimeMs() + " ms");
+        Log.d(LOGTAG, "Available Outgoing Bitrate: " + stats.getAvailableOutgoingBitrate() + " bps");
+        Log.d(LOGTAG, "Audio Packet Lost Ratio  " + stats.getAudioPacketLostRatio() * 100 + "%");
+        Log.d(LOGTAG, "Video Packet Lost Ratio  " + stats.getVideoPacketLostRatio() * 100 + "%");
+        Log.d(LOGTAG, "Jitter: " + stats.getJitter());
+        Log.d(LOGTAG, "Quality Limitation Reason: " + stats.getQualityLimitationReason());
+        Log.d(LOGTAG, "Sent video resolution: " + stats.getSentVideoResolution());
+        Log.d(LOGTAG, "Received video resolution: " + stats.getReceivedVideoResolution());
+        Log.d(LOGTAG, "---------------------------------------------------------------");
+    }
+
+    @Override
+    public void onError(String error) {
+        Log.d(LOGTAG, "Error " + error);
+    }
+}
+
 
 
 5. **Start the Test**
@@ -106,7 +180,7 @@ test session. Do not use the test session for your actual call. Use a separate O
 
 6. **Stop the test**
 
-    To stop the test, you can call stopTest. If the test is halted before 5 seconds, an error will be triggered.
+    To stop the test, you can call NetworkQualityTest.stopTest(). If the test is halted before 5 seconds, an error will be triggered.
 
     ```java
      networkQualityTest.stopTest();
