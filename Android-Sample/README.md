@@ -3,7 +3,7 @@ OpenTok Android Network Test Sample
 
 # NetworkQualityTest
 
-The `NetworkQualityTest` class is a utility for testing network quality and gathering statistics during video streaming sessions using the OpenTok platform. It allows you to monitor various network and media statistics and also get the recommanded resoltion [Handle Callbacks](##Handle Callbacks)
+The `NetworkQualityTest` class is a utility for testing network quality and gathering statistics during video streaming sessions using the OpenTok platform. It allows you to monitor various network and media statistics and also get the recommanded resoltion: - [Handle Callbacks](#handle-callbacks)
 
 
 The `MainActivity`class is sample shows how to use this OpenTok Android SDK to determine the appropriate audio and video
