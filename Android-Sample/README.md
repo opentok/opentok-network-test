@@ -47,12 +47,34 @@ test session. Do not use the test session for your actual call. Use a separate O
     The `NetworkQualityTestConfig` class is used to configure the parameters of the network quality test. It provides the following constructor:
 
     You can configure the following parameters:
-    
-    - `sessionId`: The session ID of your OpenTok session.
-    - `apiKey`: Your OpenTok API key.
-    - `token`: The token for connecting to the session.
-    - `resolution`: The camera capture resolution for the publisher. Defaults to `HIGH` if not specified.
-    - `testDurationSec`: The duration of the test in seconds. Defaults to `30 sec` if not specified.
+   ### Configurable Parameters:
+
+- **`sessionId`**:  
+  The session ID of your OpenTok session. This is required to identify which session you are testing.
+  - Type: `String`
+  
+- **`apiKey`**:  
+  Your OpenTok API key. This is required for authentication when accessing the OpenTok session.
+  - Type: `String`
+  
+- **`token`**:  
+  The token used to connect to the OpenTok session. This is necessary for a participant to join the session.
+  - Type: `String`
+
+- **`resolution`**:  
+  The camera capture resolution for the publisher. If not specified, the default resolution is set to **HIGH**.
+  - Type: `String`
+  - Possible Values:
+    - **"HIGH"**: HD resolution (1280x720).
+    - **"HIGH_1080P"**: 1080p resolution (1920x1080).
+    - **"LOW"**: Lowest available resolution (typically 352x288).
+    - **"MEDIUM"**: VGA resolution (640x480).
+  - Default: `"HIGH"`
+
+- **`testDurationSec`**:  
+  The duration of the test, in seconds. If not specified, the test will default to **30 seconds**.
+  - Type: `int`
+  - Default: `30 sec`
 
 ## Handle Callbacks
 
