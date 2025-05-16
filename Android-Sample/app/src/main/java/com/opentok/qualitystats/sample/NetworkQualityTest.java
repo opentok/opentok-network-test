@@ -49,8 +49,8 @@ public class NetworkQualityTest extends Activity
     private static final double MIN_TEST_DURATION_SEC = 5;
 
     private final Handler mHandler = new Handler();
-    private final Queue<SubscriberKit.SubscriberVideoStats> videoStatsQueue = new LinkedList<>();
-    private final Queue<SubscriberKit.SubscriberAudioStats> audioStatsQueue = new LinkedList<>();
+    private final LinkedList<SubscriberKit.SubscriberVideoStats> videoStatsQueue = new LinkedList<>();
+    private final LinkedList<SubscriberKit.SubscriberAudioStats> audioStatsQueue = new LinkedList<>();
     private final Activity context;
     private final NetworkQualityTestConfig config;
     private final NetworkQualityTestCallbackListener listener;
@@ -273,10 +273,10 @@ public class NetworkQualityTest extends Activity
     private void onSubscriberVideoStats(SubscriberKit.SubscriberVideoStats videoStats) {
         double videoTimestamp = videoStats.timeStamp;
         if (videoStatsQueue.isEmpty()) {
-            videoStatsQueue.add(videoStats);
+            videoStatsQueue.addLast(videoStats);
             return;
         }
-        SubscriberKit.SubscriberVideoStats previousVideoStats = videoStatsQueue.peek();
+        SubscriberKit.SubscriberVideoStats previousVideoStats = videoStatsQueue.peekLast();
 
         assert previousVideoStats != null;
         if ((videoTimestamp - previousVideoStats.timeStamp) < TIME_WINDOW * 1000) {
@@ -295,7 +295,7 @@ public class NetworkQualityTest extends Activity
         long bytesSentDiff = videoStats.videoBytesReceived - previousVideoStats.videoBytesReceived;
         long videoBitrateKbps = (long) ((bytesSentDiff * 8) / (elapsedTimeMs / 1000.0)) / 1000;
 
-        videoStatsQueue.add(videoStats);
+        videoStatsQueue.addLast(videoStats);
 
         subVideoStatsList.add(new SubVideoStats.Builder()
                 .videoBytesKbsReceived(videoBitrateKbps)
@@ -311,11 +311,11 @@ public class NetworkQualityTest extends Activity
 
         // When queue is empty, add the current stats and return
         if (audioStatsQueue.isEmpty()) {
-            audioStatsQueue.add(audioStats);
+            audioStatsQueue.addLast(audioStats);
             return;
         }
 
-        SubscriberKit.SubscriberAudioStats previousAudioStats = audioStatsQueue.peek();
+        SubscriberKit.SubscriberAudioStats previousAudioStats = audioStatsQueue.peekLast();
 
         // Check if the time difference is within the time window
         long elapsedTimeMs = 0;
@@ -342,7 +342,7 @@ public class NetworkQualityTest extends Activity
         long audioBitrateKbps = (long) ((audioBytesReceivedDiff * BITS_PER_BYTE) / (elapsedTimeMs / (double) MILLIS_TO_SECONDS)) / 1000;
 
         // Update the queue and stats list
-        audioStatsQueue.add(audioStats);
+        audioStatsQueue.addLast(audioStats);
         subAudioStatsList.add(new SubAudioStats.Builder()
                 .audioBitrateKbps(audioBitrateKbps)
                 .audioBytesReceived(audioStats.audioBytesReceived)
