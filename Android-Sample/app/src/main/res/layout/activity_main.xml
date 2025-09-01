@@ -8,4 +8,97 @@
     android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context=".MainActivity">
 
+    <TextView
+        android:id="@+id/audioUploadSpeedLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Audio bitrate"
+        android:textSize="10sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="3dp"
+        android:layout_above="@+id/audioUploadSpeedChart" />
+
+    <TextView
+        android:id="@+id/videoUploadSpeedLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Video bitrate"
+        android:textSize="10sp"
+        android:layout_marginBottom="3dp"
+        android:textStyle="bold"
+        android:layout_above="@+id/videoUploadSpeedChart"
+        android:layout_alignLeft="@+id/videoUploadSpeedChart" />
+
+    <TextView
+        android:id="@+id/vUploadSpeedLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Video bitrate"
+        android:textSize="10sp"
+        android:layout_marginBottom="3dp"
+        android:textStyle="bold"
+        android:layout_above="@+id/videoUploadSpeedChart"
+        android:layout_alignLeft="@+id/videoUploadSpeedChart" />
+
+    <TextView
+        android:id="@+id/outGoingBitrateLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Outgoing available bitrate"
+        android:textSize="10sp"
+        android:layout_marginBottom="3dp"
+        android:textStyle="bold"
+        android:layout_alignLeft="@+id/chart" />
+
+    <com.github.mikephil.charting.charts.LineChart
+        android:id="@+id/audioUploadSpeedChart"
+        android:layout_width="183dp"
+        android:layout_height="158dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="218dp">
+
+    </com.github.mikephil.charting.charts.LineChart>
+
+    <com.github.mikephil.charting.charts.LineChart
+        android:id="@+id/chart"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true">
+
+    </com.github.mikephil.charting.charts.LineChart>
+
+    <TextView
+        android:id="@+id/statsTextView"
+        android:layout_width="381dp"
+        android:layout_height="149dp"
+        android:layout_below="@+id/chart"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_centerInParent="true"
+        android:layout_marginStart="36dp"
+        android:layout_marginTop="356dp"
+        android:layout_marginEnd="42dp"
+        android:layout_marginBottom="26dp"
+        android:autoText="false"
+        android:textSize="12sp" />
+
+    <com.github.mikephil.charting.charts.LineChart
+        android:id="@+id/videoUploadSpeedChart"
+        android:layout_width="183dp"
+        android:layout_height="158dp"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="-8dp">
+
+    </com.github.mikephil.charting.charts.LineChart>
+
+
 </RelativeLayout>

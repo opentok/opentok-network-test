@@ -10,7 +10,7 @@ session that connects two clients in a one-to-one call.
 
 The network test is supported in:
 
-*  [OpenTok Android SDK 2.12 and newer](https://tokbox.com/developer/sdks/android/)
+*  [OpenTok Android SDK 2.24.4 and newer](https://tokbox.com/developer/sdks/android/)
 *  [OpenTok iOS SDK 2.12 and newer](https://tokbox.com/developer/sdks/ios/)
 
 JavaScript clients should use the sample code found here:
@@ -18,6 +18,11 @@ https://github.com/opentok/opentok-network-test-js.
 
 ## How does it work
 
+## Android
+
+Please check the README file inside the "android-sample" folder.
+
+## iOS
 The sample apps each do the following:
 
 1. Connect to an OpenTok session and publish a test stream to a test session.
