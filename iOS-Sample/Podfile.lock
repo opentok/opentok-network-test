@@ -1,20 +1,16 @@
 PODS:
-  - OpenTok (2.22.2):
-    - VonageWebRTC (= 84.0.20)
-  - VonageWebRTC (84.0.20)
+  - OTXCFramework (2.31.1)
 
 DEPENDENCIES:
-  - OpenTok (= 2.22.2)
+  - OTXCFramework (= 2.31.1)
 
 SPEC REPOS:
   trunk:
-    - OpenTok
-    - VonageWebRTC
+    - OTXCFramework
 
 SPEC CHECKSUMS:
-  OpenTok: 097187cb5a0116431ef5f2fdf5a2b4261bb2be42
-  VonageWebRTC: 20e0e56f656ddbf49287cacbd33e69dbbe5736f8
+  OTXCFramework: da6c1ae5159da5a56a380a3954d5027a8b48d829
 
-PODFILE CHECKSUM: bde97323b45b4146b93b3b349e5b1b2ab86b8a5f
+PODFILE CHECKSUM: a14e0ea14b6d2aa65b7955a21caa973157d6fdc9
 
-COCOAPODS: 1.11.3
+COCOAPODS: 1.16.2
