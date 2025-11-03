@@ -1,12 +1,13 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 30
+    namespace "com.opentok.qualitystats.sample"
+    compileSdkVersion 31
 
     defaultConfig {
         applicationId "com.opentok.qualitystats.sample"
-        minSdkVersion 16
-        targetSdkVersion 30
+        minSdkVersion 24
+        targetSdkVersion 31
         versionCode 1
         versionName "1.0"
     }
@@ -25,8 +26,13 @@ android {
 }
 
 dependencies {
-    implementation 'com.opentok.android:opentok-android-sdk:2.22.2'
+    implementation 'com.opentok.android:opentok-android-sdk:2.31.1'
     implementation 'androidx.appcompat:appcompat:1.0.0'
     implementation 'pub.devrel:easypermissions:3.0.0'
 
+}
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
 }
