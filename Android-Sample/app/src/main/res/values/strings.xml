@@ -4,6 +4,8 @@
     <string name="app_name">QualityStatsSample</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="title_settings_dialog">Permissions Required</string>
+    <string name="rationale_ask_again">This app needs camera and microphone permissions to run. Please enable them in Settings.</string>
     <string name="rationale_video_app">This app needs access to your camera and mic to make video calls</string>
     <string name="setting">Settings</string>
     <string name="cancel">Cancel</string>
