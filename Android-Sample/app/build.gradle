@@ -23,16 +23,15 @@ android {
             jniLibs.srcDir 'jniLibs'
         }
     }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
 }
 
 dependencies {
     implementation 'com.opentok.android:opentok-android-sdk:2.31.1'
     implementation 'androidx.appcompat:appcompat:1.0.0'
     implementation 'pub.devrel:easypermissions:3.0.0'
-
-}
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
-    }
 }
