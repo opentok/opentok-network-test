@@ -1,14 +1,14 @@
 package com.opentok.qualitystats.sample;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+
 import androidx.annotation.NonNull;
-import android.Manifest;
 
 import com.opentok.android.OpentokError;
 import com.opentok.android.Publisher;
@@ -19,18 +19,17 @@ import com.opentok.android.Subscriber;
 import com.opentok.android.SubscriberKit;
 import com.opentok.android.SubscriberKit.VideoStatsListener;
 
+import java.util.List;
 
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
 
-import java.util.List;
-
 public class MainActivity extends Activity implements
         Session.SessionListener,
         PublisherKit.PublisherListener,
         SubscriberKit.SubscriberListener,
-        EasyPermissions.PermissionCallbacks{
+        EasyPermissions.PermissionCallbacks {
 
     private static final int RC_SETTINGS_SCREEN_PERM = 123;
     private static final int RC_VIDEO_APP_PERM = 124;
@@ -70,7 +69,7 @@ public class MainActivity extends Activity implements
 
     private boolean audioOnly = false;
 
-    private Handler mHandler = new Handler();
+    private final Handler mHandler = new Handler();
 
     private ProgressDialog mProgressDialog;
     private AlertDialog dialog;
@@ -85,8 +84,8 @@ public class MainActivity extends Activity implements
     }
 
     @Override
-    public void onBackPressed() {
-        super.onBackPressed();
+    public void onStop() {
+        super.onStop();
 
         if (mSession != null) {
             mSession.disconnect();
@@ -94,10 +93,10 @@ public class MainActivity extends Activity implements
     }
 
     @Override
-    public void onPause(){
+    public void onPause() {
         super.onPause();
 
-        if(dialog!= null && dialog.isShowing()){
+        if (dialog != null && dialog.isShowing()) {
             dialog.dismiss();
         }
     }
@@ -135,13 +134,14 @@ public class MainActivity extends Activity implements
     @AfterPermissionGranted(RC_VIDEO_APP_PERM)
     private void requestPermissions() {
 
-        String[] perms = { Manifest.permission.INTERNET, Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO };
+        String[] perms = {Manifest.permission.INTERNET, Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO};
         if (EasyPermissions.hasPermissions(this, perms)) {
             sessionConnect();
         } else {
             EasyPermissions.requestPermissions(this, getString(R.string.rationale_video_app), RC_VIDEO_APP_PERM, perms);
         }
     }
+
     public void sessionConnect() {
         Log.i(LOGTAG, "Connecting session");
         if (mSession == null) {
@@ -341,7 +341,7 @@ public class MainActivity extends Activity implements
 
         }
 
-   }
+    }
 
     private void checkVideoQuality() {
         if (mSession != null) {
@@ -381,21 +381,17 @@ public class MainActivity extends Activity implements
                 .setTitle(title)
                 .setMessage(Message)
                 .setPositiveButton(android.R.string.yes,
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog,
-                                                int which) {
-                                try {
-                                    finish();
-                                } catch (Throwable throwable) {
-                                    throwable.printStackTrace();
-                                }
+                        (dialog, which) -> {
+                            try {
+                                finish();
+                            } catch (Throwable throwable) {
+                                throwable.printStackTrace();
                             }
                         }).setIcon(android.R.drawable.ic_dialog_alert)
                 .show();
     }
 
-    private Runnable statsRunnable = new Runnable() {
-
+    private final Runnable statsRunnable = new Runnable() {
         @Override
         public void run() {
             if (mSession != null) {
@@ -404,5 +400,4 @@ public class MainActivity extends Activity implements
             }
         }
     };
-
 }
