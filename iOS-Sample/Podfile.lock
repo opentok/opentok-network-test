@@ -1,16 +1,16 @@
 PODS:
-  - VonageClientSDKVideo (2.29.1)
+  - VonageClientSDKVideo (2.31.1)
 
 DEPENDENCIES:
-  - VonageClientSDKVideo (= 2.29.1)
+  - VonageClientSDKVideo (= 2.31.1)
 
 SPEC REPOS:
   trunk:
     - VonageClientSDKVideo
 
 SPEC CHECKSUMS:
-  VonageClientSDKVideo: d74428e330bd0c903f8055a1e47abeeed35bc078
+  VonageClientSDKVideo: 752cf8dbd08a57a9e7fb0080fc26117f4dacfbf8
 
-PODFILE CHECKSUM: 31e2e83a4f4e11a32b6d407716857ec7f6246956
+PODFILE CHECKSUM: a99286f98f1cc326b7586eb4945b25c0aea7b0f2
 
 COCOAPODS: 1.16.2
