@@ -2,12 +2,12 @@ apply plugin: 'com.android.application'
 
 android {
     namespace "com.opentok.qualitystats.sample"
-    compileSdkVersion 31
+    compileSdkVersion 36
 
     defaultConfig {
         applicationId "com.opentok.qualitystats.sample"
         minSdkVersion 24
-        targetSdkVersion 31
+        targetSdkVersion 36
         versionCode 1
         versionName "1.0"
     }
