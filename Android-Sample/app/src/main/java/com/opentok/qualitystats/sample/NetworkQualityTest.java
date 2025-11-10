@@ -5,6 +5,7 @@ import static com.opentok.qualitystats.sample.models.constant.RtcStatsConstants.
 import android.app.Activity;
 import android.os.Handler;
 import android.util.Log;
+import android.util.Pair;
 
 
 import com.opentok.android.OpentokError;
@@ -55,7 +56,9 @@ public class NetworkQualityTest extends Activity
     private final NetworkQualityTestConfig config;
     private final NetworkQualityTestCallbackListener listener;
     private final Handler rtcStatsHandler = new Handler();
-    private final Map<Long, Long> ssrcToPrevBytesSent = new HashMap<>();
+    // FIXME: use a better data structure to avoid mistakes about what is in the first and in the second pair member
+    // Maps SSRC to the previous timestamp and the previous bytesSent
+    private final Map<Long, Pair<Long, Long>> ssrcToPrevTimestampBytesSent = new HashMap<>();
     private final List<NetworkQualityStats> publisherNetworkQualityStatsList = new ArrayList<>();
     private final List<NetworkQualityStats> subscriberNetworkQualityStatsList = new ArrayList<>();
     private final List<SubVideoStats> subVideoStatsList = new ArrayList<>();
@@ -67,7 +70,6 @@ public class NetworkQualityTest extends Activity
     private Runnable qualityStatsRunnable;
 
     private boolean isErrorOccurred = false;
-    private long prevVideoTimestamp = 0;
     private long startTestStartTime = 0;
 
     public NetworkQualityTest(Activity context, NetworkQualityTestConfig config,
@@ -355,21 +357,26 @@ public class NetworkQualityTest extends Activity
     private long calculateVideoBitrateKbps(long ssrc, long timestamp, long currentBytesSent) {
         long videoBitrateKbps = 0;
 
-        if (prevVideoTimestamp > 0 && ssrcToPrevBytesSent.containsKey(ssrc)) {
-            long elapsedTimeMs = timestamp - prevVideoTimestamp;
+        if (ssrcToPrevTimestampBytesSent.containsKey(ssrc)) {
+            Pair<Long, Long> prevTimestampBytesSentPair = ssrcToPrevTimestampBytesSent.get(ssrc);
+            long previousSsrcTimestamp = prevTimestampBytesSentPair.first;
+            long previousSsrcBytesSent = prevTimestampBytesSentPair.second;
+            if (previousSsrcTimestamp > 0) {
+                long elapsedTimeMs = timestamp - previousSsrcTimestamp;
 
-            if (elapsedTimeMs == 0) {
-                return videoBitrateKbps;
+                if (elapsedTimeMs == 0) {
+                    return videoBitrateKbps;
+                }
+
+                long bytesSentDifference = currentBytesSent - previousSsrcBytesSent;
+
+                videoBitrateKbps = (long) ((bytesSentDifference * BITS_PER_BYTE)
+                        / (elapsedTimeMs / (double) MILLIS_TO_SECONDS));
+
             }
-
-            long previousBytesSent = ssrcToPrevBytesSent.get(ssrc);
-            long bytesSentDifference = currentBytesSent - previousBytesSent;
-
-            videoBitrateKbps = (long) ((bytesSentDifference * BITS_PER_BYTE)
-                    / (elapsedTimeMs / (double) MILLIS_TO_SECONDS));
         }
 
-        ssrcToPrevBytesSent.put(ssrc, currentBytesSent);
+        ssrcToPrevTimestampBytesSent.put(ssrc, new Pair<>(timestamp, currentBytesSent));
 
         return videoBitrateKbps;
     }
@@ -434,7 +441,6 @@ public class NetworkQualityTest extends Activity
                 }
             }
         }
-        prevVideoTimestamp = timestamp;
 
         NetworkQualityStats networkQualityStats = new NetworkQualityStats.Builder()
                 .videoStats(videoStatsList)
