@@ -6,15 +6,13 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.1.1'
+        classpath 'com.android.tools.build:gradle:8.13.0'
     }
 }
 
 allprojects {
     repositories {
-        jcenter()
-        maven { url 'https://maven.google.com' }
-        maven { url 'https://tokbox.bintray.com/maven' }
         google()
+        mavenCentral()
     }
 }
